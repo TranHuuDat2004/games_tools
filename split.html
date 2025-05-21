@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Cắt Ảnh</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link đến file CSS chung -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            /* Giới hạn chiều rộng */
+        }
+
+        #preview-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            min-height: 150px;
+            /* Chiều cao tối thiểu để dễ nhìn */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f1f1;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            /* Giới hạn chiều cao preview */
+            display: none;
+            /* Ẩn ban đầu */
+        }
+
+        #preview-placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        #tiles-output {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            display: flex;
+            /* Hiển thị các mảnh theo hàng */
+            flex-wrap: wrap;
+            /* Cho phép xuống dòng */
+            gap: 10px;
+            /* Khoảng cách giữa các mảnh */
+            background-color: #fdfdfd;
+            padding: 15px;
+            border: 1px solid #eee;
+            min-height: 50px;
+        }
+
+        .tile-container {
+            border: 1px solid #ddd;
+            padding: 3px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            /* Căn giữa link download */
+        }
+
+        .tile-container img {
+            width: 145px;
+            /* Giới hạn kích thước hiển thị mảnh */
+            height: auto;
+            display: block;
+            /* Để link download xuống dưới */
+            margin-bottom: 5px;
+        }
+
+        .tile-container a {
+            font-size: 0.8em;
+        }
+
+        /* Tùy chỉnh input number */
+        input[type=number] {
+            max-width: 80px;
+            /* Giới hạn chiều rộng ô nhập số */
+        }
+
+        /* Nút */
+        #split-button {
+            width: 100%;
+            /* Nút chiếm hết cột */
+        }
+
+        /* Thông báo lỗi */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        /* --- NEW Custom styles for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height and preference */
+            right: 20px;
+            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px; /* Slightly adjusted for VI/EN */
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active { /* This class will be toggled by JS */
+            background-color: #ffc107; /* Bootstrap warning color */
+            border-color: #ffc107;
+            color: #212529; /* Dark text for better contrast on yellow */
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="split.html"><button class="btn btn-outline-secondary lang-btn active" data-lang="vi">VI</button></a>
+            <a href="split_en.html"><button class="btn btn-outline-secondary lang-btn " data-lang="en">EN</button></a>
+        </div>
+    </div>
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                <!-- Optional: Thêm tên thương hiệu dạng text -->
+                <!-- <span style="vertical-align: middle; margin-left: 5px;">Game Xếp Hình</span> -->
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="index.html">Trang Chủ <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="game.html">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="split.html">Cắt Ảnh</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+    <div style="padding-top: 80px;"></div>
+    <div style="padding-top: 20px;" class="container">
+
+        <!-- Tab lựa chọn công cụ (Tùy chọn, có thể bỏ nếu trang này chỉ làm resize) -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link " id="crop-square-tab" href="scale.html" role="tab">Cắt Ảnh Vuông</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="split-grid-tab" href="split.html" role="tab">Cắt Ảnh Lưới</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " id="resize-image-tab" href="resize.html" role="tab">Thay Đổi Kích Thước</a>
+            </li>
+        </ul>
+
+        <h1 class="text-center mb-4">Công Cụ Cắt Ảnh Thành Lưới</h1>
+        <div class="alert alert-info">
+            Chọn ảnh từ máy tính, nhập số hàng và cột mong muốn, sau đó nhấn "Cắt Ảnh".
+        </div>
+
+        <!-- Khu vực Input -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-5 form-group">
+                <label for="image-input">Chọn file ảnh:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image-input"
+                        accept="image/png, image/jpeg, image/gif, image/webp">
+                    <label class="custom-file-label" for="image-input" data-browse="Duyệt">Chọn file...</label>
+                </div>
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="rows-input">Số Hàng:</label>
+                <input type="number" class="form-control" id="rows-input" value="3" min="1">
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="cols-input">Số Cột:</label>
+                <input type="number" class="form-control" id="cols-input" value="3" min="1">
+            </div>
+            <div class="col-md-3 form-group">
+                <button id="split-button" class="btn btn-warning btn-block" disabled>Cắt Ảnh</button>
+            </div>
+        </div>
+
+        <!-- Khu vực xem trước ảnh gốc -->
+        <div id="preview-container">
+            <span id="preview-placeholder">Chưa có ảnh nào được chọn</span>
+            <img id="preview-image" src="#" alt="Ảnh xem trước">
+        </div>
+
+        <!-- Khu vực hiển thị thông báo lỗi -->
+        <div id="error-message" class="text-center"></div>
+
+
+        <!-- Khu vực hiển thị các mảnh đã cắt -->
+        <div id="tiles-output">
+            <!-- Các mảnh ảnh sẽ được thêm vào đây bằng JavaScript -->
+        </div>
+
+    </div>
+    <div style="padding-bottom: 80px;"></div>
+    <!-- ===== MAIN CONTENT END ===== -->
+
+<!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn. .</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Khám Phá</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang
+                                    Chủ</a>
+                            </li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp
+                                    Hình</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Công cụ</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
+                                    Ảnh Lưới</a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
+                                    Ảnh Vuông</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Thông Tin</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới
+                                    Thiệu</a>
+                            </li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên
+                                    Hệ</a>
+                            </li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều
+                                    Khoản</a></li>
+                            <!-- Thêm link Điều khoản nếu có -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi
+                            quyền.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                            <!-- Lưu ý: Bootstrap 5 không cần jQuery, nếu bạn dùng BS5 thì có thể bỏ jQuery -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            const imageInput = document.getElementById('image-input');
+            const previewImage = document.getElementById('preview-image');
+            const previewPlaceholder = document.getElementById('preview-placeholder');
+            const rowsInput = document.getElementById('rows-input');
+            const colsInput = document.getElementById('cols-input');
+            const splitButton = document.getElementById('split-button');
+            const tilesOutput = document.getElementById('tiles-output');
+            const errorMessage = document.getElementById('error-message');
+            const fileLabel = $('.custom-file-label'); // Lấy label của input file
+
+            let originalImage = null; // Lưu trữ đối tượng Image gốc
+            let originalFileName = 'image'; // Tên file gốc để đặt tên cho các mảnh
+
+            // --- Xử lý chọn file ---
+            imageInput.addEventListener('change', function (e) {
+                errorMessage.textContent = ''; // Xóa lỗi cũ
+                tilesOutput.innerHTML = ''; // Xóa kết quả cũ
+                const file = e.target.files[0];
+                if (!file) {
+                    previewImage.style.display = 'none';
+                    previewPlaceholder.style.display = 'inline';
+                    splitButton.disabled = true;
+                    fileLabel.text('Chọn file...');
+                    originalImage = null;
+                    return;
+                }
+
+                // Kiểm tra loại file
+                if (!file.type.startsWith('image/')) {
+                    showError('Vui lòng chọn một file ảnh hợp lệ (png, jpg, gif, webp).');
+                    previewImage.style.display = 'none';
+                    previewPlaceholder.style.display = 'inline';
+                    splitButton.disabled = true;
+                    fileLabel.text('Chọn file...');
+                    imageInput.value = ''; // Reset input file
+                    originalImage = null;
+                    return;
+                }
+
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image'; // Lấy tên file gốc (bỏ phần mở rộng)
+
+                // Đọc file và hiển thị preview
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = 'block';
+                    previewPlaceholder.style.display = 'none';
+
+                    // Quan trọng: Tạo đối tượng Image để lấy kích thước thực
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        console.log(`Ảnh đã tải: ${originalImage.naturalWidth}x${originalImage.naturalHeight}`);
+                        splitButton.disabled = false; // Kích hoạt nút cắt khi ảnh đã sẵn sàng
+                    };
+                    originalImage.onerror = () => {
+                        showError('Không thể tải ảnh để xử lý.');
+                        splitButton.disabled = true;
+                        originalImage = null;
+                    };
+                    originalImage.src = event.target.result; // Gán src cho đối tượng Image
+                }
+                reader.readAsDataURL(file);
+                fileLabel.text(file.name); // Hiển thị tên file đã chọn
+            });
+
+            // --- Xử lý nhấn nút Cắt Ảnh ---
+            splitButton.addEventListener('click', function () {
+                errorMessage.textContent = ''; // Xóa lỗi cũ
+                tilesOutput.innerHTML = ''; // Xóa kết quả cũ
+
+                if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
+                    showError('Ảnh chưa được tải hoặc không hợp lệ. Vui lòng chọn lại ảnh.');
+                    return;
+                }
+
+                const rows = parseInt(rowsInput.value);
+                const cols = parseInt(colsInput.value);
+
+                if (isNaN(rows) || isNaN(cols) || rows < 1 || cols < 1) {
+                    showError('Số hàng và số cột phải là số nguyên dương.');
+                    return;
+                }
+
+                console.log(`Bắt đầu cắt thành ${rows} hàng, ${cols} cột.`);
+                splitImageIntoTiles(originalImage, rows, cols);
+            });
+
+            // --- Hàm cắt ảnh ---
+            function splitImageIntoTiles(img, rows, cols) {
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
+                const tileWidth = Math.floor(naturalWidth / cols);
+                const tileHeight = Math.floor(naturalHeight / rows);
+
+                console.log(`Kích thước mảnh: ${tileWidth}x${tileHeight}`);
+
+                if (tileWidth === 0 || tileHeight === 0) {
+                    showError('Kích thước ảnh quá nhỏ hoặc số hàng/cột quá lớn.');
+                    return;
+                }
+
+                // Giả sử originalFileName và numCols (ở đây là cols) đã được định nghĩa
+                // Ví dụ: const originalFileName = "anh"; // Lấy từ tên file gốc, không có đuôi
+                // const numCols = cols; // Số cột chính là biến cols truyền vào hàm
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        // Tính toán tọa độ và kích thước chính xác cho từng mảnh
+                        // Sử dụng kích thước đã làm tròn để tránh lỗi pixel lẻ
+                        const sx = c * tileWidth;
+                        const sy = r * tileHeight;
+                        // Tính kích thước thực tế cho mảnh cuối cùng nếu kích thước gốc không chia hết
+                        const sWidth = (c === cols - 1) ? (naturalWidth - sx) : tileWidth;
+                        const sHeight = (r === rows - 1) ? (naturalHeight - sy) : tileHeight;
+
+                        // Tạo canvas tạm để vẽ mảnh ảnh
+                        const canvas = document.createElement('canvas');
+                        canvas.width = sWidth; // Kích thước canvas bằng kích thước mảnh thực tế
+                        canvas.height = sHeight;
+                        const ctx = canvas.getContext('2d');
+
+                        // Vẽ phần ảnh tương ứng từ ảnh gốc lên canvas tạm
+                        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+                        try {
+                            ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+                            // Tạo thẻ img để hiển thị mảnh
+                            const tileImg = document.createElement('img');
+                            // Lấy Data URL từ canvas (chất lượng cao hơn nếu dùng toBlob nhưng phức tạp hơn)
+                            const dataUrl = canvas.toDataURL('image/png'); // Hoặc 'image/jpeg'
+                            tileImg.src = dataUrl;
+                            tileImg.alt = `Mảnh ${r + 1}-${c + 1}`;
+
+                            // === PHẦN SỬA ĐỔI TÊN FILE ===
+                            // Tính toán số thứ tự tăng dần cho mảnh ảnh
+                            const pieceNumber = (r * cols) + (c + 1); // Sử dụng 'cols' trực tiếp từ tham số hàm
+
+                            // Tạo link tải về cho từng mảnh
+                            const downloadLink = document.createElement('a');
+
+                            // Tên file mới theo dạng: originalFileName-sốThứTự.png
+                            // Cần đảm bảo biến 'originalFileName' đã được định nghĩa ở đâu đó ngoài hàm này,
+                            // hoặc bạn cần một cách để lấy tên file gốc ở đây.
+                            // Ví dụ: const originalFileNameFromFile = uploadedFileName.split('.').slice(0, -1).join('.');
+                            const fileName = `anh_${pieceNumber}.png`; // Giả sử originalFileName là tên gốc không đuôi
+
+                            downloadLink.href = dataUrl;
+                            downloadLink.download = fileName;
+
+                            // Cập nhật textContent của link cho phù hợp
+                            downloadLink.textContent = `Tải ảnh-${pieceNumber}`;
+                            downloadLink.classList.add('btn', 'btn-sm', 'btn-outline-secondary', 'mt-1'); // Thêm class Bootstrap
+                            // === KẾT THÚC PHẦN SỬA ĐỔI ===
+
+
+                            // Tạo container cho ảnh và link
+                            const tileContainer = document.createElement('div');
+                            tileContainer.classList.add('tile-container');
+                            tileContainer.appendChild(tileImg);
+                            tileContainer.appendChild(downloadLink);
+
+
+                            // Thêm vào khu vực hiển thị kết quả
+                            tilesOutput.appendChild(tileContainer);
+
+                        } catch (error) {
+                            console.error(`Lỗi khi vẽ mảnh (${r}, ${c}):`, error);
+                            showError(`Có lỗi xảy ra khi xử lý mảnh ảnh (${r + 1}, ${c + 1}).`);
+                            // Có thể dừng vòng lặp nếu muốn
+                            // return;
+                        }
+                    }
+                }
+                console.log("Cắt ảnh hoàn tất.");
+            }
+
+            // --- Hàm hiển thị lỗi ---
+            function showError(message) {
+                errorMessage.textContent = message;
+                console.error("Lỗi:", message);
+            }
+
+            // Cập nhật label của input file khi chọn file (cho Bootstrap)
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Chọn file...');
+            });
+
+        }); // End $(document).ready
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Trang chủ Game Xếp Hình - Thử thách trí tuệ với những bức tranh đầy màu sắc và các cấp độ hấp dẫn. Chơi ngay!">
+    <title>Trang Chủ - Game Xếp Hình Pro</title>
+<link rel="icon" href="favicon.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome (for icons) - Optional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Favicon (thay 'favicon.ico' bằng icon của bạn) -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            /* Giúp footer đẩy xuống dưới */
+            flex-direction: column;
+            min-height: 100vh;
+            /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao màn hình */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                <!-- Optional: Thêm tên thương hiệu dạng text -->
+                <!-- <span style="vertical-align: middle; margin-left: 5px;">Game Xếp Hình</span> -->
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="index.html">Trang Chủ <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="game.html">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="split.html">Cắt Ảnh</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <!-- ===== HERO SECTION START ===== -->
+    <header class="hero-section py-5 text-center"> <!-- Bạn cần định nghĩa .hero-section trong style.css -->
+        <div class="container">
+            <h2 class="display-4 fw-bold">Khám Phá Thế Giới Game Xếp Hình Đỉnh Cao!</h2>
+            <p class="lead col-lg-8 mx-auto">Rèn luyện tư duy, thư giãn tâm trí với hàng ngàn bức tranh tuyệt đẹp và thử
+                thách đa dạng.<br> Bạn đã sẵn sàng?</p>
+            <hr class="my-4 border-light">
+            <a class="btn btn-primary btn-lg px-4 gap-3" href="game.html" role="button">
+                <i class="fas fa-play me-2"></i>Chơi Ngay
+            </a>
+            <a class="btn btn-outline btn-lg px-4" href="about.html" role="button">
+                <i class="fas fa-info-circle me-2"></i>Tìm Hiểu Thêm
+            </a>
+        </div>
+    </header>
+    <!-- ===== HERO SECTION END ===== -->
+
+    <!-- ===== FEATURES SECTION START ===== -->
+    <section class="features-section py-5">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-item p-4 shadow-sm rounded">
+                        <i class="fas fa-images fa-3x text-primary mb-3"></i>
+                        <h3 class="h4 fw-semibold">Bộ Sưu Tập Ảnh Phong Phú</h3>
+                        <p class="text-muted">Hàng trăm bức ảnh chất lượng cao thuộc nhiều chủ đề: thiên nhiên, động
+                            vật, nghệ thuật, và hơn thế nữa.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-item p-4 shadow-sm rounded">
+                        <i class="fas fa-puzzle-piece fa-3x text-success mb-3"></i>
+                        <h3 class="h4 fw-semibold">Nhiều Cấp Độ Thử Thách</h3>
+                        <p class="text-muted">Từ dễ đến khó, phù hợp cho cả người mới bắt đầu và các cao thủ xếp hình
+                            chuyên nghiệp.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-item p-4 shadow-sm rounded">
+                        <i class="fas fa-brain fa-3x text-warning mb-3"></i>
+                        <h3 class="h4 fw-semibold">Rèn Luyện Trí Tuệ & Thư Giãn</h3>
+                        <p class="text-muted">Cải thiện khả năng tập trung, logic và giải tỏa căng thẳng hiệu quả sau
+                            những giờ làm việc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ===== FEATURES SECTION END ===== -->
+
+    <!-- ===== CALL TO ACTION (Optional) ===== -->
+    <section class="cta-section bg-light py-5">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-3">Sẵn sàng chinh phục những thử thách?</h2>
+            <p class="lead mb-4">Đừng chần chừ, hãy tham gia cộng đồng game xếp hình của chúng tôi ngay hôm nay!</p>
+            <a class="btn btn-warning btn-lg" href="game.html" role="button">
+                <i class="fas fa-rocket me-2"></i>Tham Gia Ngay!
+            </a>
+        </div>
+    </section>
+    <!-- ===== CALL TO ACTION END ===== -->
+
+<!-- ===== FOOTER START ===== -->
+<footer class="site-footer bg-dark text-white py-4">
+    <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+        <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                    <p class="small text-white-50">Giải trí và sáng tạo không giới hạn. .</p>
+                </div>
+                <div class="col-md-3 col-6 mb-3 mb-md-0">
+                    <h5 class="fw-semibold">Khám Phá</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang Chủ</a>
+                        </li>
+                        <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp Hình</a>
+                        </li>
+                        <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Ảnh Lưới</a></li>
+                        <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Ảnh Vuông</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-6">
+                    <h5 class="fw-semibold">Thông Tin</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới Thiệu</a>
+                        </li>
+                        <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên Hệ</a>
+                        </li>
+                        <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều Khoản</a></li>
+                        <!-- Thêm link Điều khoản nếu có -->
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-3 border-secondary">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="small text-white-50 mb-0">
+                        © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.
+                    </p>
+                    <p class="small text-white-50">
+                        <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                        <!-- Lưu ý: Bootstrap 5 không cần jQuery, nếu bạn dùng BS5 thì có thể bỏ jQuery -->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- Bootstrap 5 JS Bundle (Popper.js included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script>
+        // JavaScript để tự động cập nhật năm hiện tại trong footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

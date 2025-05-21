@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer Tool</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link to common CSS file -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            /* Limit width */
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #f1f1f1;
+            text-align: center;
+            /* Center placeholder */
+        }
+
+        .preview-section h5 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        #original-preview-image,
+        #resized-preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            /* Limit preview height */
+            display: none;
+            /* Hide initially */
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        #preview-placeholder { /* This ID is not used in the current HTML, but kept for consistency if needed */
+            color: #999;
+            font-style: italic;
+            display: block;
+            min-height: 100px;
+            line-height: 100px;
+        }
+
+        #original-preview-placeholder, #resized-preview-placeholder { /* Specific placeholders */
+             color: #999;
+            font-style: italic;
+            display: block;
+            min-height: 100px;
+            line-height: 100px;
+        }
+
+
+        /* Button */
+        #resize-button,
+        #download-button {
+            width: 100%;
+        }
+
+        /* Error message */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* Customize number input */
+        input[type=number] {
+            max-width: 100px;
+            /* Limit width of number input box */
+        }
+
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        /* --- CSS for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1031;
+        }
+
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .lang-switcher .btn.active {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="resize.html"><button class="btn btn-outline-secondary lang-btn"
+                    data-lang="vi">VI</button></a>
+            <a href="resize_en.html"><button class="btn btn-outline-secondary lang-btn active" data-lang="en">EN</button></a>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index_en.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+            </a>
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="index_en.html">Home</a></li>
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="game.html">Play Game</a></li> <!-- Assuming game.html is universal or also has _en -->
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="about.html">About</a></li> <!-- Assuming about.html is universal or also has _en -->
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="contact.html">Contact</a></li> <!-- Assuming contact.html is universal or also has _en -->
+                    <li class="nav-menu-item active"><a class="nav-menu-link" href="resize_en.html">Image Resizer</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+    <div style="padding-top: 80px;"></div>
+
+    <div style="padding-top: 20px;" class="container">
+        <!-- Tool selection tabs (Optional, can be removed if this page is only for resize) -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="crop-square-tab" href="scale_en.html" role="tab">Square Crop</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="split-grid-tab" href="split_en.html" role="tab">Grid Split</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="resize-image-tab" href="resize_en.html" role="tab">Resize Image</a>
+            </li>
+        </ul>
+
+        <h1 class="text-center mb-4">Image Resizer Tool</h1>
+        <div class="alert alert-info">
+            Select an image from your computer, enter the desired dimensions (width or height). Check "Lock aspect ratio" to automatically adjust the other dimension.
+        </div>
+
+        <!-- Input Area -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-12 form-group">
+                <label for="image-input">Select image file:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image-input"
+                        accept="image/png, image/jpeg, image/gif, image/webp">
+                    <label class="custom-file-label" for="image-input" data-browse="Browse">Choose file...</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-3 form-group">
+                <label for="width-input">Width (px):</label>
+                <input type="number" class="form-control" id="width-input" min="1" placeholder="e.g., 800">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="height-input">Height (px):</label>
+                <input type="number" class="form-control" id="height-input" min="1" placeholder="e.g., 600">
+            </div>
+            <div class="col-md-3 form-group d-flex align-items-center pt-4">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aspect-ratio-lock" checked>
+                    <label class="custom-control-label" for="aspect-ratio-lock">Lock aspect ratio</label>
+                </div>
+            </div>
+            <div class="col-md-3 form-group">
+                <button id="resize-button" class="btn btn-warning btn-block" disabled>Resize Image</button>
+            </div>
+        </div>
+
+
+        <!-- Original and Resized Image Preview Area -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Original Image</h5>
+                    <span id="original-preview-placeholder" class="preview-placeholder">No image selected</span>
+                    <img id="original-preview-image" src="#" alt="Original image preview">
+                    <p id="original-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Resized Image</h5>
+                    <span id="resized-preview-placeholder" class="preview-placeholder">No result yet</span>
+                    <img id="resized-preview-image" src="#" alt="Resized image preview">
+                    <p id="resized-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Message Area -->
+        <div id="error-message" class="text-center mb-3"></div>
+
+        <!-- Download Button -->
+        <div class="row mt-3 mb-4">
+            <div class="col-md-6 offset-md-3">
+                <button id="download-button" class="btn btn-success btn-block" disabled>Download Resized Image</button>
+            </div>
+        </div>
+
+    </div>
+    <div style="padding-bottom: 80px;"></div>
+    <!-- ===== MAIN CONTENT END ===== -->
+
+    <!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Unlimited entertainment and creativity.</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Explore</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index_en.html" class="text-white-50 text-decoration-none hover-light">Home</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Jigsaw Game</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split_en.html" class="text-white-50 text-decoration-none hover-light">Grid Split Tool</a></li>
+                            <li><a href="scale_en.html" class="text-white-50 text-decoration-none hover-light">Square Crop Tool</a></li>
+                            <li><a href="resize_en.html" class="text-white-50 text-decoration-none hover-light">Image Resizer</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Information</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">About</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Contact</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Developed by Tran Huu Dat. All rights reserved.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Built with <i class="fas fa-heart text-danger"></i> and Bootstrap, jQuery.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome (if footer uses it) -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            const imageInput = $('#image-input');
+            const originalPreviewImage = $('#original-preview-image');
+            const originalPreviewPlaceholder = $('#original-preview-placeholder');
+            const originalDimensionsP = $('#original-dimensions');
+
+            const resizedPreviewImage = $('#resized-preview-image');
+            const resizedPreviewPlaceholder = $('#resized-preview-placeholder');
+            const resizedDimensionsP = $('#resized-dimensions');
+
+            const widthInput = $('#width-input');
+            const heightInput = $('#height-input');
+            const aspectRatioLock = $('#aspect-ratio-lock');
+            const resizeButton = $('#resize-button');
+            const downloadButton = $('#download-button');
+            const errorMessage = $('#error-message');
+            const fileLabel = $('.custom-file-label');
+
+            let originalImage = null; // Original Image object
+            let originalFileName = 'image'; // Original file name
+            let originalAspectRatio = 0;
+            let resizedImageDataUrl = null; // Data URL of the resized image
+
+            // --- Handle file selection ---
+            imageInput.on('change', function (e) {
+                resetUI();
+                const file = e.target.files[0];
+                if (!file) {
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file (png, jpg, gif, webp).');
+                    imageInput.val(''); // Reset file input
+                    fileLabel.text('Choose file...');
+                    return;
+                }
+
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
+                fileLabel.text(file.name);
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    originalPreviewImage.attr('src', event.target.result).show();
+                    originalPreviewPlaceholder.hide();
+
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        originalAspectRatio = originalImage.naturalWidth / originalImage.naturalHeight;
+                        widthInput.val(originalImage.naturalWidth);
+                        heightInput.val(originalImage.naturalHeight);
+                        originalDimensionsP.text(`Original dimensions: ${originalImage.naturalWidth}x${originalImage.naturalHeight}px`);
+                        resizeButton.prop('disabled', false);
+                    };
+                    originalImage.onerror = () => {
+                        showError('Could not load image for processing.');
+                        originalImage = null;
+                    };
+                    originalImage.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            });
+
+            // --- Handle dimension changes on input ---
+            widthInput.on('input', function () {
+                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
+                    const newWidth = parseInt($(this).val());
+                    if (newWidth > 0) {
+                        heightInput.val(Math.round(newWidth / originalAspectRatio));
+                    }
+                }
+            });
+
+            heightInput.on('input', function () {
+                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
+                    const newHeight = parseInt($(this).val());
+                    if (newHeight > 0) {
+                        widthInput.val(Math.round(newHeight * originalAspectRatio));
+                    }
+                }
+            });
+
+            aspectRatioLock.on('change', function () {
+                // When checkbox changes, if aspect ratio is locked, update one dimension based on the other
+                if ($(this).is(':checked') && originalImage && originalAspectRatio) {
+                    const currentWidth = parseInt(widthInput.val());
+                    if (currentWidth > 0) {
+                        heightInput.val(Math.round(currentWidth / originalAspectRatio));
+                    } else {
+                        const currentHeight = parseInt(heightInput.val());
+                        if (currentHeight > 0) {
+                            widthInput.val(Math.round(currentHeight * originalAspectRatio));
+                        }
+                    }
+                }
+            });
+
+
+            // --- Handle Resize Image button click ---
+            resizeButton.on('click', function () {
+                errorMessage.text('');
+                resizedPreviewImage.hide();
+                resizedPreviewPlaceholder.text('Processing...').show();
+                resizedDimensionsP.text('');
+                downloadButton.prop('disabled', true);
+                resizedImageDataUrl = null;
+
+                if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
+                    showError('Image not loaded or invalid. Please select an image again.');
+                    return;
+                }
+
+                const targetWidth = parseInt(widthInput.val());
+                const targetHeight = parseInt(heightInput.val());
+
+                if (isNaN(targetWidth) || isNaN(targetHeight) || targetWidth < 1 || targetHeight < 1) {
+                    showError('Width and height must be positive integers.');
+                    resizedPreviewPlaceholder.text('No result yet');
+                    return;
+                }
+
+                // Create canvas to draw the resized image
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                const ctx = canvas.getContext('2d');
+
+                try {
+                    // Draw the original image onto the canvas with new dimensions
+                    ctx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
+
+                    resizedImageDataUrl = canvas.toDataURL('image/png'); // Or 'image/jpeg' depending on original file
+                    resizedPreviewImage.attr('src', resizedImageDataUrl).show();
+                    resizedPreviewPlaceholder.hide();
+                    resizedDimensionsP.text(`New dimensions: ${targetWidth}x${targetHeight}px`);
+                    downloadButton.prop('disabled', false);
+
+                } catch (error) {
+                    console.error('Error resizing image:', error);
+                    showError('An error occurred while resizing the image.');
+                    resizedPreviewPlaceholder.text('Processing error');
+                }
+            });
+
+            // --- Handle Download Image button click ---
+            downloadButton.on('click', function () {
+                if (!resizedImageDataUrl) {
+                    showError('No resized image available for download.');
+                    return;
+                }
+                const link = document.createElement('a');
+                // Try to keep original file extension, or default to png
+                const originalExtension = (originalImage.src.match(/\.(jpeg|jpg|gif|png|webp)$/i) || [, "png"])[1];
+                link.download = `${originalFileName}_resized.${originalExtension}`;
+                link.href = resizedImageDataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+
+            // --- Function to show error messages ---
+            function showError(message) {
+                errorMessage.text(message);
+                console.error("Error:", message);
+            }
+
+            // --- Function to reset UI ---
+            function resetUI() {
+                errorMessage.text('');
+                originalPreviewImage.attr('src', '#').hide();
+                originalPreviewPlaceholder.text('No image selected').show();
+                originalDimensionsP.text('');
+
+                resizedPreviewImage.attr('src', '#').hide();
+                resizedPreviewPlaceholder.text('No result yet').show();
+                resizedDimensionsP.text('');
+
+                widthInput.val('');
+                heightInput.val('');
+                // aspectRatioLock.prop('checked', true); // Keep checkbox state
+
+                resizeButton.prop('disabled', true);
+                downloadButton.prop('disabled', true);
+                originalImage = null;
+                originalAspectRatio = 0;
+                resizedImageDataUrl = null;
+                // fileLabel.text('Choose file...'); // Do not reset file name here so user knows which file is selected
+            }
+
+
+            // Update file input label on change (for Bootstrap)
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Choose file...');
+            });
+
+            // Navbar toggler for custom navbar
+            $('#navbarToggler').on('click', function () {
+                $('#navbarNavContent').toggleClass('show');
+            });
+
+            // Update current year in footer
+            $('#currentYear').text(new Date().getFullYear());
+
+        }); // End $(document).ready
+    </script>
+
+</body>
+
+</html>

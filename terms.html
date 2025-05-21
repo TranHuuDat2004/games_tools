@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Điều khoản sử dụng dịch vụ cho Game Xếp Hình & Công Cụ Ảnh. Vui lòng đọc kỹ trước khi sử dụng trang web của chúng tôi.">
+    <meta name="description" lang="en" content="Terms of Use for Jigsaw Puzzle Game & Image Tools. Please read carefully before using our website.">
+    <title>Điều Khoản Sử Dụng - Game Xếp Hình & Công Cụ Ảnh</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome (for icons) - Optional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific styles for terms page if needed */
+        .terms-container h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #0d6efd; /* Bootstrap primary color */
+        }
+        .terms-container h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #212529;
+        }
+        .terms-container p, .terms-container ul {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        .terms-container ul {
+            padding-left: 2rem;
+        }
+
+        /* --- NEW Custom styles for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height and preference */
+            right: 20px;
+            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px; /* Slightly adjusted for VI/EN */
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active { /* This class will be toggled by JS */
+            background-color: #ffc107; /* Bootstrap warning color */
+            border-color: #ffc107;
+            color: #212529; /* Dark text for better contrast on yellow */
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <!-- <p>Chọn ngôn ngữ để hiển thị / Choose Language</p> -->
+            <div style="padding-left: 20px;"></div>
+            <button class="btn btn-outline-secondary" data-lang="vi">VI</button>
+            <button class="btn btn-outline-secondary" data-lang="en">EN</button>
+        </div>
+    </div>
+        <!-- ===== NAVBAR START (Custom CSS) ===== -->
+        <nav class="custom-navbar">
+            <div class="nav-container">
+                <a class="nav-brand" href="index.html">
+                    <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                </a>
+    
+                <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                    <span class="nav-toggler-icon"></span>
+                </button>
+    
+                <div class="nav-collapse" id="navbarNavContent">
+                    <ul class="nav-menu">
+                        <li class="nav-menu-item ">
+                            <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ" data-lang-en="Home">Trang Chủ <span class="screen-reader-only">(current)</span></a>
+                        </li>
+                        <li class="nav-menu-item ">
+                            <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game" data-lang-en="Play Game">Chơi Game</a>
+                        </li>
+                        <li class="nav-menu-item">
+                            <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu" data-lang-en="About">Giới Thiệu</a>
+                        </li>
+                        <li class="nav-menu-item">
+                            <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ" data-lang-en="Contact">Liên Hệ</a>
+                        </li>
+                        <li class="nav-menu-item">
+                            <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh" data-lang-en="Image Tools">Cắt Ảnh</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <!-- ===== MAIN CONTENT START ===== -->
+    <main class="py-5">
+        <div class="container terms-container">
+
+            <!-- VIETNAMESE CONTENT -->
+            <div class="lang-content" data-lang="vi">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold">Điều Khoản Sử Dụng</h1>
+                    <p class="lead text-muted">Vui lòng đọc kỹ các điều khoản và điều kiện này trước khi sử dụng trang web của chúng tôi.</p>
+                    <p class="small">Cập nhật lần cuối: Ngày 10 tháng 5 năm 2025</p>
+                </div>
+
+                <section id="introduction-vi">
+                    <h2>1. Giới Thiệu Chung</h2>
+                    <p>Chào mừng bạn đến với Game & Ảnh Pro (sau đây gọi là "Trang Web", "Chúng tôi"). Trang Web này cung cấp trò chơi xếp hình giải trí và các công cụ xử lý ảnh trực tuyến (sau đây gọi chung là "Dịch Vụ").</p>
+                    <p>Bằng việc truy cập hoặc sử dụng Dịch Vụ của chúng tôi, bạn đồng ý bị ràng buộc bởi các Điều Khoản Sử Dụng này ("Điều Khoản"). Nếu bạn không đồng ý với bất kỳ phần nào của Điều Khoản, bạn không được phép truy cập Dịch Vụ.</p>
+                </section>
+
+                <section id="user-conduct-vi">
+                    <h2>2. Hành Vi Người Dùng</h2>
+                    <p>Bạn đồng ý không sử dụng Dịch Vụ cho bất kỳ mục đích bất hợp pháp hoặc bị cấm bởi các Điều Khoản này. Bạn đồng ý không:</p>
+                    <ul>
+                        <li>Tải lên, đăng tải, hoặc truyền bá bất kỳ nội dung nào là bất hợp pháp, có hại, đe dọa, lạm dụng, quấy rối, phỉ báng, tục tĩu, xâm phạm quyền riêng tư của người khác, hoặc có thể gây khó chịu về mặt chủng tộc, dân tộc hoặc các mặt khác.</li>
+                        <li>Vi phạm bất kỳ quyền sở hữu trí tuệ nào của chúng tôi hoặc của bất kỳ bên thứ ba nào, bao gồm bản quyền, nhãn hiệu, hoặc bí mật thương mại. (Đặc biệt quan trọng với công cụ xử lý ảnh - người dùng không được tải lên ảnh vi phạm bản quyền).</li>
+                        <li>Cố gắng truy cập trái phép vào hệ thống máy tính hoặc các phần không công khai của Dịch Vụ.</li>
+                        <li>Sử dụng Dịch Vụ theo bất kỳ cách nào có thể làm hỏng, vô hiệu hóa, quá tải hoặc làm suy yếu Dịch Vụ hoặc can thiệp vào việc sử dụng Dịch Vụ của bất kỳ bên nào khác.</li>
+                        <li>Sử dụng bất kỳ robot, spider, hoặc thiết bị tự động nào khác để truy cập Dịch Vụ cho bất kỳ mục đích nào mà không có sự cho phép rõ ràng bằng văn bản của chúng tôi.</li>
+                    </ul>
+                </section>
+
+                <section id="intellectual-property-vi">
+                    <h2>3. Quyền Sở Hữu Trí Tuệ</h2>
+                    <p>Dịch Vụ và nội dung gốc của nó (không bao gồm nội dung do người dùng cung cấp như hình ảnh tải lên), các tính năng và chức năng là và sẽ vẫn là tài sản độc quyền của Game & Ảnh Pro và những người cấp phép của nó. Dịch Vụ được bảo vệ bởi bản quyền, nhãn hiệu và các luật khác của [Tên Quốc Gia Của Bạn] và các quốc gia nước ngoài.</p>
+                    <p>Đối với các hình ảnh bạn tải lên thông qua công cụ xử lý ảnh của chúng tôi:</p>
+                    <ul>
+                        <li>Bạn giữ toàn quyền sở hữu đối với hình ảnh gốc của mình.</li>
+                        <li>Bằng việc tải ảnh lên, bạn cấp cho chúng tôi quyền hạn chế, không độc quyền, miễn phí bản quyền để xử lý (ví dụ: cắt, chia nhỏ) hình ảnh đó theo yêu cầu của bạn thông qua các công cụ của chúng tôi.</li>
+                        <li>Chúng tôi không lưu trữ vĩnh viễn các hình ảnh bạn tải lên hoặc các phiên bản đã xử lý của chúng sau khi bạn hoàn tất phiên làm việc và tải xuống kết quả, trừ khi có thông báo khác một cách rõ ràng. (<strong>Quan trọng:</strong> Làm rõ chính sách lưu trữ ảnh của bạn).</li>
+                        <li>Bạn tự chịu trách nhiệm đảm bảo rằng bạn có quyền tải lên và xử lý các hình ảnh đó và việc đó không vi phạm quyền của bất kỳ bên thứ ba nào.</li>
+                    </ul>
+                </section>
+
+                <section id="disclaimers-vi">
+                    <h2>4. Tuyên Bố Miễn Trừ Trách Nhiệm</h2>
+                    <p>Dịch Vụ được cung cấp trên cơ sở "NGUYÊN TRẠNG" và "NHƯ HIỆN CÓ". Chúng tôi không đưa ra bất kỳ tuyên bố hay bảo đảm nào, dù rõ ràng hay ngụ ý, về hoạt động của Dịch Vụ hoặc thông tin, nội dung, hoặc tài liệu có trong đó.</p>
+                    <p>Chúng tôi không đảm bảo rằng Dịch Vụ sẽ không bị gián đoạn, kịp thời, an toàn, hoặc không có lỗi, rằng các lỗi sẽ được sửa chữa, hoặc rằng Dịch Vụ hoặc máy chủ cung cấp Dịch Vụ không có virus hoặc các thành phần có hại khác.</p>
+                    <p>Việc sử dụng các công cụ xử lý ảnh là do bạn tự chịu rủi ro. Chúng tôi không chịu trách nhiệm về bất kỳ mất mát hoặc hư hỏng nào đối với hình ảnh gốc của bạn. Bạn nên luôn giữ một bản sao lưu của hình ảnh gốc.</p>
+                </section>
+
+                <section id="limitation-of-liability-vi">
+                    <h2>5. Giới Hạn Trách Nhiệm</h2>
+                    <p>Trong phạm vi tối đa được pháp luật hiện hành cho phép, trong mọi trường hợp, Game & Ảnh Pro, cũng như các giám đốc, nhân viên, đối tác, đại lý, nhà cung cấp, hoặc chi nhánh của chúng tôi, sẽ không chịu trách nhiệm pháp lý cho bất kỳ thiệt hại gián tiếp, ngẫu nhiên, đặc biệt, do hậu quả hoặc trừng phạt nào, bao gồm nhưng không giới hạn ở việc mất lợi nhuận, dữ liệu, việc sử dụng, uy tín, hoặc các tổn thất vô hình khác, phát sinh từ (i) việc bạn truy cập hoặc sử dụng hoặc không thể truy cập hoặc sử dụng Dịch Vụ; (ii) bất kỳ hành vi hoặc nội dung nào của bất kỳ bên thứ ba nào trên Dịch Vụ; (iii) bất kỳ nội dung nào thu được từ Dịch Vụ; và (iv) việc truy cập, sử dụng hoặc thay đổi trái phép các nội dung truyền tải hoặc nội dung của bạn, cho dù dựa trên bảo hành, hợp đồng, sai phạm dân sự (bao gồm cả sơ suất) hoặc bất kỳ lý thuyết pháp lý nào khác, cho dù chúng tôi đã được thông báo về khả năng xảy ra thiệt hại đó hay chưa, và ngay cả khi một biện pháp khắc phục được quy định ở đây được phát hiện là đã thất bại trong mục đích thiết yếu của nó.</p>
+                </section>
+
+                 <section id="privacy-vi">
+                    <h2>6. Quyền Riêng Tư</h2>
+                    <p>Việc bạn sử dụng Dịch Vụ cũng chịu sự điều chỉnh của Chính Sách Quyền Riêng Tư của chúng tôi. Vui lòng xem lại Chính Sách Quyền Riêng Tư [Tạo link đến trang Chính Sách Quyền Riêng Tư nếu có] để hiểu các thông lệ của chúng tôi.</p>
+                    <p>Nếu bạn không có trang Chính Sách Quyền Riêng Tư riêng, bạn có thể thêm một đoạn ngắn ở đây về cách bạn xử lý dữ liệu người dùng, ví dụ: "Chúng tôi không thu thập thông tin cá nhân nhận dạng từ người dùng trò chơi hoặc người dùng công cụ xử lý ảnh, ngoại trừ các dữ liệu kỹ thuật ẩn danh (ví dụ: loại trình duyệt, địa chỉ IP bị ẩn danh một phần) cho mục đích phân tích và cải thiện Dịch Vụ. Hình ảnh được tải lên công cụ xử lý ảnh chỉ được xử lý tạm thời và không được lưu trữ trên máy chủ của chúng tôi sau khi phiên làm việc kết thúc." <strong>Lưu ý:</strong> Đây chỉ là ví dụ, hãy điều chỉnh cho đúng với thực tế của bạn.</p>
+                </section>
+
+                <section id="changes-to-terms-vi">
+                    <h2>7. Thay Đổi Điều Khoản</h2>
+                    <p>Chúng tôi có quyền, theo quyết định riêng của mình, sửa đổi hoặc thay thế các Điều Khoản này vào bất kỳ lúc nào. Nếu một bản sửa đổi là quan trọng, chúng tôi sẽ cố gắng cung cấp thông báo ít nhất [30] ngày trước khi bất kỳ điều khoản mới nào có hiệu lực. Điều gì cấu thành một thay đổi quan trọng sẽ được xác định theo quyết định riêng của chúng tôi.</p>
+                    <p>Bằng việc tiếp tục truy cập hoặc sử dụng Dịch Vụ của chúng tôi sau khi các bản sửa đổi đó có hiệu lực, bạn đồng ý bị ràng buộc bởi các điều khoản đã sửa đổi. Nếu bạn không đồng ý với các điều khoản mới, vui lòng ngừng sử dụng Dịch Vụ.</p>
+                </section>
+
+                <section id="governing-law-vi">
+                    <h2>8. Luật Điều Chỉnh</h2>
+                    <p>Các Điều Khoản này sẽ được điều chỉnh và hiểu theo luật pháp của [Tên Quốc Gia/Tiểu Bang Của Bạn], bất kể xung đột các quy định pháp luật của nó.</p>
+                </section>
+
+                <section id="contact-us-vi">
+                    <h2>9. Liên Hệ Chúng Tôi</h2>
+                    <p>Nếu bạn có bất kỳ câu hỏi nào về các Điều Khoản này, vui lòng liên hệ với chúng tôi qua trang <a href="contact.html">Liên Hệ</a>.</p>
+                </section>
+            </div>
+            <!-- END VIETNAMESE CONTENT -->
+
+            <!-- ENGLISH CONTENT -->
+            <div class="lang-content" data-lang="en">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 fw-bold">Terms of Use</h1>
+                    <p class="lead text-muted">Please read these terms and conditions carefully before using our website.</p>
+                    <p class="small">Last updated: May 10, 2025</p> <!-- UPDATE THIS DATE -->
+                </div>
+
+                <section id="introduction-en">
+                    <h2>1. Acceptance of Terms</h2>
+                    <p>Welcome to Game & Photos Pro (hereinafter referred to as "the Website", "We", "Us", or "Our"). This Website provides an entertaining jigsaw puzzle game and online image processing tools (collectively, the "Services").</p>
+                    <p>By accessing or using our Services, you agree to be bound by these Terms of Use ("Terms"). If you disagree with any part of the Terms, then you may not access the Services.</p>
+                </section>
+
+                <section id="user-conduct-en">
+                    <h2>2. User Conduct</h2>
+                    <p>You agree not to use the Services for any unlawful purpose or any purpose prohibited under these Terms. You agree not to:</p>
+                    <ul>
+                        <li>Upload, post, or otherwise transmit any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, invasive of another's privacy, or racially, ethnically, or otherwise objectionable.</li>
+                        <li>Infringe upon any intellectual property rights of ours or any third party, including copyright, trademark, or trade secrets. (Especially important for the image processing tool - users must not upload copyrighted images).</li>
+                        <li>Attempt to gain unauthorized access to computer systems or non-public portions of the Services.</li>
+                        <li>Use the Services in any manner that could damage, disable, overburden, or impair the Services or interfere with any other party's use of the Services.</li>
+                        <li>Use any robot, spider, or other automated device to access the Services for any purpose without our express written permission.</li>
+                    </ul>
+                </section>
+
+                <section id="intellectual-property-en">
+                    <h2>3. Intellectual Property Rights</h2>
+                    <p>The Services and their original content (excluding user-provided content such as uploaded images), features, and functionality are and will remain the exclusive property of Game & Photos Pro and its licensors. The Services are protected by copyright, trademark, and other laws of [Your Country Name] and foreign countries.</p>
+                    <p>Regarding the images you upload through our image processing tools:</p>
+                    <ul>
+                        <li>You retain full ownership of your original images.</li>
+                        <li>By uploading an image, you grant us a limited, non-exclusive, royalty-free license to process (e.g., crop, split) that image as per your request through our tools.</li>
+                        <li>We do not permanently store the images you upload or their processed versions after you complete your session and download the results, unless otherwise explicitly stated. (<strong>Important:</strong> Clarify your image storage policy).</li>
+                        <li>You are solely responsible for ensuring that you have the right to upload and process such images and that doing so does not infringe upon the rights of any third party.</li>
+                    </ul>
+                </section>
+
+                <section id="disclaimers-en">
+                    <h2>4. Disclaimers of Warranties</h2>
+                    <p>The Services are provided on an "AS IS" and "AS AVAILABLE" basis. We make no representations or warranties of any kind, express or implied, as to the operation of the Services or the information, content, or materials included therein.</p>
+                    <p>We do not warrant that the Services will be uninterrupted, timely, secure, or error-free, that defects will be corrected, or that the Services or the server that makes them available are free of viruses or other harmful components.</p>
+                    <p>Your use of the image processing tools is at your sole risk. We are not responsible for any loss or damage to your original images. You should always maintain a backup copy of your original images.</p>
+                </section>
+
+                <section id="limitation-of-liability-en">
+                    <h2>5. Limitation of Liability</h2>
+                    <p>To the maximum extent permitted by applicable law, in no event shall Game & Photos Pro, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Services; (ii) any conduct or content of any third party on the Services; (iii) any content obtained from the Services; and (iv) unauthorized access, use, or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence), or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose.</p>
+                </section>
+
+                 <section id="privacy-en">
+                    <h2>6. Privacy Policy</h2>
+                    <p>Your use of the Services is also governed by our Privacy Policy. Please review our Privacy Policy [Link to your Privacy Policy page if you have one] to understand our practices.</p>
+                    <p>If you do not have a separate Privacy Policy page, you can add a short paragraph here about how you handle user data, for example: "We do not collect personally identifiable information from game users or image processing tool users, except for anonymous technical data (e.g., browser type, partially anonymized IP address) for analytical purposes and service improvement. Images uploaded to the image processing tools are processed temporarily and are not stored on our servers after the session ends." <strong>Note:</strong> This is just an example; please adjust it to accurately reflect your practices.</p>
+                </section>
+
+                <section id="changes-to-terms-en">
+                    <h2>7. Changes to Terms</h2>
+                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least [30] days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+                    <p>By continuing to access or use our Services after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Services.</p>
+                </section>
+
+                <section id="governing-law-en">
+                    <h2>8. Governing Law</h2>
+                    <p>These Terms shall be governed and construed in accordance with the laws of [Your Country/State Name], without regard to its conflict of law provisions.</p>
+                </section>
+
+                <section id="contact-us-en">
+                    <h2>9. Contact Us</h2>
+                    <p>If you have any questions about these Terms, please contact us via our <a href="contact.html">Contact</a> page.</p>
+                </section>
+            </div>
+            <!-- END ENGLISH CONTENT -->
+
+        </div>
+    </main>
+    <!-- ===== MAIN CONTENT END ===== -->
+
+<!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50 lang-specific" data-lang-vi="Giải trí và sáng tạo không giới hạn."
+                            data-lang-en="Unlimited entertainment and creativity."></p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Khám Phá" data-lang-en="Explore"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Trang Chủ" data-lang-en="Home">
+                                </a>
+                            </li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Game Xếp Hình" data-lang-en="Jigsaw Game">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Công cụ" data-lang-en="Tools"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Lưới" data-lang-en="Grid Image Splitter"></a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Vuông" data-lang-en="Square Image Cropper"></a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light"  data-lang-vi="Thay Đổi
+                                    Kích Thước" data-lang-en="Image Resizer"></a></li>                            
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Thông Tin" data-lang-en="Information"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light lang-specific active"
+                                    data-lang-vi="Giới Thiệu" data-lang-en="About">
+                                </a>
+                            </li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Liên Hệ" data-lang-en="Contact">
+                                </a>
+                            </li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Điều Khoản" data-lang-en="Terms"></a></li>
+                            <!-- Thêm link Điều khoản nếu có -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0 lang-specific"
+                            data-lang-vi="© <span id='currentYear'></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền."
+                            data-lang-en="© <span id='currentYear'></span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.">
+                        </p>
+                        <p class="small text-white-50 lang-specific"
+                            data-lang-vi="<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>"
+                            data-lang-en="<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- Bootstrap 5 JS Bundle (Popper.js included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        // JavaScript cho Navbar Toggler (nếu dùng custom navbar)
+        const togglerButton = document.getElementById('navbarToggler');
+        const navbarContent = document.getElementById('navbarNavContent');
+        if (togglerButton && navbarContent) {
+            togglerButton.addEventListener('click', function () {
+                navbarContent.classList.toggle('show');
+            });
+        }
+
+        // JavaScript cho chuyển đổi ngôn ngữ
+        document.addEventListener('DOMContentLoaded', function () {
+            const langButtons = document.querySelectorAll('.lang-switcher .btn');
+            const langContents = document.querySelectorAll('.lang-content');
+            const langSpecificElements = document.querySelectorAll('.lang-specific');
+            const pageTitle = document.querySelector('title');
+            const metaDescription = document.querySelector('meta[name="description"]');
+
+            function updateFooterYear() {
+                 // Cập nhật năm cho cả hai ngôn ngữ nếu có
+                const currentYearViSpan = document.getElementById('currentYearVi');
+                const currentYearEnSpan = document.getElementById('currentYearEn');
+                const year = new Date().getFullYear();
+                if (currentYearViSpan) currentYearViSpan.textContent = year;
+                if (currentYearEnSpan) currentYearEnSpan.textContent = year;
+            }
+            updateFooterYear(); // Call on load
+
+            function switchLanguage(lang) {
+                // Hide all language content sections
+                langContents.forEach(content => {
+                    content.style.display = 'none';
+                });
+
+                // Show the selected language content section
+                const selectedContent = document.querySelector(`.lang-content[data-lang="${lang}"]`);
+                if (selectedContent) {
+                    selectedContent.style.display = 'block';
+                }
+
+                // Update active class for buttons
+                langButtons.forEach(button => {
+                    if (button.dataset.lang === lang) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+
+                // Update language-specific elements (Navbar, Footer, etc.)
+                langSpecificElements.forEach(element => {
+                    const viText = element.dataset.langVi;
+                    const enText = element.dataset.langEn;
+
+                    if (element.tagName === 'A' || element.tagName === 'H5' || element.tagName === 'SPAN') {
+                         // For elements where textContent is appropriate
+                        if (lang === 'vi' && viText) {
+                            element.textContent = viText;
+                        } else if (lang === 'en' && enText) {
+                            element.textContent = enText;
+                        }
+                    } else if (element.tagName === 'P') {
+                        // For paragraphs that might contain HTML (like the copyright line)
+                        if (lang === 'vi' && viText) {
+                            element.innerHTML = viText;
+                        } else if (lang === 'en' && enText) {
+                            element.innerHTML = enText;
+                        }
+                    }
+                    // Ensure active class is correctly set for footer links
+                     if (element.href && element.href.includes('terms.html')) {
+                        if (lang === 'vi') element.textContent = element.dataset.langVi;
+                        else if (lang === 'en') element.textContent = element.dataset.langEn;
+                        element.classList.add('active'); // Keep "Điều Khoản" / "Terms" active
+                    } else if (element.classList.contains('active') && !(element.href && element.href.includes('terms.html'))) {
+                        // Remove active from other footer links if they were previously active
+                        // This part might need adjustment based on how you want other links to behave
+                    }
+                });
+
+                // Update page title and meta description
+                if (lang === 'vi') {
+                    pageTitle.textContent = "Điều Khoản Sử Dụng - Game Xếp Hình & Công Cụ Ảnh";
+                    if (metaDescription) metaDescription.setAttribute('content', "Điều khoản sử dụng dịch vụ cho Game Xếp Hình & Công Cụ Ảnh. Vui lòng đọc kỹ trước khi sử dụng trang web của chúng tôi.");
+                    document.documentElement.lang = 'vi';
+                } else if (lang === 'en') {
+                    pageTitle.textContent = "Terms of Use - Jigsaw Puzzle Game & Image Tools";
+                    if (metaDescription) metaDescription.setAttribute('content', "Terms of Use for Jigsaw Puzzle Game & Image Tools. Please read carefully before using our website.");
+                    document.documentElement.lang = 'en';
+                }
+                 // Call updateFooterYear again after switching language to ensure correct span is updated
+                updateFooterYear();
+
+                // Save preferred language to localStorage
+                localStorage.setItem('preferredLanguage', lang);
+            }
+
+            // Load preferred language from localStorage on page load
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'vi'; // Default to Vietnamese
+            switchLanguage(preferredLanguage);
+
+            // Add event listeners to language buttons
+            langButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const lang = this.dataset.lang;
+                    switchLanguage(lang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

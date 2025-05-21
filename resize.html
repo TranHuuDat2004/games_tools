@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Thay Đổi Kích Thước Ảnh</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link đến file CSS chung -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            /* Giới hạn chiều rộng */
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px dashed #ccc;
+            background-color: #f1f1f1;
+            text-align: center;
+            /* Căn giữa placeholder */
+        }
+
+        .preview-section h5 {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        #original-preview-image,
+        #resized-preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            /* Giới hạn chiều cao preview */
+            display: none;
+            /* Ẩn ban đầu */
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        #preview-placeholder {
+            color: #999;
+            font-style: italic;
+            display: block;
+            /* Để placeholder chiếm toàn bộ không gian khi không có ảnh */
+            min-height: 100px;
+            /* Chiều cao tối thiểu cho placeholder */
+            line-height: 100px;
+            /* Căn giữa placeholder theo chiều dọc */
+        }
+
+        /* Nút */
+        #resize-button,
+        #download-button {
+            width: 100%;
+        }
+
+        /* Thông báo lỗi */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* Tùy chỉnh input number */
+        input[type=number] {
+            max-width: 100px;
+            /* Giới hạn chiều rộng ô nhập số */
+        }
+
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        /* --- CSS cho bộ chuyển đổi ngôn ngữ --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1031;
+        }
+
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .lang-switcher .btn.active {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Bộ chuyển đổi ngôn ngữ -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="resize.html"><button class="btn btn-outline-secondary lang-btn active"
+                    data-lang="vi">VI</button></a>
+            <a href="resize_en.html"><button class="btn btn-outline-secondary lang-btn " data-lang="en">EN</button></a>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+            </a>
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="index.html">Trang Chủ</a></li>
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="game.html">Chơi Game</a></li>
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="about.html">Giới Thiệu</a></li>
+                    <li class="nav-menu-item"><a class="nav-menu-link" href="contact.html">Liên Hệ</a></li>
+                    <li class="nav-menu-item active"><a class="nav-menu-link" href="resize.html">Thay Đổi Kích Thước
+                            Ảnh</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+    <div style="padding-top: 80px;"></div>
+
+    <div style="padding-top: 20px;" class="container">
+        <!-- Tab lựa chọn công cụ (Tùy chọn, có thể bỏ nếu trang này chỉ làm resize) -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="crop-square-tab" href="scale.html" role="tab">Cắt Ảnh Vuông</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="split-grid-tab" href="split.html" role="tab">Cắt Ảnh Lưới</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="resize-image-tab" href="resize.html" role="tab">Thay Đổi Kích Thước</a>
+            </li>
+        </ul>
+
+        <h1 class="text-center mb-4">Công Cụ Thay Đổi Kích Thước Ảnh</h1>
+        <div class="alert alert-info">
+            Chọn ảnh từ máy tính, nhập kích thước mong muốn (chiều rộng hoặc chiều cao). Chọn "Giữ tỷ lệ" để tự động
+            điều chỉnh kích thước còn lại.
+        </div>
+
+        <!-- Khu vực Input -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-12 form-group">
+                <label for="image-input">Chọn file ảnh:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image-input"
+                        accept="image/png, image/jpeg, image/gif, image/webp">
+                    <label class="custom-file-label" for="image-input" data-browse="Duyệt">Chọn file...</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-3 form-group">
+                <label for="width-input">Chiều Rộng (px):</label>
+                <input type="number" class="form-control" id="width-input" min="1" placeholder="VD: 800">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="height-input">Chiều Cao (px):</label>
+                <input type="number" class="form-control" id="height-input" min="1" placeholder="VD: 600">
+            </div>
+            <div class="col-md-3 form-group d-flex align-items-center pt-4">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aspect-ratio-lock" checked>
+                    <label class="custom-control-label" for="aspect-ratio-lock">Giữ tỷ lệ</label>
+                </div>
+            </div>
+            <div class="col-md-3 form-group">
+                <button id="resize-button" class="btn btn-warning btn-block" disabled>Thay Đổi Kích Thước</button>
+            </div>
+        </div>
+
+
+        <!-- Khu vực xem trước ảnh gốc và ảnh đã resize -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Ảnh Gốc</h5>
+                    <span id="original-preview-placeholder" class="preview-placeholder">Chưa có ảnh nào được chọn</span>
+                    <img id="original-preview-image" src="#" alt="Ảnh gốc xem trước">
+                    <p id="original-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Ảnh Sau Khi Thay Đổi</h5>
+                    <span id="resized-preview-placeholder" class="preview-placeholder">Chưa có kết quả</span>
+                    <img id="resized-preview-image" src="#" alt="Ảnh đã thay đổi kích thước xem trước">
+                    <p id="resized-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khu vực hiển thị thông báo lỗi -->
+        <div id="error-message" class="text-center mb-3"></div>
+
+        <!-- Nút tải xuống -->
+        <div class="row mt-3 mb-4">
+            <div class="col-md-6 offset-md-3">
+                <button id="download-button" class="btn btn-success btn-block" disabled>Tải Ảnh Đã Thay Đổi</button>
+            </div>
+        </div>
+
+    </div>
+    <div style="padding-bottom: 80px;"></div>
+    <!-- ===== MAIN CONTENT END ===== -->
+
+    <!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn.</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Khám Phá</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang
+                                    Chủ</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp
+                                    Hình</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Công cụ</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Cắt Ảnh
+                                    Lưới</a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Cắt Ảnh
+                                    Vuông</a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light">Thay Đổi
+                                    Kích Thước</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Thông Tin</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới
+                                    Thiệu</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên
+                                    Hệ</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều
+                                    Khoản</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi
+                            quyền.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome (nếu footer có dùng) -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            const imageInput = $('#image-input');
+            const originalPreviewImage = $('#original-preview-image');
+            const originalPreviewPlaceholder = $('#original-preview-placeholder');
+            const originalDimensionsP = $('#original-dimensions');
+
+            const resizedPreviewImage = $('#resized-preview-image');
+            const resizedPreviewPlaceholder = $('#resized-preview-placeholder');
+            const resizedDimensionsP = $('#resized-dimensions');
+
+            const widthInput = $('#width-input');
+            const heightInput = $('#height-input');
+            const aspectRatioLock = $('#aspect-ratio-lock');
+            const resizeButton = $('#resize-button');
+            const downloadButton = $('#download-button');
+            const errorMessage = $('#error-message');
+            const fileLabel = $('.custom-file-label');
+
+            let originalImage = null; // Đối tượng Image gốc
+            let originalFileName = 'image'; // Tên file gốc
+            let originalAspectRatio = 0;
+            let resizedImageDataUrl = null; // Data URL của ảnh đã resize
+
+            // --- Xử lý chọn file ---
+            imageInput.on('change', function (e) {
+                resetUI();
+                const file = e.target.files[0];
+                if (!file) {
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showError('Vui lòng chọn một file ảnh hợp lệ (png, jpg, gif, webp).');
+                    imageInput.val(''); // Reset input file
+                    fileLabel.text('Chọn file...');
+                    return;
+                }
+
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
+                fileLabel.text(file.name);
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    originalPreviewImage.attr('src', event.target.result).show();
+                    originalPreviewPlaceholder.hide();
+
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        originalAspectRatio = originalImage.naturalWidth / originalImage.naturalHeight;
+                        widthInput.val(originalImage.naturalWidth);
+                        heightInput.val(originalImage.naturalHeight);
+                        originalDimensionsP.text(`Kích thước gốc: ${originalImage.naturalWidth}x${originalImage.naturalHeight}px`);
+                        resizeButton.prop('disabled', false);
+                    };
+                    originalImage.onerror = () => {
+                        showError('Không thể tải ảnh để xử lý.');
+                        originalImage = null;
+                    };
+                    originalImage.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
+            });
+
+            // --- Xử lý thay đổi kích thước khi nhập ---
+            widthInput.on('input', function () {
+                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
+                    const newWidth = parseInt($(this).val());
+                    if (newWidth > 0) {
+                        heightInput.val(Math.round(newWidth / originalAspectRatio));
+                    }
+                }
+            });
+
+            heightInput.on('input', function () {
+                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
+                    const newHeight = parseInt($(this).val());
+                    if (newHeight > 0) {
+                        widthInput.val(Math.round(newHeight * originalAspectRatio));
+                    }
+                }
+            });
+
+            aspectRatioLock.on('change', function () {
+                // Khi thay đổi checkbox, nếu đang giữ tỷ lệ, cập nhật lại 1 chiều dựa trên chiều kia
+                if ($(this).is(':checked') && originalImage && originalAspectRatio) {
+                    const currentWidth = parseInt(widthInput.val());
+                    if (currentWidth > 0) {
+                        heightInput.val(Math.round(currentWidth / originalAspectRatio));
+                    } else {
+                        const currentHeight = parseInt(heightInput.val());
+                        if (currentHeight > 0) {
+                            widthInput.val(Math.round(currentHeight * originalAspectRatio));
+                        }
+                    }
+                }
+            });
+
+
+            // --- Xử lý nhấn nút Thay Đổi Kích Thước ---
+            resizeButton.on('click', function () {
+                errorMessage.text('');
+                resizedPreviewImage.hide();
+                resizedPreviewPlaceholder.text('Đang xử lý...').show();
+                resizedDimensionsP.text('');
+                downloadButton.prop('disabled', true);
+                resizedImageDataUrl = null;
+
+                if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
+                    showError('Ảnh chưa được tải hoặc không hợp lệ. Vui lòng chọn lại ảnh.');
+                    return;
+                }
+
+                const targetWidth = parseInt(widthInput.val());
+                const targetHeight = parseInt(heightInput.val());
+
+                if (isNaN(targetWidth) || isNaN(targetHeight) || targetWidth < 1 || targetHeight < 1) {
+                    showError('Chiều rộng và chiều cao phải là số nguyên dương.');
+                    resizedPreviewPlaceholder.text('Chưa có kết quả');
+                    return;
+                }
+
+                // Tạo canvas để vẽ ảnh đã resize
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                const ctx = canvas.getContext('2d');
+
+                try {
+                    // Vẽ ảnh gốc lên canvas với kích thước mới
+                    ctx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
+
+                    resizedImageDataUrl = canvas.toDataURL('image/png'); // Hoặc 'image/jpeg' tùy thuộc vào file gốc
+                    resizedPreviewImage.attr('src', resizedImageDataUrl).show();
+                    resizedPreviewPlaceholder.hide();
+                    resizedDimensionsP.text(`Kích thước mới: ${targetWidth}x${targetHeight}px`);
+                    downloadButton.prop('disabled', false);
+
+                } catch (error) {
+                    console.error('Lỗi khi thay đổi kích thước ảnh:', error);
+                    showError('Có lỗi xảy ra khi thay đổi kích thước ảnh.');
+                    resizedPreviewPlaceholder.text('Lỗi xử lý');
+                }
+            });
+
+            // --- Xử lý nhấn nút Tải Ảnh ---
+            downloadButton.on('click', function () {
+                if (!resizedImageDataUrl) {
+                    showError('Không có ảnh đã thay đổi kích thước để tải xuống.');
+                    return;
+                }
+                const link = document.createElement('a');
+                // Cố gắng giữ phần mở rộng file gốc nếu có thể, hoặc mặc định là png
+                const originalExtension = (originalImage.src.match(/\.(jpeg|jpg|gif|png|webp)$/i) || [, "png"])[1];
+                link.download = `${originalFileName}_resized.${originalExtension}`;
+                link.href = resizedImageDataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+
+            // --- Hàm hiển thị lỗi ---
+            function showError(message) {
+                errorMessage.text(message);
+                console.error("Lỗi:", message);
+            }
+
+            // --- Hàm reset UI ---
+            function resetUI() {
+                errorMessage.text('');
+                originalPreviewImage.attr('src', '#').hide();
+                originalPreviewPlaceholder.text('Chưa có ảnh nào được chọn').show();
+                originalDimensionsP.text('');
+
+                resizedPreviewImage.attr('src', '#').hide();
+                resizedPreviewPlaceholder.text('Chưa có kết quả').show();
+                resizedDimensionsP.text('');
+
+                widthInput.val('');
+                heightInput.val('');
+                // aspectRatioLock.prop('checked', true); // Giữ nguyên trạng thái checkbox
+
+                resizeButton.prop('disabled', true);
+                downloadButton.prop('disabled', true);
+                originalImage = null;
+                originalAspectRatio = 0;
+                resizedImageDataUrl = null;
+                // fileLabel.text('Chọn file...'); // Không reset tên file ở đây để người dùng biết file nào đang chọn
+            }
+
+
+            // Cập nhật label của input file khi chọn file (cho Bootstrap)
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Chọn file...');
+            });
+
+            // Navbar toggler for custom navbar
+            $('#navbarToggler').on('click', function () {
+                $('#navbarNavContent').toggleClass('show');
+            });
+
+            // Cập nhật năm hiện tại ở footer
+            $('#currentYear').text(new Date().getFullYear());
+
+        }); // End $(document).ready
+    </script>
+
+</body>
+
+</html>

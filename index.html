@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="vi"> <!-- Đổi lang sang vi -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Trang chủ Game Xếp Hình & Công Cụ Ảnh - Thử thách trí tuệ với game xếp hình hấp dẫn và tùy chỉnh ảnh dễ dàng với công cụ cắt ảnh vuông, cắt lưới chuyên nghiệp.">
+    <!-- Giữ lại meta description tiếng Anh nếu muốn cho SEO đa ngôn ngữ, hoặc bỏ đi -->
+    <meta name="description" lang="en"
+        content="Homepage of Jigsaw Puzzle Game & Image Tools - Challenge your mind with engaging jigsaw puzzles and easily customize images with professional square crop and grid split tools.">
+    <title>Trang Chủ - Game Xếp Hình & Công Cụ Ảnh</title> <!-- Đổi title sang tiếng Việt -->
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome (cho biểu tượng) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Thư viện Fireworks-JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
+    <!-- Bootstrap JS (nếu cần cho các component khác) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CSS tùy chỉnh của bạn -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* style.css */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #495057;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+
+        .dropdown-menu {
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-item:active {
+            background-color: #0d6efd;
+            color: #fff !important;
+        }
+
+        /* --- CSS CHO PHẦN HERO --- */
+        .hero-section-fireworks {
+            position: relative;
+            /* Quan trọng để định vị các phần tử con tuyệt đối */
+            overflow: hidden;
+            /* Đảm bảo pháo hoa không tràn ra ngoài nếu có */
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            text-align: center;
+            color: white;
+            /* Màu chữ mặc định cho nội dung */
+        }
+
+        #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Đặt canvas ở lớp dưới cùng */
+            background-color: #2c3e50;
+            /* Màu nền tối để pháo hoa nổi bật */
+        }
+
+        .hero-section-fireworks .container {
+            position: relative;
+            /* Đảm bảo container nội dung nổi lên trên canvas */
+            z-index: 1;
+            /* Đặt container nội dung ở lớp trên */
+        }
+
+        .hero-section-fireworks h1,
+        .hero-section-fireworks p {
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(29, 37, 89, 0.7), rgba(18, 23, 58, 0.8)), url('img/hero-background.jpg') no-repeat center center;
+            background-size: cover;
+            color: #fff;
+            position: relative;
+        }
+
+        .hero-section .display-3 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-intro-section .img-fluid {
+            max-height: 450px;
+            object-fit: cover;
+        }
+
+        .image-tools-section .feature-card {
+            border: 1px solid #e9ecef;
+            border-radius: 0.75rem;
+            padding: 25px;
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .image-tools-section .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .image-tools-section .tool-demo-img {
+            max-height: 120px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
+        .highlights-section .fa-3x {
+            font-size: 2.5rem;
+        }
+
+        .site-footer h5 {
+            color: #f8f9fa;
+            margin-bottom: 1rem;
+        }
+
+        .site-footer a.hover-light:hover {
+            color: #ffc107 !important;
+            text-decoration: none !important;
+        }
+
+        .site-footer .fa-heart {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* CSS tùy chỉnh cho bộ chuyển đổi ngôn ngữ */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px;
+            /* Điều chỉnh dựa trên chiều cao navbar của bạn */
+            right: 20px;
+            z-index: 1031;
+        }
+
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .lang-switcher .btn.active {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        /* Ẩn nội dung theo mặc định để JS kiểm soát */
+        .lang-content {
+            display: none;
+        }
+
+        /* Hiển thị nội dung ngôn ngữ đang hoạt động */
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Bộ chuyển đổi ngôn ngữ -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="index.html"><button class="btn btn-outline-secondary active">VI</button></a> <!-- Trang hiện tại là Tiếng Việt -->
+            <a href="index_en.html"><button class="btn btn-outline-secondary">EN</button></a>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR BẮT ĐẦU (CSS Tùy Chỉnh) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html"> <!-- Trang chủ tiếng Việt -->
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Chuyển đổi điều hướng">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="index.html">Trang Chủ <span class="screen-reader-only">(hiện tại)</span></a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="game.html">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="scale.html">Công Cụ Ảnh</a> <!-- Giả sử đây là trang công cụ tổng hợp hoặc trang cắt lưới -->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR KẾT THÚC (CSS Tùy Chỉnh) ===== -->
+
+    <div> <!-- Bắt đầu nội dung tiếng Việt -->
+        <!-- ===== PHẦN HERO BẮT ĐẦU ===== -->
+        <header class="hero-section-fireworks">
+            <div id="fireworks-canvas"></div> <!-- Canvas cho pháo hoa sẽ được chèn vào đây bởi JS -->
+            <div class="container">
+                <h1 class="display-3 fw-bolder mb-3">Chào Mừng Đến Với Game Xếp Hình & Công Cụ Ảnh!</h1>
+                <p class="lead col-lg-9 mx-auto mb-4">
+                    Giải trí đỉnh cao với game giải đố trí tuệ và thỏa sức sáng tạo với các công cụ xử lý ảnh mạnh mẽ. Tất cả trong một!
+                </p>
+                <a class="btn btn-warning btn-lg px-4 me-sm-3 mb-3 mb-sm-0" href="#game-section-vi" role="button">
+                    <i class="fas fa-puzzle-piece me-2"></i>Thử Game Xếp Hình
+                </a>
+                <a class="btn btn-outline-light btn-lg px-4" href="#image-tools-section-vi" role="button">
+                    <i class="fas fa-crop-alt me-2"></i>Khám Phá Công Cụ Ảnh
+                </a>
+            </div>
+        </header>
+        <!-- ===== PHẦN HERO KẾT THÚC ===== -->
+
+        <!-- ===== PHẦN GIỚI THIỆU GAME BẮT ĐẦU ===== -->
+        <section id="game-section-vi" class="game-intro-section py-5 bg-light">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <img src="img/demo_game.png" alt="Demo Game Xếp Hình" class="img-fluid rounded">
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="display-5 fw-bold mb-3">Thử Thách Trí Tuệ với Game Xếp Hình</h2>
+                        <p class="lead text-muted">
+                            Đắm mình trong thế giới của những mảnh ghép đầy màu sắc. Rèn luyện kỹ năng quan sát, tư duy logic và sự kiên nhẫn.
+                        </p>
+                        <ul class="list-unstyled mb-4 fs-5">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Bộ sưu tập ảnh đa dạng, cập nhật thường xuyên.</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Cơ chế xoay mảnh ghép, kéo thả trực quan.</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Phù hợp mọi lứa tuổi, mang lại giây phút thư giãn.</li>
+                        </ul>
+                        <a href="game.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play me-2"></i>Chơi Ngay!
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== PHẦN GIỚI THIỆU GAME KẾT THÚC ===== -->
+
+        <!-- ===== PHẦN CÔNG CỤ ẢNH BẮT ĐẦU ===== -->
+        <!-- ===== PHẦN CÔNG CỤ ẢNH BẮT ĐẦU ===== -->
+        <section id="image-tools-section-vi" class="image-tools-section py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Bộ Công Cụ Xử Lý Ảnh Đa Năng</h2>
+                    <p class="lead text-muted col-lg-8 mx-auto">
+                        Hoàn thiện bức ảnh của bạn với các công cụ cắt, chia và thay đổi kích thước ảnh chuyên nghiệp, dễ sử dụng.
+                    </p>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <!-- Card Cắt Ảnh Vuông -->
+                    <div class="col-lg-4 col-md-6"> 
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông"
+                                    class="img-fluid tool-demo-img rounded">
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Cắt Ảnh Thành Hình Vuông (1:1)</h3>
+                            <p class="text-muted small">
+                                Nhanh chóng tạo ảnh đại diện, ảnh thu nhỏ hoặc bất kỳ ảnh nào yêu cầu tỷ lệ vuông. Tải lên, kéo và điều chỉnh vùng chọn trực quan.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="scale.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-vector-square me-2"></i>Thử Cắt Vuông
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Chia Ảnh Lưới -->
+                    <div class="col-lg-4 col-md-6"> 
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_split.png" alt="Demo Chia Ảnh Lưới"
+                                    class="img-fluid tool-demo-img rounded">
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Chia Ảnh Thành Lưới (VD: 3x3)</h3>
+                            <p class="text-muted small">
+                                Chia một ảnh lớn thành nhiều mảnh bằng nhau theo lưới tùy chỉnh (số hàng x số cột). Lý tưởng để tạo mảnh ghép game hoặc hiệu ứng ảnh độc đáo.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="split.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-th-large me-2"></i>Thử Chia Lưới
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Thay Đổi Kích Thước Ảnh -->
+                    <div class="col-lg-4 col-md-6"> 
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước Ảnh"  class="img-fluid tool-demo-img rounded">
+                                <!-- Bạn cần có ảnh demo_resize.png trong thư mục img/ -->
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Thay Đổi Kích Thước Ảnh</h3>
+                            <p class="text-muted small">
+                                Dễ dàng điều chỉnh chiều rộng và chiều cao của ảnh theo ý muốn. Hỗ trợ giữ nguyên tỷ lệ khung hình hoặc tùy chỉnh tự do.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="resize.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-expand-arrows-alt me-2"></i>Thử Resize Ảnh
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <a href="about.html#image-tools-section" class="btn btn-secondary">
+                        <i class="fas fa-info-circle me-2"></i>Xem Chi Tiết Các Công Cụ
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- ===== PHẦN CÔNG CỤ ẢNH KẾT THÚC ===== -->
+
+
+        <!-- ===== TẠI SAO CHỌN CHÚNG TÔI / ĐIỂM NỔI BẬT (Tùy chọn) ===== -->
+        <section class="highlights-section py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Tại Sao Chọn Chúng Tôi?</h2>
+                </div>
+                <div class="row text-center g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-user-friends fa-3x text-primary mb-3"></i>
+                            <h3 class="h5 fw-semibold">Dễ Sử Dụng</h3>
+                            <p class="text-muted small">Giao diện trực quan, thân thiện, không yêu cầu kỹ năng cao.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-bolt fa-3x text-success mb-3"></i>
+                            <h3 class="h5 fw-semibold">Nhanh & Hiệu Quả</h3>
+                            <p class="text-muted small">Xử lý tác vụ nhanh chóng, tiết kiệm thời gian của bạn.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                            <h3 class="h5 fw-semibold">Miễn Phí & Bảo Mật</h3>
+                            <p class="text-muted small">Hoàn toàn miễn phí sử dụng, và chúng tôi tôn trọng quyền riêng tư của bạn.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== TẠI SAO CHỌN CHÚNG TÔI KẾT THÚC ===== -->
+    </div>
+    <!-- Kết thúc nội dung tiếng Việt -->
+
+
+    <!-- ===== FOOTER BẮT ĐẦU ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn.</p>
+                    </div>
+
+                    <div class="col-md-3 col-6 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Khám Phá</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang Chủ</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp Hình</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Công Cụ</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Lưới</a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Vuông</a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light">Thay đổi kích thước </a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <h5 class="fw-semibold">Thông Tin</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới Thiệu</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên Hệ</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều Khoản</a></li> <!-- Giả sử tên file là dieu-khoan.html -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                            <!-- Lưu ý: Bootstrap 5 không yêu cầu jQuery, nếu bạn dùng BS5 có thể bỏ jQuery -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER KẾT THÚC ===== -->
+
+    <!-- Bootstrap 5 JS Bundle (Popper.js bao gồm) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fireworksCanvas = document.getElementById('fireworks-canvas');
+            if (fireworksCanvas) {
+                const fireworks = new Fireworks.default(fireworksCanvas, {
+                    rocketsPoint: {
+                        min: 50,
+                        max: 50
+                    },
+                    hue: {
+                        min: 0,
+                        max: 360
+                    },
+                    delay: {
+                        min: 30,
+                        max: 60
+                    },
+                    opacity: 0.5,
+                    speed: 2,
+                    acceleration: 1.05,
+                    friction: 0.97,
+                    gravity: 1.5,
+                    particles: 90,
+                    traceSpeed: 3,
+                    explosion: 5,
+                    intensity: 30,
+                    flickering: 50,
+                    lineWidth: {
+                        explosion: {
+                            min: 1,
+                            max: 3
+                        },
+                        trace: {
+                            min: 0.1,
+                            max: 1
+                        }
+                    },
+                });
+                fireworks.start();
+            }
+
+            // Cập nhật năm hiện tại ở footer
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+        });
+
+        // JavaScript cho Navbar Toggler (nếu dùng navbar tùy chỉnh)
+        const togglerButton = document.getElementById('navbarToggler');
+        const navbarContent = document.getElementById('navbarNavContent');
+        if (togglerButton && navbarContent) {
+            togglerButton.addEventListener('click', function () {
+                navbarContent.classList.toggle('show');
+            });
+        }
+
+        // Cuộn mượt cho anchor link (nếu dùng)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#') && href.length > 1 && document.querySelector(href)) {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

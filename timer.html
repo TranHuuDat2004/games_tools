@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <title>Game xếp hình</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        /* --- Thêm CSS cho lựa chọn chế độ --- */
+        .game-mode-selection {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .game-mode-selection label {
+            margin-right: 15px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .game-mode-selection input[type="radio"] {
+            cursor: pointer;
+        }
+
+        #countdown-duration-group {
+            display: inline-flex;
+            /* Sử dụng flex để căn chỉnh tốt hơn */
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        #countdown-duration-group label {
+            margin-right: 5px;
+            font-size: 0.9em;
+            margin-bottom: 0;
+            /* Bỏ margin bottom mặc định của label */
+        }
+
+        /* Style cho thanh trượt */
+        #countdown-seconds.custom-range {
+            width: auto;
+            /* Cho phép co giãn */
+            max-width: 150px;
+            /* Giới hạn chiều rộng tối đa */
+            vertical-align: middle;
+            /* Căn giữa */
+            margin: 0 5px;
+            /* Khoảng cách hai bên */
+            cursor: pointer;
+        }
+
+        #countdown-value {
+            font-weight: bold;
+            min-width: 20px;
+            /* Đảm bảo có đủ chỗ cho số 2 chữ số */
+            display: inline-block;
+            text-align: right;
+            /* Căn phải số */
+        }
+
+        /* --- Thêm CSS cho trạng thái thua --- */
+        #game-table.game-lost {
+            border: 3px solid #dc3545;
+            /* Màu đỏ Bootstrap */
+            box-shadow: 0 0 15px #dc3545;
+        }
+
+        #game-table.game-lost .image-cell {
+            border-color: #dc3545;
+            opacity: 0.7;
+            /* Hơi mờ đi */
+        }
+
+        #game-table.game-lost img {
+            cursor: not-allowed !important;
+            /* Con trỏ không cho phép */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                <!-- Optional: Thêm tên thương hiệu dạng text -->
+                <!-- <span style="vertical-align: middle; margin-left: 5px;">Game Xếp Hình</span> -->
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="index.html">Trang Chủ <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="game.html">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="split.html">Cắt Ảnh</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <div class="game-title-area">
+        <h1>Game Xếp Hình</h1>
+        <h6>Click vào ảnh để xoay góc độ của ảnh. Kéo thả ảnh vào đúng vị trí.</h6>
+    </div>
+
+    <!-- ===== LỰA CHỌN CHẾ ĐỘ CHƠI (Cập nhật) ===== -->
+    <div class="game-mode-selection">
+        <strong>Chế độ chơi:</strong>
+        <input type="radio" id="mode-classic" name="gameMode" value="classic" checked>
+        <label for="mode-classic">Cổ điển (Đếm lên)</label>
+
+        <input type="radio" id="mode-countdown" name="gameMode" value="countdown">
+        <label for="mode-countdown">Đếm ngược</label>
+
+        <div id="countdown-duration-group" style="display: none;"> <!-- Ẩn ban đầu -->
+            <label for="countdown-seconds">Giây:</label>
+            <!-- Sử dụng thanh trượt (range input) -->
+            <input type="range" id="countdown-seconds" class="custom-range" value="30" min="20" max="60" step="5">
+            <span id="countdown-value" style="font-weight: bold; margin-left: 5px;">30</span> giây
+            <!-- Hoặc dùng input number:
+         <input type="number" id="countdown-seconds" class="form-control d-inline-block" style="max-width: 70px;" value="45" min="20" max="60" step="5"> giây
+         -->
+        </div>
+    </div>
+    <!-- ================================== -->
+
+
+    <div class="game-container">
+        <!-- Khu vực ảnh tham chiếu bên trái -->
+        <div class="reference-section">
+            <h5>Ảnh Gốc</h5>
+            <!-- Ảnh gốc mặc định (Paimon) -->
+            <img src="AnhXepHinh/paimon/Genshin_Impact.jpg" alt="Ảnh gốc tham khảo" class="reference-image">
+        </div>
+
+        <!-- Khu vực chơi game chính giữa -->
+        <div class="main-game-section">
+            <div id="timer-display">Thời gian: 00:00</div>
+            <div id="game-table">
+                <!-- 9 ô mục tiêu 3x3 -->
+                <div class="image-cell target-cell" id="cell-0" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-1" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-2" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-3" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-4" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-5" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-6" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-7" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-8" ondragover="allowDrop(event, this)"
+                    ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+            </div>
+        </div>
+
+        <!-- Khu vực danh sách ảnh nguồn -->
+        <div id="image-list-container">
+            <h5>Các Mảnh Ghép</h5>
+            <div id="image-list">
+                <!-- Các ô ảnh nguồn mặc định (Paimon) - Sẽ được shuffle bởi JS -->
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-1.jpg" id="paimon-image01" data-correct-cell="cell-0"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-2.jpg" id="paimon-image02" data-correct-cell="cell-1"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-3.jpg" id="paimon-image03" data-correct-cell="cell-2"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-4.jpg" id="paimon-image04" data-correct-cell="cell-3"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-5.jpg" id="paimon-image05" data-correct-cell="cell-4"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-6.jpg" id="paimon-image06" data-correct-cell="cell-5"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-7.jpg" id="paimon-image07" data-correct-cell="cell-6"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-8.jpg" id="paimon-image08" data-correct-cell="cell-7"
+                        draggable="true" />
+                </div>
+                <div class="image-cell source-cell">
+                    <img src="AnhXepHinh/paimon/anh-9.jpg" id="paimon-image09" data-correct-cell="cell-8"
+                        draggable="true" />
+                </div>
+            </div>
+        </div>
+
+    </div><!-- End .game-container -->
+
+    <!-- Khu vực chọn ảnh mới -->
+    <div id="puzzle-selection">
+        <h4 style="border-top: 1px solid #eee; padding: 20px; margin-left: 50px;">Chọn Ảnh Khác</h4>
+        <div id="selection-list">
+            <!-- Danh sách ảnh lựa chọn sẽ được tạo bằng JavaScript -->
+        </div>
+    </div>
+
+<!-- ===== FOOTER START ===== -->
+<footer class="site-footer bg-dark text-white py-4">
+    <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+        <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                    <p class="small text-white-50">Giải trí và sáng tạo không giới hạn. .</p>
+                </div>
+                <div class="col-md-3 col-6 mb-3 mb-md-0">
+                    <h5 class="fw-semibold">Khám Phá</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang Chủ</a>
+                        </li>
+                        <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp Hình</a>
+                        </li>
+                        <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Ảnh Lưới</a></li>
+                        <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Ảnh Vuông</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-6">
+                    <h5 class="fw-semibold">Thông Tin</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới Thiệu</a>
+                        </li>
+                        <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên Hệ</a>
+                        </li>
+                        <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều Khoản</a></li>
+                        <!-- Thêm link Điều khoản nếu có -->
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-3 border-secondary">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="small text-white-50 mb-0">
+                        © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.
+                    </p>
+                    <p class="small text-white-50">
+                        <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                        <!-- Lưu ý: Bootstrap 5 không cần jQuery, nếu bạn dùng BS5 thì có thể bỏ jQuery -->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- Modal thông báo chiến thắng -->
+    <div class="modal fade" id="winModal" tabindex="-1" role="dialog" aria-labelledby="winModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="winModalLabel">🎉 Chúc Mừng! 🎉</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn đã hoàn thành bức tranh! <br>
+                    Thời gian của bạn là: <strong id="final-time"></strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="location.reload()">Chơi Lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL THÔNG BÁO THUA CUỘC ===== -->
+    <div class="modal fade" id="loseModal" tabindex="-1" role="dialog" aria-labelledby="loseModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="loseModalLabel"> Rất Tiếc! Đã Hết Giờ</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn đã không hoàn thành bức tranh trong thời gian quy định.
+                    <br>
+                    Hãy cố gắng hơn ở lần chơi sau nhé!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="resetGame()">Chơi Lại</button>
+                    <!-- onclick gọi hàm reset mới thay vì reload -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================================== -->
+
+    <!-- Scripts (jQuery, Popper, Bootstrap) giữ nguyên -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom Game JavaScript (Cập nhật) -->
+    <script>
+        // --- KHAI BÁO BIẾN TOÀN CỤC ---
+        let timerInterval = null;
+        let startTime = null;     // Dùng cho chế độ classic
+        let timerSecondsRemaining = 0; // Dùng cho chế độ countdown
+        let countdownDuration = 30; // *** THAY ĐỔI: Giá trị mặc định theo giây ***
+        let timerRunning = false;
+        let gameWon = false;
+        let timeUp = false;      // Cờ mới cho trạng thái hết giờ
+        let draggedElement = null;
+        let currentPuzzleId = 'paimon';
+        let gameMode = 'classic'; // Chế độ chơi mặc định
+
+        // --- Dữ liệu các bộ ảnh ---
+        const puzzlesData = {
+            'paimon': {
+                name: 'Paimon',
+                // !!! KIỂM TRA VÀ THAY ĐỔI ĐƯỜNG DẪN CHO ĐÚNG !!!
+                reference: 'AnhXepHinh/paimon/Genshin_Impact.jpg',
+                pieces: [
+                    'AnhXepHinh/paimon/anh-1.jpg', 'AnhXepHinh/paimon/anh-2.jpg', 'AnhXepHinh/paimon/anh-3.jpg',
+                    'AnhXepHinh/paimon/anh-4.jpg', 'AnhXepHinh/paimon/anh-5.jpg', 'AnhXepHinh/paimon/anh-6.jpg',
+                    'AnhXepHinh/paimon/anh-7.jpg', 'AnhXepHinh/paimon/anh-8.jpg', 'AnhXepHinh/paimon/anh-9.jpg'
+                ],
+                thumbnail: 'AnhXepHinh/paimon/Genshin_Impact.jpg'
+            },
+            'honkai_star_rail': {
+                name: 'Honkai Star Rail',
+                // !!! KIỂM TRA VÀ THAY ĐỔI ĐƯỜNG DẪN CHO ĐÚNG !!!
+                reference: 'AnhXepHinh/honkai_star_rail/Honkai_Star_Rail.png',
+                pieces: [
+                    'AnhXepHinh/honkai_star_rail/anh-1.jpg', 'AnhXepHinh/honkai_star_rail/anh-2.jpg', 'AnhXepHinh/honkai_star_rail/anh-3.jpg',
+                    'AnhXepHinh/honkai_star_rail/anh-4.jpg', 'AnhXepHinh/honkai_star_rail/anh-5.jpg', 'AnhXepHinh/honkai_star_rail/anh-6.jpg',
+                    'AnhXepHinh/honkai_star_rail/anh-7.jpg', 'AnhXepHinh/honkai_star_rail/anh-8.jpg', 'AnhXepHinh/honkai_star_rail/anh-9.jpg'
+                ],
+                thumbnail: 'AnhXepHinh/honkai_star_rail/Honkai_Star_Rail.png'
+            },
+            'zenless_zone_zero': {
+                name: 'Zenless Zone Zero',
+                // !!! KIỂM TRA VÀ THAY ĐỔI ĐƯỜNG DẪN CHO ĐÚNG !!!
+                reference: 'AnhXepHinh/zenless_zone_zero/zenless-zone-zero.jpg',
+                pieces: [
+                    'AnhXepHinh/zenless_zone_zero/anh-1.jpg', 'AnhXepHinh/zenless_zone_zero/anh-2.jpg', 'AnhXepHinh/zenless_zone_zero/anh-3.jpg',
+                    'AnhXepHinh/zenless_zone_zero/anh-4.jpg', 'AnhXepHinh/zenless_zone_zero/anh-5.jpg', 'AnhXepHinh/zenless_zone_zero/anh-6.jpg',
+                    'AnhXepHinh/zenless_zone_zero/anh-7.jpg', 'AnhXepHinh/zenless_zone_zero/anh-8.jpg', 'AnhXepHinh/zenless_zone_zero/anh-9.jpg'
+                ],
+                thumbnail: 'AnhXepHinh/zenless_zone_zero/zenless-zone-zero.jpg'
+            }
+            // Thêm các bộ ảnh khác vào đây
+        };
+
+        // --- Các hàm xử lý thời gian ---
+        function startTimer() {
+            if (timerRunning || gameWon || timeUp) return;
+            timerRunning = true;
+            if (gameMode === 'classic') {
+                startTime = Date.now();
+                timerInterval = setInterval(updateClassicTimer, 1000);
+                updateClassicTimer();
+                console.log('Classic Timer started');
+            } else if (gameMode === 'countdown') {
+                timerSecondsRemaining = countdownDuration;
+                timerInterval = setInterval(updateCountdownTimer, 1000);
+                updateCountdownTimer();
+                console.log(`Countdown Timer started (${countdownDuration}s)`);
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            console.log('Timer stopped');
+        }
+
+        function updateClassicTimer() {
+            if (!startTime) return;
+            const elapsedTime = Date.now() - startTime;
+            displayTime(elapsedTime / 1000);
+        }
+
+        function updateCountdownTimer() {
+            if (timerSecondsRemaining <= 0 || gameWon) {
+                if (timerSecondsRemaining <= 0 && !gameWon) {
+                    handleTimeUp();
+                } else {
+                    stopTimer();
+                }
+                return;
+            }
+            timerSecondsRemaining--;
+            displayTime(timerSecondsRemaining);
+        }
+
+        function displayTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            $('#timer-display').text(`Thời gian: ${formattedTime}`);
+        }
+
+        function handleTimeUp() {
+            console.log("Time's Up!");
+            timeUp = true;
+            stopTimer();
+            $('#game-table').addClass('game-lost').removeClass('game-won');
+            $('#game-table img, #image-list img').attr('draggable', false).css('cursor', 'not-allowed');
+            $('#loseModal').modal('show');
+        }
+
+
+        // --- Hàm kiểm tra điều kiện thắng ---
+        function checkWinCondition() {
+            if (gameWon || timeUp) return false;
+            const targetCells = $('#game-table .target-cell');
+            if (targetCells.length !== 9) return false;
+            let allCorrect = true;
+            for (let i = 0; i < targetCells.length; i++) {
+                const cell = targetCells[i];
+                const img = cell.querySelector('img');
+                if (!img) { allCorrect = false; break; }
+                const expectedCellId = img.getAttribute('data-correct-cell');
+                const currentCellId = cell.id;
+                const currentAngle = ($(img).data('angle') || 0) % 360;
+                if (expectedCellId !== currentCellId || currentAngle !== 0) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+            if (allCorrect) {
+                console.log('Game Won!');
+                gameWon = true;
+                timeUp = false;
+                stopTimer();
+                $('#game-table').addClass('game-won').removeClass('game-lost');
+                $('#game-table img, #image-list img').attr('draggable', false).css('cursor', 'default');
+                if (gameMode === 'classic') {
+                    $('#final-time').text(getFinalTime());
+                } else {
+                    const usedSeconds = countdownDuration - timerSecondsRemaining;
+                    const minutes = Math.floor(usedSeconds / 60);
+                    const seconds = Math.floor(usedSeconds % 60);
+                    $('#final-time').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+                }
+                $('#winModal').modal('show');
+            }
+            return allCorrect;
+        }
+
+        // --- Hàm xáo trộn ---
+        function shuffleImages() {
+            var parent = $("#image-list");
+            var cells = parent.children('.source-cell');
+            if (cells.length === 0) return;
+
+            var tempCells = [];
+            cells.each(function () {
+                tempCells.push($(this).detach());
+            });
+
+            while (tempCells.length) {
+                parent.append(tempCells.splice(Math.floor(Math.random() * tempCells.length), 1)[0]);
+            }
+
+            parent.find('.source-cell img').each(function () {
+                var randomRotation = getRandomRotationAngle();
+                $(this).css('transform', 'rotate(' + randomRotation + 'deg)');
+                $(this).data('angle', randomRotation);
+            });
+            console.log("Shuffled images for:", currentPuzzleId);
+        }
+
+        // --- Hàm lấy góc xoay ngẫu nhiên ---
+        function getRandomRotationAngle() {
+            var angles = [0, 90, 180, 270];
+            return angles[Math.floor(Math.random() * angles.length)];
+        }
+
+
+        // --- Các hàm xử lý Drag and Drop ---
+        function startDrag(event) {
+            if (gameWon || timeUp) { event.preventDefault(); return; }
+            draggedElement = event.target;
+            event.dataTransfer.setData('imageId', draggedElement.id);
+            setTimeout(() => {
+                if (draggedElement) draggedElement.classList.add('dragging');
+            }, 0);
+        }
+
+        function allowDrop(event, receiverCell) {
+            if (gameWon || timeUp) return;
+            const isReceiverEmpty = receiverCell.childElementCount === 0;
+            const isNotSelfContainer = draggedElement ? receiverCell !== draggedElement.parentNode : true;
+            if (isReceiverEmpty && isNotSelfContainer) {
+                event.preventDefault();
+                receiverCell.classList.add('drag-over-valid');
+            }
+        }
+
+        function dragLeave(event, receiverCell) {
+            if (receiverCell) receiverCell.classList.remove('drag-over-valid');
+        }
+
+        function endDrag(event) {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+            }
+            $('.image-cell').removeClass('drag-over-valid');
+            draggedElement = null;
+        }
+
+        function receiveData(event) {
+            event.preventDefault();
+            if (gameWon || timeUp) return;
+
+            const id = event.dataTransfer.getData('imageId');
+            const droppedImage = document.getElementById(id);
+            let targetCell = event.target;
+
+            $('.image-cell').removeClass('drag-over-valid');
+
+            if (!droppedImage) return;
+
+            if (targetCell.tagName === 'IMG') {
+                targetCell = targetCell.parentNode;
+            }
+
+            if (targetCell.classList.contains('image-cell') &&
+                targetCell.childElementCount === 0 &&
+                (!draggedElement || targetCell !== draggedElement.parentNode)) {
+                targetCell.appendChild(droppedImage);
+
+                if ($(targetCell).closest('#game-table').length > 0 && !timerRunning) {
+                    console.log("Điều kiện bắt đầu timer thỏa mãn");
+                    startTimer();
+                }
+                if ($(targetCell).closest('#game-table').length > 0) {
+                    checkWinCondition();
+                }
+            }
+        }
+
+        // --- Hàm tạo danh sách lựa chọn ảnh ---
+        function populateSelectionList() {
+            const selectionList = $('#selection-list');
+            selectionList.empty();
+
+            for (const puzzleId in puzzlesData) {
+                const puzzle = puzzlesData[puzzleId];
+                const imgElement = $('<img>')
+                    .attr('src', puzzle.thumbnail)
+                    .attr('alt', `Chọn ${puzzle.name}`)
+                    .attr('data-puzzle-id', puzzleId)
+                    .addClass('puzzle-option img-thumbnail')
+                    .on('click', selectPuzzle); // Gán sự kiện
+
+                if (puzzleId === currentPuzzleId) {
+                    imgElement.addClass('active');
+                }
+                selectionList.append(imgElement);
+            }
+        }
+
+        // --- Hàm xử lý khi chọn bộ ảnh mới ---
+        function selectPuzzle(event) {
+            const selectedId = $(event.target).data('puzzle-id');
+            if (selectedId === currentPuzzleId) return;
+            currentPuzzleId = selectedId;
+            $('.puzzle-option').removeClass('active');
+            $(event.target).addClass('active');
+            // Gọi hàm reset tổng quát
+            resetGame();
+        }
+
+        // --- Hàm Reset và Tải bộ ảnh mới ---
+        function resetAndLoadPuzzle(puzzleId) {
+            console.log("Đang tải bộ ảnh:", puzzleId);
+            const puzzle = puzzlesData[puzzleId];
+            if (!puzzle) { console.error("Không tìm thấy bộ ảnh:", puzzleId); return; }
+
+            // 1. Reset bảng chơi và trạng thái trực quan
+            $('#game-table').removeClass('game-won game-lost');
+            $('#game-table .target-cell').empty();
+
+            // 2. Update ảnh gốc
+            $('.reference-image').attr('src', puzzle.reference).attr('alt', `Ảnh gốc ${puzzle.name}`);
+
+            // 3. Tạo mảnh ghép mới
+            const imageList = $('#image-list');
+            imageList.empty();
+
+            if (!puzzle.pieces || puzzle.pieces.length !== 9) {
+                console.error("Dữ liệu mảnh ghép không hợp lệ cho:", puzzleId);
+                imageList.html('<p style="color: red;">Lỗi tải mảnh ghép!</p>');
+                return;
+            }
+
+            puzzle.pieces.forEach((pieceSrc, index) => {
+                const cellId = `cell-${index}`;
+                const imgId = `${puzzleId}-image${String(index + 1).padStart(2, '0')}`;
+
+                // Tạo ảnh và lấy DOM element
+                const imgDOM = $('<img>')
+                    .attr('src', pieceSrc)
+                    .attr('id', imgId)
+                    .attr('data-correct-cell', cellId)
+                    .get(0);
+
+                // Gán thuộc tính và sự kiện trực tiếp
+                imgDOM.draggable = true; // Kích hoạt lại draggable
+                imgDOM.ondragstart = startDrag;
+                imgDOM.ondragend = endDrag;
+
+                // Tạo ô chứa và lấy DOM element
+                const cellDOM = $('<div>')
+                    .addClass('image-cell source-cell')
+                    .append(imgDOM)
+                    .get(0);
+
+                // Gán sự kiện trực tiếp cho ô chứa
+                cellDOM.ondragover = (e) => allowDrop(e, cellDOM);
+                cellDOM.ondrop = (e) => receiveData(e);
+                cellDOM.ondragleave = (e) => dragLeave(e, cellDOM);
+
+                imageList.append(cellDOM);
+            });
+
+            // 4. Xáo trộn các mảnh mới
+            shuffleImages();
+
+            // 5. Đảm bảo cursor đúng
+            $('#image-list img').css('cursor', 'grab');
+
+            console.log("Đã tải xong bộ ảnh:", puzzleId);
+        }
+
+        // --- Hàm Reset Game Tổng Quát (*** CẬP NHẬT ***) ---
+        function resetGame() {
+            console.log("Resetting game...");
+            // 1. Reset các cờ trạng thái (giữ nguyên)
+            gameWon = false;
+            timeUp = false;
+            timerRunning = false;
+            draggedElement = null;
+
+            // 2. Dừng timer hiện tại (giữ nguyên)
+            stopTimer();
+            startTime = null;
+            timerSecondsRemaining = 0;
+
+            // 3. Đặt lại hiển thị timer dựa trên chế độ hiện tại (*** CẬP NHẬT ***)
+            if (gameMode === 'classic') {
+                $('#timer-display').text('Thời gian: 00:00');
+            } else {
+                // *** THAY ĐỔI: Lấy giá trị từ input giây ***
+                let secondsValue = parseInt($('#countdown-seconds').val()) || 45; // Lấy giá trị giây, mặc định 45
+                // Đảm bảo giá trị nằm trong khoảng min-max (phòng trường hợp người dùng sửa HTML)
+                secondsValue = Math.max(20, Math.min(60, secondsValue));
+                countdownDuration = secondsValue; // Cập nhật duration (giây)
+                timerSecondsRemaining = countdownDuration;
+                displayTime(timerSecondsRemaining); // Hiển thị thời gian countdown ban đầu
+                // Cập nhật cả span hiển thị giá trị
+                $('#countdown-value').text(countdownDuration);
+            }
+
+            // 4. Tải lại các mảnh ghép (giữ nguyên)
+            resetAndLoadPuzzle(currentPuzzleId);
+        }
+
+
+        // --- Document Ready ---
+        $(document).ready(function () {
+            // Gán sự kiện cho các ảnh/ô ban đầu có trong HTML
+            $('#image-list img').each(function () {
+                const imgDOM = $(this).get(0);
+                // Chỉ gán nếu chưa có listener (tránh gán nhiều lần khi sửa code)
+                if (!imgDOM.ondragstart) imgDOM.ondragstart = startDrag;
+                if (!imgDOM.ondragend) imgDOM.ondragend = endDrag;
+            });
+            $('#image-list .source-cell').each(function () {
+                const cellDOM = $(this).get(0);
+                if (!cellDOM.ondragover) cellDOM.ondragover = (e) => allowDrop(e, cellDOM);
+                if (!cellDOM.ondrop) cellDOM.ondrop = (e) => receiveData(e);
+                if (!cellDOM.ondragleave) cellDOM.ondragleave = (e) => dragLeave(e, cellDOM);
+            });
+
+            // Hiển thị danh sách chọn
+            populateSelectionList();
+
+            // Xáo trộn bộ ảnh mặc định
+            shuffleImages();
+
+            // Xử lý thay đổi chế độ chơi
+            $('input[name="gameMode"]').change(function () {
+                gameMode = $(this).val();
+                console.log("Chế độ chơi đổi thành:", gameMode);
+                if (gameMode === 'countdown') {
+                    $('#countdown-duration-group').slideDown();
+                } else {
+                    $('#countdown-duration-group').slideUp();
+                }
+                resetGame(); // Reset khi đổi chế độ
+            });
+
+            // *** THÊM: Xử lý thay đổi giá trị thanh trượt ***
+            $('#countdown-seconds').on('input', function () {
+                // Cập nhật span hiển thị giá trị ngay lập tức
+                $('#countdown-value').text($(this).val());
+                // Có thể reset game ngay khi kéo để áp dụng, hoặc chỉ reset khi người dùng thả chuột
+                // hoặc khi bắt đầu game mới (hiện tại đang reset khi đổi chế độ hoặc chọn ảnh mới)
+                // Nếu muốn reset ngay khi kéo xong:
+                // clearTimeout(resetTimeout); // Xóa timeout cũ nếu có
+                // resetTimeout = setTimeout(resetGame, 500); // Reset sau 0.5s không kéo nữa
+            });
+
+            // *** THAY ĐỔI: Chỉ reset khi người dùng thay đổi hẳn giá trị (sau khi thả chuột hoặc nhập xong) ***
+            $('#countdown-seconds').on('change', function () {
+                if (gameMode === 'countdown') {
+                    console.log("Countdown duration changed, resetting game.");
+                    resetGame(); // Reset khi đổi thời gian xong
+                }
+            });
+
+
+        }); // Kết thúc $(document).ready()
+
+        // --- SỰ KIỆN CLICK XOAY ẢNH (Dùng event delegation) ---
+        $(document).on('click', '.image-cell img', function (e) {
+            if (gameWon || timeUp) return; // Kiểm tra cả thắng và hết giờ
+            if ($(this).hasClass('dragging')) return;
+
+            var currentAngle = ($(this).data('angle') || 0);
+            var newAngle = (currentAngle + 90) % 360;
+            $(this).css('transform', 'rotate(' + newAngle + 'deg)');
+            $(this).data('angle', newAngle);
+
+            if ($(this).closest('#game-table').length > 0) {
+                checkWinCondition();
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

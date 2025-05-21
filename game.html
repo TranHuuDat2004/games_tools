@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi"> <!-- Default language, will be updated by JS -->
+
+<head>
+    <title data-translate="docTitle">Game xếp hình</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Your main style.css -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        /* --- Existing styles from your previous code --- */
+        .game-title-area {
+            padding-top: 10px;
+        }
+        .game-mode-selection {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .game-mode-selection label {
+            margin-right: 15px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .game-mode-selection input[type="radio"] {
+            cursor: pointer;
+        }
+        #countdown-duration-group {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        #countdown-duration-group label {
+            margin-right: 5px;
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+        #countdown-seconds.custom-range {
+            width: auto;
+            max-width: 150px;
+            vertical-align: middle;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        #countdown-value {
+            font-weight: bold;
+            min-width: 20px;
+            display: inline-block;
+            text-align: right;
+        }
+        #game-table.game-lost {
+            border: 3px solid #dc3545;
+            box-shadow: 0 0 15px #dc3545;
+        }
+        #game-table.game-lost .image-cell {
+            border-color: #dc3545;
+            opacity: 0.7;
+        }
+        #game-table.game-lost img {
+            cursor: not-allowed !important;
+        }
+        :root {
+            --sidebar-width: 320px;
+            --transition-duration: 0.5s;
+            --sidebar-bg: #fff;
+            --header-color: #333;
+            --button-bg: #d0021b;
+            --button-color: #fff;
+            --checkout-bg: #d0021b;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+        .ins-sidebar {
+            height: 100%; width: 0; position: fixed; top: 0; right: 0;
+            background-color: var(--sidebar-bg); overflow-x: hidden;
+            transition: var(--transition-duration); padding-top: 20px;
+            box-shadow: -2px 0px 10px var(--shadow-color); z-index: 1000;
+        }
+        .ins-sidebar.open { width: var(--sidebar-width); }
+        .ins-header {
+            padding: 80px 20px 10px 20px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .ins-header p strong { font-size: 18px; margin:0; }
+        .close-btn { font-size: 24px; cursor: pointer; }
+        .ins-content { padding: 15px 20px; max-height: calc(100vh - 150px); overflow-y: auto; }
+        /* ... other existing styles for sidebar, cart etc. ... */
+
+        /* --- NEW Custom styles for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height and preference */
+            right: 20px;
+            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px; /* Slightly adjusted for VI/EN */
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active { /* This class will be toggled by JS */
+            background-color: #ffc107; /* Bootstrap warning color */
+            border-color: #ffc107;
+            color: #212529; /* Dark text for better contrast on yellow */
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group" role="group" aria-label="Language selector">
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo" data-translate="navLogoAlt">
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation" data-translate="navToggleLabel">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <!-- Note: The 'active' class on li might need dynamic handling if this page is not index.html -->
+                        <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ" data-lang-en="Home">Trang Chủ <span class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item active" >
+                        <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game" data-lang-en="Play Game">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu" data-lang-en="About">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ" data-lang-en="Contact">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh" data-lang-en="Image Tools">Cắt Ảnh</a>
+                    </li>
+                </ul>
+                <!-- Old language switcher placeholder removed -->
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <div class="game-title-area">
+        <h1 data-translate="gameTitle">Game Xếp Hình</h1>
+        <h6 data-translate="gameSubtitle">Click vào ảnh để xoay góc độ của ảnh. Kéo thả ảnh vào đúng vị trí.</h6>
+        <button class="btn btn-warning" id="insBtn" data-translate="howToPlayButton">Hướng dẫn cách chơi</button>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="insSidebar" class="ins-sidebar">
+        <div class="ins-header">
+            <p><strong data-translate="sidebarTitle">Bí Kíp Xếp Hình</strong></p>
+            <span id="closeSidebar" class="close-btn">×</span>
+        </div>
+        <div class="ins-content" data-translate="sidebarContentHTML"> <!-- Translate entire block if complex -->
+            <p data-translate="sidebarWelcome">Chào mừng bạn đến với thử thách xếp hình!</p>
+            <p data-translate="sidebarStart"><strong>Bắt đầu nào:</strong> Hãy chọn một bức ảnh bạn thích ở phía dưới nhé.</p>
+            <p data-translate="sidebarPieces"><strong>Làm quen mảnh ghép:</strong> Các mảnh ghép đang bị lộn xộn và xoay tứ tung. Đừng lo, hãy click vào chúng để xoay về đúng chiều.</p>
+            <p data-translate="sidebarArrange"><strong>Xếp thôi:</strong> Dùng chuột kéo từng mảnh ghép vào đúng ô trên bảng 3x3. Hãy nhìn ảnh gốc bên trái để tham khảo nhé.</p>
+            <p data-translate="sidebarComplete"><strong>Hoàn thành:</strong> Khi bức tranh hiện ra hoàn chỉnh (đúng vị trí, đúng góc), bạn là người chiến thắng!</p>
+            <hr>
+            <p><strong data-translate="sidebarChallenge">Thử thách bản thân:</strong></p>
+            <p data-translate="sidebarModes">Bạn có thể chơi chế độ <strong>Cổ điển</strong> để xem mình xếp trong bao lâu, hoặc thử chế độ <strong>Đếm ngược</strong> (20-60 giây) để tăng phần gay cấn!</p>
+            <p data-translate="sidebarEnjoy">Chúc bạn có những phút giây thư giãn!</p>
+        </div>
+    </div>
+
+    <!-- ===== LỰA CHỌN CHẾ ĐỘ CHƠI (Cập nhật) ===== -->
+    <div class="game-mode-selection">
+        <strong><span data-translate="modeTitle">Chế độ chơi:</span></strong> <!-- Wrapped text in span for easier translation if needed -->
+        <input type="radio" id="mode-classic" name="gameMode" value="classic" checked>
+        <label for="mode-classic" data-translate="modeClassic">Cổ điển (Đếm lên)</label>
+
+        <input type="radio" id="mode-countdown" name="gameMode" value="countdown">
+        <label for="mode-countdown" data-translate="modeCountdown">Đếm ngược</label>
+
+        <div id="countdown-duration-group" style="display: none;">
+            <label for="countdown-seconds" data-translate="modeSeconds">Giây:</label>
+            <input type="range" id="countdown-seconds" class="custom-range" value="30" min="20" max="60" step="5">
+            <span id="countdown-value" style="font-weight: bold; margin-left: 5px;">30</span> <span class="seconds-unit-text" data-translate="secondsUnit">giây</span>
+        </div>
+    </div>
+    <!-- ================================== -->
+
+    <div class="game-container">
+        <div class="reference-section">
+            <h5 data-translate="refTitle">Ảnh Gốc</h5>
+            <img src="AnhXepHinh/paimon/Genshin_Impact.jpg" alt="Ảnh gốc tham khảo" class="reference-image" data-translate="refAlt">
+        </div>
+
+        <div class="main-game-section">
+            <div id="timer-display" data-translate-dynamic="timerLabelPrefix">Thời gian: 00:00</div>
+            <div id="game-table">
+                <!-- 9 ô mục tiêu 3x3 -->
+                <div class="image-cell target-cell" id="cell-0" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-1" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-2" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-3" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-4" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-5" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-6" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-7" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+                <div class="image-cell target-cell" id="cell-8" ondragover="allowDrop(event, this)" ondrop="receiveData(event)" ondragleave="dragLeave(event, this)"></div>
+            </div>
+        </div>
+
+        <div id="image-list-container">
+            <h5 data-translate="piecesTitle">Các Mảnh Ghép</h5>
+            <div id="image-list">
+                <!-- Default Paimon images -->
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-1.jpg" id="paimon-image01" data-correct-cell="cell-0" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-2.jpg" id="paimon-image02" data-correct-cell="cell-1" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-3.jpg" id="paimon-image03" data-correct-cell="cell-2" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-4.jpg" id="paimon-image04" data-correct-cell="cell-3" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-5.jpg" id="paimon-image05" data-correct-cell="cell-4" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-6.jpg" id="paimon-image06" data-correct-cell="cell-5" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-7.jpg" id="paimon-image07" data-correct-cell="cell-6" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-8.jpg" id="paimon-image08" data-correct-cell="cell-7" draggable="true" /></div>
+                <div class="image-cell source-cell"><img src="AnhXepHinh/paimon/anh-9.jpg" id="paimon-image09" data-correct-cell="cell-8" draggable="true" /></div>
+            </div>
+        </div>
+    </div><!-- End .game-container -->
+
+    <div id="puzzle-selection">
+        <h4 style="font-weight: 600;" data-translate="selectPuzzleTitle">Chọn Ảnh Khác</h4>
+        <div id="selection-list"></div>
+    </div>
+
+    <!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50 lang-specific" data-lang-vi="Giải trí và sáng tạo không giới hạn."
+                            data-lang-en="Unlimited entertainment and creativity."></p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Khám Phá" data-lang-en="Explore"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Trang Chủ" data-lang-en="Home">
+                                </a>
+                            </li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Game Xếp Hình" data-lang-en="Jigsaw Game">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Công cụ" data-lang-en="Tools"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Lưới" data-lang-en="Grid Image Splitter"></a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Vuông" data-lang-en="Square Image Cropper"></a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light"  data-lang-vi="Thay Đổi
+                                    Kích Thước" data-lang-en="Image Resizer"></a></li>                            
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Thông Tin" data-lang-en="Information"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light lang-specific active"
+                                    data-lang-vi="Giới Thiệu" data-lang-en="About">
+                                </a>
+                            </li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Liên Hệ" data-lang-en="Contact">
+                                </a>
+                            </li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Điều Khoản" data-lang-en="Terms"></a></li>
+                            <!-- Thêm link Điều khoản nếu có -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0 lang-specific"
+                            data-lang-vi="© <span id='currentYear'></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền."
+                            data-lang-en="© <span id='currentYear'></span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.">
+                        </p>
+                        <p class="small text-white-50 lang-specific"
+                            data-lang-vi="<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>"
+                            data-lang-en="<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- Modal thông báo chiến thắng -->
+    <div class="modal fade" id="winModal" tabindex="-1" role="dialog" aria-labelledby="winModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="winModalLabel" data-translate="winModalTitle">🎉 Chúc Mừng! 🎉</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body" data-translate="winModalBodyHTML">
+                    Bạn đã hoàn thành bức tranh! <br>
+                    Thời gian của bạn là: <strong id="final-time"></strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-translate="winModalClose">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="location.reload()" data-translate="winModalPlayAgain">Chơi Lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL THÔNG BÁO THUA CUỘC ===== -->
+    <div class="modal fade" id="loseModal" tabindex="-1" role="dialog" aria-labelledby="loseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="loseModalLabel" data-translate="loseModalTitle"> Rất Tiếc! Đã Hết Giờ</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body" data-translate="loseModalBodyHTML">
+                    Bạn đã không hoàn thành bức tranh trong thời gian quy định. <br>
+                    Hãy cố gắng hơn ở lần chơi sau nhé!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-translate="loseModalClose">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="resetGame()" data-translate="loseModalPlayAgain">Chơi Lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================================== -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // i18n.js - Internationalization Script
+        const translations = {
+            en: {
+                docTitle: "Puzzle Game",
+                navLogoAlt: "Logo",
+                navToggleLabel: "Toggle navigation",
+                // Navbar items are now handled by data-lang-xx attributes in HTML
+
+                gameTitle: "Puzzle Game",
+                gameSubtitle: "Click on an image to rotate it. Drag and drop images to the correct position.",
+                howToPlayButton: "How to Play",
+
+                sidebarTitle: "<strong>Puzzle Tips</strong>",
+                // For complex HTML blocks, you might translate the whole block
+                sidebarContentHTML: `<p>Welcome to the puzzle challenge!</p>
+                                     <p><strong>Get started:</strong> Choose an image you like below.</p>
+                                     <p><strong>Familiarize with pieces:</strong> The pieces are mixed up and rotated. Don't worry, click on them to rotate them to the correct orientation.</p>
+                                     <p><strong>Arrange them:</strong> Drag each piece to the correct cell on the 3x3 grid. Refer to the original image on the left.</p>
+                                     <p><strong>Complete:</strong> When the picture is fully assembled (correct position, correct angle), you are the winner!</p>
+                                     <hr>
+                                     <p><strong>Challenge yourself:</strong></p>
+                                     <p>You can play in <strong>Classic</strong> mode to see how long you take, or try <strong>Countdown</strong> mode (20-60 seconds) for an extra thrill!</p>
+                                     <p>Enjoy your relaxing moments!</p>`,
+                // Individual keys if preferred for sidebar elements
+                sidebarWelcome: "Welcome to the puzzle challenge!",
+                sidebarStart: "<strong>Get started:</strong> Choose an image you like below.",
+                sidebarPieces: "<strong>Familiarize with pieces:</strong> The pieces are mixed up and rotated. Don't worry, click on them to rotate them to the correct orientation.",
+                sidebarArrange: "<strong>Arrange them:</strong> Drag each piece to the correct cell on the 3x3 grid. Refer to the original image on the left.",
+                sidebarComplete: "<strong>Complete:</strong> When the picture is fully assembled (correct position, correct angle), you are the winner!",
+                sidebarChallenge: "<strong>Challenge yourself:</strong>",
+                sidebarModes: "You can play in <strong>Classic</strong> mode to see how long you take, or try <strong>Countdown</strong> mode (20-60 seconds) for an extra thrill!",
+                sidebarEnjoy: "Enjoy your relaxing moments!",
+
+
+                modeTitle: "Game Mode:",
+                modeClassic: "Classic (Count Up)",
+                modeCountdown: "Countdown",
+                modeSeconds: "Seconds:",
+                secondsUnit: "seconds",
+
+                refTitle: "Original Image",
+                refAlt: "Reference original image",
+                timerLabel: "Time:", // Used by game.js
+
+                piecesTitle: "Puzzle Pieces",
+                selectPuzzleTitle: "Choose Another Puzzle",
+
+                footerSlogan: "Unlimited entertainment and creativity.",
+                footerExplore: "Explore",
+                // Footer links also handled by data-lang-xx
+                footerTools: "Tools",
+                footerInfo: "Information",
+                footerCopyrightHTML: "© <span id='currentYear'></span> Game & Photo Pro. Developed by Tran Huu Dat. All rights reserved.", // Contains HTML
+                footerBuiltWithHTML: "<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>", // Contains HTML
+
+                winModalTitle: "🎉 Congratulations! 🎉",
+                winModalBodyHTML: "You have completed the puzzle! <br>Your time is: <strong id='final-time'></strong>",
+                winModalClose: "Close",
+                winModalPlayAgain: "Play Again",
+
+                loseModalTitle: "Too Bad! Time's Up",
+                loseModalBodyHTML: "You didn't complete the puzzle in time. <br>Try harder next time!",
+                loseModalClose: "Close",
+                loseModalPlayAgain: "Play Again"
+            },
+            vi: {
+                docTitle: "Game xếp hình",
+                navLogoAlt: "Logo",
+                navToggleLabel: "Toggle navigation",
+
+                gameTitle: "Game Xếp Hình",
+                gameSubtitle: "Click vào ảnh để xoay góc độ của ảnh. Kéo thả ảnh vào đúng vị trí.",
+                howToPlayButton: "Hướng dẫn cách chơi",
+
+                sidebarTitle: "<strong>Bí Kíp Xếp Hình</strong>",
+                sidebarContentHTML: `<p>Chào mừng bạn đến với thử thách xếp hình!</p>
+                                     <p><strong>Bắt đầu nào:</strong> Hãy chọn một bức ảnh bạn thích ở phía dưới nhé.</p>
+                                     <p><strong>Làm quen mảnh ghép:</strong> Các mảnh ghép đang bị lộn xộn và xoay tứ tung. Đừng lo, hãy click vào chúng để xoay về đúng chiều.</p>
+                                     <p><strong>Xếp thôi:</strong> Dùng chuột kéo từng mảnh ghép vào đúng ô trên bảng 3x3. Hãy nhìn ảnh gốc bên trái để tham khảo nhé.</p>
+                                     <p><strong>Hoàn thành:</strong> Khi bức tranh hiện ra hoàn chỉnh (đúng vị trí, đúng góc), bạn là người chiến thắng!</p>
+                                     <hr>
+                                     <p><strong>Thử thách bản thân:</strong></p>
+                                     <p>Bạn có thể chơi chế độ <strong>Cổ điển</strong> để xem mình xếp trong bao lâu, hoặc thử chế độ <strong>Đếm ngược</strong> (20-60 giây) để tăng phần gay cấn!</p>
+                                     <p>Chúc bạn có những phút giây thư giãn!</p>`,
+                sidebarWelcome: "Chào mừng bạn đến với thử thách xếp hình!",
+                sidebarStart: "<strong>Bắt đầu nào:</strong> Hãy chọn một bức ảnh bạn thích ở phía dưới nhé.",
+                sidebarPieces: "<strong>Làm quen mảnh ghép:</strong> Các mảnh ghép đang bị lộn xộn và xoay tứ tung. Đừng lo, hãy click vào chúng để xoay về đúng chiều.",
+                sidebarArrange: "<strong>Xếp thôi:</strong> Dùng chuột kéo từng mảnh ghép vào đúng ô trên bảng 3x3. Hãy nhìn ảnh gốc bên trái để tham khảo nhé.",
+                sidebarComplete: "<strong>Hoàn thành:</strong> Khi bức tranh hiện ra hoàn chỉnh (đúng vị trí, đúng góc), bạn là người chiến thắng!",
+                sidebarChallenge: "<strong>Thử thách bản thân:</strong>",
+                sidebarModes: "Bạn có thể chơi chế độ <strong>Cổ điển</strong> để xem mình xếp trong bao lâu, hoặc thử chế độ <strong>Đếm ngược</strong> (20-60 giây) để tăng phần gay cấn!",
+                sidebarEnjoy: "Chúc bạn có những phút giây thư giãn!",
+
+                modeTitle: "Chế độ chơi:",
+                modeClassic: "Cổ điển (Đếm lên)",
+                modeCountdown: "Đếm ngược",
+                modeSeconds: "Giây:",
+                secondsUnit: "giây",
+
+                refTitle: "Ảnh Gốc",
+                refAlt: "Ảnh gốc tham khảo",
+                timerLabel: "Thời gian:",
+
+                piecesTitle: "Các Mảnh Ghép",
+                selectPuzzleTitle: "Chọn Ảnh Khác",
+
+                footerSlogan: "Giải trí và sáng tạo không giới hạn. .",
+                footerExplore: "Khám Phá",
+                footerTools: "Công cụ",
+                footerInfo: "Thông Tin",
+                footerCopyrightHTML: "© <span id='currentYear'></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.",
+                footerBuiltWithHTML: "<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>",
+
+                winModalTitle: "🎉 Chúc Mừng! 🎉",
+                winModalBodyHTML: "Bạn đã hoàn thành bức tranh! <br>Thời gian của bạn là: <strong id='final-time'></strong>",
+                winModalClose: "Đóng",
+                winModalPlayAgain: "Chơi Lại",
+
+                loseModalTitle: " Rất Tiếc! Đã Hết Giờ",
+                loseModalBodyHTML: "Bạn đã không hoàn thành bức tranh trong thời gian quy định.<br>Hãy cố gắng hơn ở lần chơi sau nhé!",
+                loseModalClose: "Đóng",
+                loseModalPlayAgain: "Chơi Lại"
+            }
+        };
+
+        function setLanguage(lang) {
+            if (!translations[lang]) {
+                console.error("Language not supported:", lang);
+                return;
+            }
+            document.documentElement.lang = lang;
+            const langTranslations = translations[lang];
+
+            // 1. Translate elements with data-translate attribute
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                const translation = langTranslations[key];
+                if (translation !== undefined) {
+                    // Check if key ends with HTML for elements where innerHTML is appropriate
+                    if (key.endsWith('HTML')) {
+                        element.innerHTML = translation;
+                    } else if (element.tagName === 'TITLE') {
+                        element.textContent = translation;
+                    } else if (element.tagName === 'IMG' && element.hasAttribute('alt')) {
+                        element.alt = translation;
+                    } else if (element.hasAttribute('aria-label')) {
+                        element.setAttribute('aria-label', translation);
+                    } else if (element.placeholder) {
+                        element.placeholder = translation;
+                    } else if (element.classList.contains('seconds-unit-text')) {
+                        element.textContent = translation;
+                    }
+                     else {
+                        // For simple text, use textContent to avoid issues if translation accidentally contains HTML
+                        // However, some elements like <strong> might be part of the translation string.
+                        // Using innerHTML for these but being careful. Defaulting to innerHTML for now.
+                        element.innerHTML = translation;
+                    }
+                } else {
+                    console.warn(`Translation key "${key}" not found for [data-translate] in language "${lang}".`);
+                }
+            });
+
+            // 2. Translate navbar and footer links with lang-specific class
+            document.querySelectorAll('.lang-specific').forEach(element => {
+                const textKey = lang === 'vi' ? 'data-lang-vi' : 'data-lang-en';
+                const newText = element.getAttribute(textKey);
+                if (newText) {
+                    // Preserve any existing child elements like <span class="screen-reader-only">
+                    const screenReaderSpan = element.querySelector('.screen-reader-only');
+                    let currentSpanHTML = '';
+                    if (screenReaderSpan) {
+                        currentSpanHTML = ' ' + screenReaderSpan.outerHTML;
+                    }
+                    element.innerHTML = newText + currentSpanHTML;
+                } else {
+                    console.warn(`Attribute "${textKey}" not found for .lang-specific element:`, element);
+                }
+            });
+            
+            // 3. Update timer display (ensure game.js handles this based on current lang)
+            if (typeof window.refreshTimerDisplay === 'function') {
+                window.refreshTimerDisplay();
+            } else {
+                const timerDisplay = document.getElementById('timer-display');
+                if (timerDisplay && timerDisplay.innerText.includes(":")) { // Basic check if timer is active/initialized
+                     const timeValue = timerDisplay.innerText.split(' ').pop() || "00:00";
+                     timerDisplay.innerText = `${langTranslations.timerLabel} ${timeValue}`;
+                }
+            }
+
+            // 4. Update active state for language switcher buttons
+            document.querySelectorAll('.lang-switcher .lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                }
+            });
+
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set current year in footer
+            const yearSpan = document.getElementById('currentYear');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+            const langButtons = document.querySelectorAll('.lang-switcher .lang-btn');
+            langButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const selectedLang = event.target.closest('.lang-btn').getAttribute('data-lang');
+                    if (selectedLang) {
+                        setLanguage(selectedLang);
+                    }
+                });
+            });
+
+            const browserLang = navigator.language.split('-')[0];
+            const preferredLang = localStorage.getItem('preferredLanguage') || (translations[browserLang] ? browserLang : 'vi');
+            
+            setLanguage(preferredLang); // Set initial language
+        });
+
+    </script>
+
+    <script src="puzzlesData.js"></script>
+    <script src="game.js"></script>
+    <!--
+        REMEMBER TO MODIFY game.js:
+        - Your timer update functions (for classic and countdown) should use:
+          `translations[currentLang].timerLabel`
+        - `currentLang` can be obtained from `document.documentElement.lang` or `localStorage.getItem('preferredLanguage')`.
+        - The `window.refreshTimerDisplay` function (if you implement it as suggested in previous responses)
+          should also use this.
+    -->
+
+</body>
+</html>

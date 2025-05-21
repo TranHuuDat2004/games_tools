@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Image to Square</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link to common CSS file -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body {
+            padding-top: 100px;
+            /* Top padding */
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        /* Container for image and crop area */
+        #image-crop-container {
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
+            /* To make container responsive to image */
+            margin: 20px auto;
+            /* Center */
+            border: 1px solid #ddd;
+            background-color: #eee;
+            /* Background when no image */
+            min-height: 200px;
+            /* Minimum height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            /* Prevent text selection when dragging */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #original-image {
+            display: block;
+            /* Important for size calculation */
+            max-width: 100%;
+            /* Image does not exceed container */
+            transition: opacity 0.3s ease;
+        }
+
+        /* Square selection area */
+        #crop-box {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+            /* Dim outside area */
+            cursor: move;
+            display: none;
+            /* Hidden initially */
+        }
+
+        /* Resize handles */
+        .crop-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #555;
+            border-radius: 50%;
+            /* Rounded */
+        }
+
+        /* Positioning resize handles */
+        .handle-nw {
+            top: -6px;
+            left: -6px;
+            cursor: nwse-resize;
+        }
+
+        .handle-ne {
+            top: -6px;
+            right: -6px;
+            cursor: nesw-resize;
+        }
+
+        .handle-sw {
+            bottom: -6px;
+            left: -6px;
+            cursor: nesw-resize;
+        }
+
+        .handle-se {
+            bottom: -6px;
+            right: -6px;
+            cursor: nwse-resize;
+        }
+
+        /* Could add mid-edge handles if desired */
+        /* .handle-n { top: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } */
+        /* .handle-s { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } */
+        /* .handle-w { top: 50%; left: -6px; transform: translateY(-50%); cursor: ew-resize; } */
+        /* .handle-e { top: 50%; right: -6px; transform: translateY(-50%); cursor: ew-resize; } */
+
+        /* Result area */
+        #crop-result {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        #cropped-image-preview {
+            max-width: 250px;
+            /* Preview size of cropped image */
+            height: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+
+        #download-link {
+            display: none;
+            /* Hidden initially */
+        }
+
+        /* Error message */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+                        /* --- NEW Custom styles for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height and preference */
+            right: 20px;
+            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px; /* Slightly adjusted for VI/EN */
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active { /* This class will be toggled by JS */
+            background-color: #ffc107; /* Bootstrap warning color */
+            border-color: #ffc107;
+            color: #212529; /* Dark text for better contrast on yellow */
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+            <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="scale.html"><button class="btn btn-outline-secondary lang-btn " data-lang="vi">VI</button></a> 
+            <a href="scale_en.html"><button class="btn btn-outline-secondary lang-btn active" data-lang="en">EN</button></a> 
+        </div>
+    </div>
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                <!-- Optional: Add brand name as text -->
+                <!-- <span style="vertical-align: middle; margin-left: 5px;">Puzzle Game</span> -->
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="index.html">Home <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="game.html">Play Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="split.html">Image Tools</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+
+    <div class="container">
+        <!-- Tool selection tabs (Optional, can be removed if this page is only for resize) -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item ">
+                <a class="nav-link active" id="crop-square-tab" href="scale_en.html" role="tab">Square Crop</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="split-grid-tab" href="split_en.html" role="tab">Grid Split</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " id="resize-image-tab" href="resize_en.html" role="tab">Resize Image</a>
+            </li>
+        </ul>
+        <h1 class="text-center">Crop Image to Square (1:1)</h1>
+        <div class="alert alert-info">
+            Select an image from your computer, choose the area to crop, then click "Crop Image".
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="form-group">
+                    <label for="image-upload">Select Original Image:</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="image-upload"
+                            accept="image/png, image/jpeg, image/gif, image/webp">
+                        <label class="custom-file-label" for="image-upload" data-browse="Browse">Choose file...</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="image-crop-container">
+            <img id="original-image" src="" alt="Original image">
+            <div id="crop-box">
+                <div class="crop-handle handle-nw"></div>
+                <div class="crop-handle handle-ne"></div>
+                <div class="crop-handle handle-sw"></div>
+                <div class="crop-handle handle-se"></div>
+                <!-- Add mid-edge handles if needed -->
+            </div>
+        </div>
+
+        <!-- Crop button -->
+        <div class="text-center mt-3">
+            <button id="crop-button" class="btn btn-warning" disabled>Crop Image</button>
+        </div>
+
+        <!-- Error message -->
+        <div id="error-message" class="text-center"></div>
+
+        <!-- Result display area -->
+        <div id="crop-result" style="display: none;">
+            <h5>Cropped Square Image:</h5>
+            <img id="cropped-image-preview" src="#" alt="Cropped image">
+            <br>
+            <a id="download-link" class="btn btn-success" href="#" download="square_image.png">Download Square Image</a>
+        </div>
+
+    </div>
+
+    <div style="padding-bottom: 80px;"></div>
+    <!-- ===== MAIN CONTENT END ===== -->
+     
+<!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Unlimited entertainment and creativity.</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Explore</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index_en.html" class="text-white-50 text-decoration-none hover-light">Home</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Jigsaw Game</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split_en.html" class="text-white-50 text-decoration-none hover-light">Grid Split Tool</a></li>
+                            <li><a href="scale_en.html" class="text-white-50 text-decoration-none hover-light">Square Crop Tool</a></li>
+                            <li><a href="resize_en.html" class="text-white-50 text-decoration-none hover-light">Image Resizer</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Information</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">About</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Contact</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Developed by Tran Huu Dat. All rights reserved.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Built with <i class="fas fa-heart text-danger"></i> and Bootstrap, jQuery.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+     
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            // --- Get DOM elements ---
+            const imageInput = document.getElementById('image-upload');
+            const originalImage = document.getElementById('original-image'); // img tag for display
+            const previewPlaceholder = document.getElementById('preview-placeholder');
+            const errorMessage = document.getElementById('error-message');
+            const fileLabel = $('.custom-file-label');
+            const imageContainer = document.getElementById('image-crop-container');
+            const cropBox = document.getElementById('crop-box');
+            const cropHandles = cropBox ? cropBox.querySelectorAll('.crop-handle') : [];
+            const cropResultDiv = document.getElementById('crop-result');
+            const croppedImagePreview = document.getElementById('cropped-image-preview');
+            const downloadLink = document.getElementById('download-link');
+            const cropButton = document.getElementById('crop-button');
+
+            // --- DECLARE VARIABLES IN GLOBAL SCOPE ---
+            let originalFileName = 'original_image';
+            let img = new Image(); // Hidden image object to load and get actual dimensions
+            let isDragging = false;
+            let isResizing = false;
+            let currentHandle = null;
+            let startX, startY, initialX, initialY, initialWidth, initialHeight;
+
+            // --- Handle file selection ---
+            imageInput.addEventListener('change', function (e) {
+                resetState();
+                const file = e.target.files[0];
+                if (!file) {
+                    fileLabel.text('Choose file...');
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file (png, jpg, gif, webp).');
+                    imageInput.value = '';
+                    fileLabel.text('Choose file...');
+                    return;
+                }
+
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
+                fileLabel.text(file.name);
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    img.onload = () => {
+                        originalImage.src = event.target.result;
+                        originalImage.style.display = 'block';
+                        originalImage.classList.add('loaded');
+                        if (previewPlaceholder) previewPlaceholder.style.display = 'none';
+                        console.log(`Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
+                        initializeCropBox();
+                        if (cropButton) cropButton.disabled = false;
+                    };
+                    img.onerror = () => {
+                        showError('Could not load image. The file may be corrupted or unsupported.');
+                        resetState();
+                    };
+                    img.src = event.target.result;
+                }
+                reader.onerror = function (error) {
+                    console.error("FileReader error:", error);
+                    showError('An error occurred while reading the image file.');
+                    resetState();
+                }
+                reader.readAsDataURL(file);
+            });
+
+
+            // --- Initialize Crop Box Function ---
+            function initializeCropBox() {
+                if (!cropBox || !img || img.naturalWidth === 0 || !originalImage || !imageContainer) {
+                    console.warn("initializeCropBox: Required elements are not ready.");
+                    return;
+                }
+                if (cropResultDiv) cropResultDiv.style.display = 'none';
+                cropBox.style.display = 'block';
+                const containerWidth = imageContainer.clientWidth;
+                const containerHeight = imageContainer.clientHeight;
+                const displayWidth = originalImage.clientWidth;
+                const displayHeight = originalImage.clientHeight;
+
+                if (displayWidth === 0 || displayHeight === 0) {
+                    console.warn("initializeCropBox: Display size is 0, retrying...");
+                    setTimeout(initializeCropBox, 100);
+                    return;
+                }
+                let initialSize = Math.min(displayWidth, displayHeight) * 0.8;
+                initialSize = Math.min(initialSize, displayWidth, displayHeight);
+                initialSize = Math.max(20, initialSize);
+                const cropBoxTopRelativeToImage = (displayHeight - initialSize) / 2;
+                const cropBoxLeftRelativeToImage = (displayWidth - initialSize) / 2;
+                const offsetX = originalImage.offsetLeft;
+                const offsetY = originalImage.offsetTop;
+                const finalTop = offsetY + cropBoxTopRelativeToImage;
+                const finalLeft = offsetX + cropBoxLeftRelativeToImage;
+
+                Object.assign(cropBox.style, {
+                    width: `${initialSize}px`,
+                    height: `${initialSize}px`,
+                    top: `${finalTop}px`,
+                    left: `${finalLeft}px`
+                });
+            }
+
+            // === COMMON INTERACTION HANDLERS (MOUSE AND TOUCH) ===
+            function getCoords(e) {
+                if (e.touches && e.touches.length > 0) {
+                    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }
+                return { x: e.clientX, y: e.clientY };
+            }
+
+            function handleInteractionStart(e) {
+                if (!cropBox || cropBox.style.display === 'none') return;
+                const coords = getCoords(e);
+                startX = coords.x;
+                startY = coords.y;
+                initialX = cropBox.offsetLeft;
+                initialY = cropBox.offsetTop;
+                initialWidth = cropBox.offsetWidth;
+                initialHeight = cropBox.offsetHeight;
+                const targetElement = e.target;
+
+                if (targetElement.classList.contains('crop-handle')) {
+                    isResizing = true;
+                    isDragging = false;
+                    currentHandle = targetElement;
+                    cropBox.style.cursor = getComputedStyle(targetElement).cursor;
+                } else if (targetElement === cropBox) {
+                    isDragging = true;
+                    isResizing = false;
+                    cropBox.style.cursor = 'grabbing';
+                } else {
+                    return;
+                }
+                e.preventDefault();
+                document.addEventListener('mousemove', handleInteractionMove);
+                document.addEventListener('touchmove', handleInteractionMove, { passive: false });
+                document.addEventListener('mouseup', handleInteractionEnd);
+                document.addEventListener('touchend', handleInteractionEnd);
+            }
+
+            function handleInteractionMove(e) {
+                if (!isDragging && !isResizing) return;
+                e.preventDefault(); // Prevent page scrolling on mobile
+                const coords = getCoords(e);
+                const currentX = coords.x;
+                const currentY = coords.y;
+                const deltaX = currentX - startX;
+                const deltaY = currentY - startY;
+                const displayWidth = originalImage.clientWidth;
+                const displayHeight = originalImage.clientHeight;
+                const offsetX = originalImage.offsetLeft;
+                const offsetY = originalImage.offsetTop;
+
+                if (displayWidth === 0 || displayHeight === 0) return;
+
+                if (isDragging) {
+                    let newLeft = initialX + deltaX;
+                    let newTop = initialY + deltaY;
+                    const minLeft = offsetX;
+                    const maxLeft = offsetX + displayWidth - cropBox.offsetWidth;
+                    const minTop = offsetY;
+                    const maxTop = offsetY + displayHeight - cropBox.offsetHeight;
+                    newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(minTop, Math.min(newTop, maxTop));
+                    cropBox.style.left = `${newLeft}px`;
+                    cropBox.style.top = `${newTop}px`;
+                } else if (isResizing) {
+                    let newLeft = initialX; let newTop = initialY;
+                    let newWidth = initialWidth; let newHeight = initialHeight;
+                    const imageLeftEdge = offsetX;
+                    const imageTopEdge = offsetY;
+                    const imageRightEdge = offsetX + displayWidth;
+                    const imageBottomEdge = offsetY + displayHeight;
+
+                    if (currentHandle.classList.contains('handle-se')) {
+                        newWidth = initialWidth + deltaX; newHeight = initialHeight + deltaY;
+                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
+                        newWidth = Math.min(newWidth, imageRightEdge - initialX);
+                        newHeight = Math.min(newHeight, imageBottomEdge - initialY);
+                        newWidth = newHeight = Math.min(newWidth, newHeight);
+                    } else if (currentHandle.classList.contains('handle-nw')) {
+                        newWidth = initialWidth - deltaX; newHeight = initialHeight - deltaY;
+                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
+                        let tempLeft = initialX + (initialWidth - newWidth);
+                        let tempTop = initialY + (initialHeight - newHeight);
+                        if (tempLeft < imageLeftEdge) { newWidth -= (imageLeftEdge - tempLeft); tempLeft = imageLeftEdge; }
+                        if (tempTop < imageTopEdge) { newHeight -= (imageTopEdge - tempTop); tempTop = imageTopEdge; }
+                        newWidth = newHeight = Math.min(newWidth, newHeight);
+                        if (newWidth >= 20) { newLeft = tempLeft; newTop = tempTop; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                    } else if (currentHandle.classList.contains('handle-ne')) {
+                        newWidth = initialWidth + deltaX; newHeight = initialHeight - deltaY;
+                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
+                        let tempTop = initialY + (initialHeight - newHeight);
+                        if (tempTop < imageTopEdge) { newHeight -= (imageTopEdge - tempTop); tempTop = imageTopEdge; }
+                        newWidth = Math.min(newWidth, imageRightEdge - initialX);
+                        newWidth = newHeight = Math.min(newWidth, newHeight);
+                        if (newHeight >= 20) { newTop = tempTop; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                    } else if (currentHandle.classList.contains('handle-sw')) {
+                        newWidth = initialWidth - deltaX; newHeight = initialHeight + deltaY;
+                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
+                        let tempLeft = initialX + (initialWidth - newWidth);
+                        if (tempLeft < imageLeftEdge) { newWidth -= (imageLeftEdge - tempLeft); tempLeft = imageLeftEdge; }
+                        newHeight = Math.min(newHeight, imageBottomEdge - initialY);
+                        newWidth = newHeight = Math.min(newWidth, newHeight);
+                        if (newWidth >= 20) { newLeft = tempLeft; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                    }
+                    if (newWidth >= 20 && newHeight >= 20) {
+                        Object.assign(cropBox.style, {
+                            width: `${newWidth}px`, height: `${newHeight}px`,
+                            top: `${newTop}px`, left: `${newLeft}px`
+                        });
+                    }
+                }
+            }
+
+            function handleInteractionEnd(e) {
+                if (isDragging || isResizing) {
+                    isDragging = false;
+                    isResizing = false;
+                    currentHandle = null;
+                    if (cropBox) cropBox.style.cursor = 'move';
+                    document.removeEventListener('mousemove', handleInteractionMove);
+                    document.removeEventListener('touchmove', handleInteractionMove);
+                    document.removeEventListener('mouseup', handleInteractionEnd);
+                    document.removeEventListener('touchend', handleInteractionEnd);
+                }
+            }
+
+            // --- Attach Initial Listeners ---
+            if (cropBox) {
+                cropBox.addEventListener('mousedown', handleInteractionStart);
+                cropBox.addEventListener('touchstart', handleInteractionStart, { passive: false });
+            }
+            if (cropHandles) {
+                cropHandles.forEach(handle => {
+                    handle.addEventListener('mousedown', handleInteractionStart);
+                    handle.addEventListener('touchstart', handleInteractionStart, { passive: false });
+                });
+            }
+
+            // --- Handle Crop Image button click ---
+            if (cropButton) {
+                cropButton.addEventListener('click', function () {
+                    if (!img || !img.complete || img.naturalWidth === 0) {
+                        showError('Original image is not ready or invalid.');
+                        return;
+                    }
+                    if (!cropBox || cropBox.style.display === 'none') {
+                        showError('Crop box not initialized or hidden.');
+                        return;
+                    }
+                    const boxLeft = cropBox.offsetLeft;
+                    const boxTop = cropBox.offsetTop;
+                    const boxSize = cropBox.offsetWidth;
+                    const displayWidth = originalImage.clientWidth;
+                    const displayHeight = originalImage.clientHeight;
+                    const offsetX = originalImage.offsetLeft;
+                    const offsetY = originalImage.offsetTop;
+
+                    if (displayWidth === 0 || displayHeight === 0) {
+                        showError('Cannot determine displayed image dimensions.');
+                        return;
+                    }
+                    const scaleX = img.naturalWidth / displayWidth;
+                    const scaleY = img.naturalHeight / displayHeight;
+                    const boxLeftImage = boxLeft - offsetX;
+                    const boxTopImage = boxTop - offsetY;
+                    const sourceX = boxLeftImage * scaleX;
+                    const sourceY = boxTopImage * scaleY;
+                    const sourceCropBoxWidth = boxSize * scaleX;
+                    const sourceCropBoxHeight = boxSize * scaleY;
+                    const effectiveSourceSize = Math.min(sourceCropBoxWidth, sourceCropBoxHeight);
+                    const effectiveSourceX = Math.max(0, sourceX);
+                    const effectiveSourceY = Math.max(0, sourceY);
+                    const finalCropSize = Math.min(
+                        effectiveSourceSize,
+                        img.naturalWidth - effectiveSourceX,
+                        img.naturalHeight - effectiveSourceY
+                    );
+
+                    if (finalCropSize <= 0) {
+                        showError('Invalid crop size (too small or outside the image).');
+                        return;
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = finalCropSize;
+                    canvas.height = finalCropSize;
+                    const ctx = canvas.getContext('2d');
+                    try {
+                        ctx.drawImage(
+                            img,
+                            effectiveSourceX, effectiveSourceY,
+                            finalCropSize, finalCropSize,
+                            0, 0,
+                            canvas.width, canvas.height
+                        );
+                        const croppedImageDataUrl = canvas.toDataURL('image/png');
+                        if (croppedImagePreview) croppedImagePreview.src = croppedImageDataUrl;
+                        if (downloadLink) {
+                            downloadLink.href = croppedImageDataUrl;
+                            downloadLink.download = `${(originalFileName || 'cropped_image').replace(/ /g, '_')}_square.png`;
+                            downloadLink.style.display = 'inline-block';
+                        }
+                        if (cropResultDiv) cropResultDiv.style.display = 'block';
+                        if (errorMessage) errorMessage.textContent = '';
+                    } catch (error) {
+                        console.error("Error during image cropping:", error);
+                        showError("An error occurred during the image cropping process.");
+                        if (cropResultDiv) cropResultDiv.style.display = 'none';
+                    }
+                });
+            }
+
+            // --- Show error function ---
+            function showError(message) {
+                if (errorMessage) errorMessage.textContent = message;
+                console.error("Error:", message);
+            }
+
+            // --- Reset state function ---
+            function resetState() {
+                if (errorMessage) errorMessage.textContent = '';
+                if (cropButton) cropButton.disabled = true;
+                // Also disable split button if it exists (though not used here)
+                const splitBtn = document.getElementById('split-button');
+                if (splitBtn) splitBtn.disabled = true;
+
+                if (cropBox) cropBox.style.display = 'none';
+                if (cropResultDiv) cropResultDiv.style.display = 'none';
+                if (downloadLink) downloadLink.style.display = 'none';
+                if (originalImage) {
+                    originalImage.src = '#';
+                    originalImage.style.display = 'none';
+                    originalImage.classList.remove('loaded');
+                }
+                if (previewPlaceholder) previewPlaceholder.style.display = 'inline';
+                img = new Image();
+                originalFileName = 'original_image';
+                if (fileLabel) fileLabel.text('Choose file...');
+                isDragging = false; isResizing = false; currentHandle = null;
+            }
+
+            // --- Update file input label (Bootstrap) ---
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Choose file...');
+            });
+
+        }); // End $(document).ready
+    </script>
+</body>
+
+</html>

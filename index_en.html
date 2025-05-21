@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Changed lang to en for an English page -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Homepage of Jigsaw Puzzle Game & Image Tools - Challenge your mind with engaging jigsaw puzzles and easily customize images with professional square crop and grid split tools.">
+    <meta name="description" lang="vi"
+        content="Trang chủ Game Xếp Hình & Công Cụ Ảnh - Thử thách trí tuệ với game xếp hình hấp dẫn và tùy chỉnh ảnh dễ dàng với công cụ cắt ảnh vuông, cắt lưới chuyên nghiệp.">
+    <title>Home - Jigsaw Puzzle Game & Image Tools</title> <!-- Changed title to English -->
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Thư viện Fireworks-JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
+    <!-- Bootstrap JS (nếu cần cho các component khác) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* style.css */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #495057;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+
+        .dropdown-menu {
+            border-radius: 0.5rem;
+        }
+
+        .dropdown-item:active {
+            background-color: #0d6efd;
+            color: #fff !important;
+        }
+
+        /* --- HERO SECTION STYLES --- */
+        .hero-section-fireworks {
+            position: relative;
+            /* Quan trọng để định vị các phần tử con tuyệt đối */
+            overflow: hidden;
+            /* Đảm bảo pháo hoa không tràn ra ngoài nếu có */
+            /* py-5 tương đương với padding-top: 3rem; padding-bottom: 3rem; */
+            padding-top: 5rem;
+            /* Tăng padding để có không gian cho pháo hoa và nội dung */
+            padding-bottom: 5rem;
+            text-align: center;
+            color: white;
+            /* Màu chữ mặc định cho nội dung */
+        }
+
+        #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Đặt canvas ở lớp dưới cùng */
+            background-color: #2c3e50;
+            /* Màu nền tối để pháo hoa nổi bật, bạn có thể đổi */
+        }
+
+        .hero-section-fireworks .container {
+            position: relative;
+            /* Đảm bảo container nội dung nổi lên trên canvas */
+            z-index: 1;
+            /* Đặt container nội dung ở lớp trên */
+        }
+
+        /* Đảm bảo chữ dễ đọc trên nền pháo hoa */
+        .hero-section-fireworks h1,
+        .hero-section-fireworks p {
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(29, 37, 89, 0.7), rgba(18, 23, 58, 0.8)), url('img/hero-background.jpg') no-repeat center center;
+            background-size: cover;
+            color: #fff;
+            position: relative;
+        }
+
+        .hero-section .display-3 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-intro-section .img-fluid {
+            max-height: 450px;
+            object-fit: cover;
+        }
+
+        .image-tools-section .feature-card {
+            border: 1px solid #e9ecef;
+            border-radius: 0.75rem;
+            padding: 25px;
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .image-tools-section .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .image-tools-section .tool-demo-img {
+            max-height: 120px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+
+        .highlights-section .fa-3x {
+            font-size: 2.5rem;
+        }
+
+        .site-footer h5 {
+            color: #f8f9fa;
+            margin-bottom: 1rem;
+        }
+
+        .site-footer a.hover-light:hover {
+            color: #ffc107 !important;
+            text-decoration: none !important;
+        }
+
+        .site-footer .fa-heart {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Custom styles for language switcher (copied from about.html/terms.html) */
+        .lang-switcher-container {
+            /* Container to position switcher */
+            position: fixed;
+            top: 80px;
+            /* Adjust based on your navbar height */
+            right: 20px;
+            z-index: 1031;
+            /* Above navbar content, below modal if any */
+        }
+
+        .lang-switcher .btn {
+            margin: 0 2px;
+            /* Reduced margin for horizontal layout */
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            /* Smaller buttons */
+            padding: 0.25rem 0.5rem;
+            /* Smaller padding */
+            font-size: 0.8rem;
+            /* Smaller font */
+        }
+
+        .lang-switcher .btn.active {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            /* Light background for non-active */
+            border-color: #dee2e6;
+            color: #495057;
+        }
+
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        /* Hide content by default for JS control */
+        .lang-content {
+            display: none;
+        }
+
+        /* Show the active language content */
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="index.html"><button class="btn btn-outline-secondary">VI</button></a>
+            <a href="index_en.html"><button class="btn btn-outline-secondary active">EN</button></a>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index_en.html"> <!-- Assuming index_en.html is the English homepage -->
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link lang-specific" href="index_en.html" data-lang-vi="Trang Chủ"
+                            data-lang-en="Home">Home <span class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game"
+                            data-lang-en="Play Game">Play Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu"
+                            data-lang-en="About">About</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ"
+                            data-lang-en="Contact">Contact</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="split_en.html" data-lang-vi="Cắt Ảnh"
+                            data-lang-en="Image Tools">Image Tools</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <div>
+        <!-- ===== HERO SECTION START ===== -->
+        <header class="hero-section-fireworks">
+            <!-- Canvas cho pháo hoa sẽ được chèn vào đây bởi JS -->
+            <div id="fireworks-canvas"></div>
+            <div class="container">
+                <h1 class="display-3 fw-bolder mb-3">Welcome to Jigsaw Puzzle Game & Image Tools!</h1>
+                <p class="lead col-lg-9 mx-auto mb-4">
+                    Top-tier entertainment with intellectual puzzle games and unleash your creativity with powerful
+                    image processing tools. All in one!
+                </p>
+                <a class="btn btn-warning btn-lg px-4 me-sm-3 mb-3 mb-sm-0" href="#game-section-en" role="button">
+                    <i class="fas fa-puzzle-piece me-2"></i>Try Jigsaw Game
+                </a>
+                <a class="btn btn-outline-light btn-lg px-4" href="#image-tools-section-en" role="button">
+                    <i class="fas fa-crop-alt me-2"></i>Explore Image Tools
+                </a>
+            </div>
+        </header>
+        <!-- ===== HERO SECTION END ===== -->
+
+        <!-- ===== INTRO GAME SECTION START ===== -->
+        <section id="game-section-en" class="game-intro-section py-5 bg-light">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <img src="img/demo_game.png" alt="Jigsaw Puzzle Game Demo" class="img-fluid rounded">
+                    </div>
+                    <div class="col-lg-6">
+                        <h2 class="display-5 fw-bold mb-3">Challenge Your Mind with Jigsaw Puzzles</h2>
+                        <p class="lead text-muted">
+                            Immerse yourself in the world of colorful puzzle pieces. Train your observation skills,
+                            logical thinking, and patience.
+                        </p>
+                        <ul class="list-unstyled mb-4 fs-5">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Diverse image sets,
+                                updated regularly.</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Intuitive piece
+                                rotation and drag-and-drop mechanics.</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Suitable for all ages,
+                                offering relaxing moments.</li>
+                        </ul>
+                        <a href="game.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-play me-2"></i>Play Now!
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== INTRO GAME SECTION END ===== -->
+
+        <!-- ===== IMAGE TOOLS SECTION START ===== -->
+        <section id="image-tools-section-en" class="image-tools-section py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Versatile Image Processing Tools</h2>
+                    <p class="lead text-muted col-lg-8 mx-auto">
+                        Perfect your photos with professional, easy-to-use image cropping, splitting, and resizing tools.
+                    </p>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <!-- Square Crop Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_scale.png" alt="Square Crop Demo"
+                                    class="img-fluid tool-demo-img rounded">
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Crop Image to Square (1:1)</h3>
+                            <p class="text-muted small">
+                                Quickly create avatars, thumbnails, or any image requiring a square ratio. Upload, drag, and visually adjust the selection.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="scale_en.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-vector-square me-2"></i>Try Square Crop
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Grid Split Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_split.png" alt="Grid Split Demo"
+                                    class="img-fluid tool-demo-img rounded">
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Split Image into Grid (e.g., 3x3)</h3>
+                            <p class="text-muted small">
+                                Divide a large image into multiple equal pieces in a customizable grid (rows x columns). Ideal for creating puzzle pieces or unique photo effects.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="split_en.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-th-large me-2"></i>Try Grid Split
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Image Resizer Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card h-100 d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="img/demo_resize.png" alt="Image Resizer Demo" class="img-fluid tool-demo-img rounded">
+                                <!-- Ensure you have demo_resize.png in your img/ folder -->
+                            </div>
+                            <h3 class="h4 fw-semibold text-center mb-3">Resize Image Dimensions</h3>
+                            <p class="text-muted small">
+                                Easily adjust the width and height of your images. Supports maintaining aspect ratio or free-form customization.
+                            </p>
+                            <div class="mt-auto text-center">
+                                <a href="resize_en.html" class="btn btn-outline-warning mt-3">
+                                    <i class="fas fa-expand-arrows-alt me-2"></i>Try Image Resize
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <a href="about.html#image-tools-section" class="btn btn-secondary"> <!-- Assuming about.html is universal or has an _en version -->
+                        <i class="fas fa-info-circle me-2"></i>View Tool Details
+                    </a>
+                </div>
+            </div>
+        </section>
+        <!-- ===== IMAGE TOOLS SECTION END ===== -->
+
+        <!-- ===== WHY CHOOSE US / HIGHLIGHTS (Optional) ===== -->
+        <section class="highlights-section py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Why Choose Us?</h2>
+                </div>
+                <div class="row text-center g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-user-friends fa-3x text-primary mb-3"></i>
+                            <h3 class="h5 fw-semibold">Easy to Use</h3>
+                            <p class="text-muted small">Intuitive, user-friendly interface, no advanced skills required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-bolt fa-3x text-success mb-3"></i>
+                            <h3 class="h5 fw-semibold">Fast & Efficient</h3>
+                            <p class="text-muted small">Quick task processing, saving you time.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-4 bg-white shadow-sm rounded h-100">
+                            <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                            <h3 class="h5 fw-semibold">Free & Secure</h3>
+                            <p class="text-muted small">Completely free to use, and we respect your privacy.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ===== WHY CHOOSE US END ===== -->
+    </div>
+    <!-- End English Content -->
+
+
+    <!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Unlimited entertainment and creativity.</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Explore</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index_en.html" class="text-white-50 text-decoration-none hover-light">Home</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Jigsaw Game</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split_en.html" class="text-white-50 text-decoration-none hover-light">Grid Split Tool</a></li>
+                            <li><a href="scale_en.html" class="text-white-50 text-decoration-none hover-light">Square Crop Tool</a></li>
+                            <li><a href="resize_en.html" class="text-white-50 text-decoration-none hover-light">Image Resizer</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Information</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">About</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Contact</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Developed by Tran Huu Dat. All rights reserved.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Built with <i class="fas fa-heart text-danger"></i> and Bootstrap, jQuery.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- Bootstrap 5 JS Bundle (Popper.js included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fireworksCanvas = document.getElementById('fireworks-canvas');
+            if (fireworksCanvas) {
+                const fireworks = new Fireworks.default(fireworksCanvas, {
+                    rocketsPoint: {
+                        min: 50,
+                        max: 50
+                    },
+                    hue: {
+                        min: 0,
+                        max: 360
+                    },
+                    delay: {
+                        min: 30,
+                        max: 60
+                    },
+                    opacity: 0.5,
+                    speed: 2,
+                    acceleration: 1.05,
+                    friction: 0.97,
+                    gravity: 1.5,
+                    particles: 90,
+                    traceSpeed: 3,
+                    explosion: 5,
+                    intensity: 30,
+                    flickering: 50,
+                    lineWidth: {
+                        explosion: {
+                            min: 1,
+                            max: 3
+                        },
+                        trace: {
+                            min: 0.1,
+                            max: 1
+                        }
+                    },
+                });
+                fireworks.start();
+            }
+
+            // Update current year in footer
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+        });
+
+        // JavaScript cho Navbar Toggler (nếu dùng custom navbar)
+        const togglerButton = document.getElementById('navbarToggler');
+        const navbarContent = document.getElementById('navbarNavContent');
+        if (togglerButton && navbarContent) {
+            togglerButton.addEventListener('click', function () {
+                navbarContent.classList.toggle('show');
+            });
+        }
+
+        // Smooth scroll cho anchor link (nếu dùng)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#') && href.length > 1 && document.querySelector(href)) {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

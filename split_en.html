@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Splitting Tool</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link to common CSS file -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            /* Limit width */
+        }
+
+        #preview-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            min-height: 150px;
+            /* Minimum height for visibility */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f1f1;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            /* Limit preview height */
+            display: none;
+            /* Hidden initially */
+        }
+
+        #preview-placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        #tiles-output {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            display: flex;
+            /* Display tiles in a row */
+            flex-wrap: wrap;
+            /* Allow wrapping */
+            gap: 10px;
+            /* Gap between tiles */
+            background-color: #fdfdfd;
+            padding: 15px;
+            border: 1px solid #eee;
+            min-height: 50px;
+        }
+
+        .tile-container {
+            border: 1px solid #ddd;
+            padding: 3px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            /* Center download link */
+        }
+
+        .tile-container img {
+            width: 145px;
+            /* Limit tile display size */
+            height: auto;
+            display: block;
+            /* To push download link below */
+            margin-bottom: 5px;
+        }
+
+        .tile-container a {
+            font-size: 0.8em;
+        }
+
+        /* Custom number input */
+        input[type=number] {
+            max-width: 80px;
+            /* Limit width of number input */
+        }
+
+        /* Button */
+        #split-button {
+            width: 100%;
+            /* Button takes full column width */
+        }
+
+        /* Error message */
+        #error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        /* --- NEW Custom styles for language switcher --- */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height and preference */
+            right: 20px;
+            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 50px; /* Slightly adjusted for VI/EN */
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active { /* This class will be toggled by JS */
+            background-color: #ffc107; /* Bootstrap warning color */
+            border-color: #ffc107;
+            color: #212529; /* Dark text for better contrast on yellow */
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+        .lang-content {
+            display: none;
+        }
+        .lang-content.active-lang {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group">
+            <a href="split.html"><button class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button></a>
+            <a href="split_en.html"><button class="btn btn-outline-secondary lang-btn active" data-lang="en">EN</button></a>
+        </div>
+    </div>
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index_en.html"> <!-- Assuming index_en.html for English home -->
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+                <!-- Optional: Add brand name as text -->
+                <!-- <span style="vertical-align: middle; margin-left: 5px;">Puzzle Game</span> -->
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="index.html">Home <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item ">
+                        <a class="nav-menu-link" href="game.html">Play Game</a> <!-- Assuming game_en.html -->
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="about.html">About</a> <!-- Assuming about_en.html -->
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link" href="contact.html">Contact</a> <!-- Assuming contact_en.html -->
+                    </li>
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link" href="split_en.html">Image Tools</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+    <div style="padding-top: 80px;"></div>
+    <div style="padding-top: 20px;" class="container">
+
+        <!-- Tool selection tabs (Optional, can be removed if this page is only for resize) -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item ">
+                <a class="nav-link" id="crop-square-tab" href="scale_en.html" role="tab">Square Crop</a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link active" id="split-grid-tab" href="split_en.html" role="tab">Grid Split</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " id="resize-image-tab" href="resize_en.html" role="tab">Resize Image</a>
+            </li>
+        </ul>
+
+        <h1 class="text-center mb-4">Grid Image Splitting Tool</h1>
+        <div class="alert alert-info">
+            Select an image from your computer, enter the desired number of rows and columns, then click "Image Tools".
+        </div>
+
+        <!-- Input Area -->
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-5 form-group">
+                <label for="image-input">Select image file:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image-input"
+                        accept="image/png, image/jpeg, image/gif, image/webp">
+                    <label class="custom-file-label" for="image-input" data-browse="Browse">Choose file...</label>
+                </div>
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="rows-input">Rows:</label>
+                <input type="number" class="form-control" id="rows-input" value="3" min="1">
+            </div>
+            <div class="col-md-2 form-group">
+                <label for="cols-input">Columns:</label>
+                <input type="number" class="form-control" id="cols-input" value="3" min="1">
+            </div>
+            <div class="col-md-3 form-group">
+                <button id="split-button" class="btn btn-warning btn-block" disabled>Image Tools</button>
+            </div>
+        </div>
+
+        <!-- Original image preview area -->
+        <div id="preview-container">
+            <span id="preview-placeholder">No image selected</span>
+            <img id="preview-image" src="#" alt="Preview image">
+        </div>
+
+        <!-- Error message display area -->
+        <div id="error-message" class="text-center"></div>
+
+
+        <!-- Area for displaying split tiles -->
+        <div id="tiles-output">
+            <!-- Image tiles will be added here by JavaScript -->
+        </div>
+
+    </div>
+    <div style="padding-bottom: 80px;"></div>
+    <!-- ===== MAIN CONTENT END ===== -->
+
+<!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Unlimited entertainment and creativity.</p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Explore</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index_en.html" class="text-white-50 text-decoration-none hover-light">Home</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Jigsaw Game</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split_en.html" class="text-white-50 text-decoration-none hover-light">Grid Split Tool</a></li>
+                            <li><a href="scale_en.html" class="text-white-50 text-decoration-none hover-light">Square Crop Tool</a></li>
+                            <li><a href="resize_en.html" class="text-white-50 text-decoration-none hover-light">Image Resizer</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold">Information</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">About</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Contact</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Developed by Tran Huu Dat. All rights reserved.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Built with <i class="fas fa-heart text-danger"></i> and Bootstrap, jQuery.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            const imageInput = document.getElementById('image-input');
+            const previewImage = document.getElementById('preview-image');
+            const previewPlaceholder = document.getElementById('preview-placeholder');
+            const rowsInput = document.getElementById('rows-input');
+            const colsInput = document.getElementById('cols-input');
+            const splitButton = document.getElementById('split-button');
+            const tilesOutput = document.getElementById('tiles-output');
+            const errorMessage = document.getElementById('error-message');
+            const fileLabel = $('.custom-file-label'); // Get the file input label
+
+            let originalImage = null; // Store the original Image object
+            let originalFileName = 'image'; // Original file name for naming tiles
+
+            // --- Handle file selection ---
+            imageInput.addEventListener('change', function (e) {
+                errorMessage.textContent = ''; // Clear old error
+                tilesOutput.innerHTML = ''; // Clear old results
+                const file = e.target.files[0];
+                if (!file) {
+                    previewImage.style.display = 'none';
+                    previewPlaceholder.style.display = 'inline';
+                    splitButton.disabled = true;
+                    fileLabel.text('Choose file...');
+                    originalImage = null;
+                    return;
+                }
+
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    showError('Please select a valid image file (png, jpg, gif, webp).');
+                    previewImage.style.display = 'none';
+                    previewPlaceholder.style.display = 'inline';
+                    splitButton.disabled = true;
+                    fileLabel.text('Choose file...');
+                    imageInput.value = ''; // Reset file input
+                    originalImage = null;
+                    return;
+                }
+
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image'; // Get original file name (remove extension)
+
+                // Read file and display preview
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = 'block';
+                    previewPlaceholder.style.display = 'none';
+
+                    // Important: Create Image object to get actual dimensions
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        console.log(`Image loaded: ${originalImage.naturalWidth}x${originalImage.naturalHeight}`);
+                        splitButton.disabled = false; // Enable split button when image is ready
+                    };
+                    originalImage.onerror = () => {
+                        showError('Could not load image for processing.');
+                        splitButton.disabled = true;
+                        originalImage = null;
+                    };
+                    originalImage.src = event.target.result; // Assign src to Image object
+                }
+                reader.readAsDataURL(file);
+                fileLabel.text(file.name); // Display selected file name
+            });
+
+            // --- Handle Image Tools button click ---
+            splitButton.addEventListener('click', function () {
+                errorMessage.textContent = ''; // Clear old error
+                tilesOutput.innerHTML = ''; // Clear old results
+
+                if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
+                    showError('Image not loaded or invalid. Please reselect the image.');
+                    return;
+                }
+
+                const rows = parseInt(rowsInput.value);
+                const cols = parseInt(colsInput.value);
+
+                if (isNaN(rows) || isNaN(cols) || rows < 1 || cols < 1) {
+                    showError('Rows and columns must be positive integers.');
+                    return;
+                }
+
+                console.log(`Starting to split into ${rows} rows, ${cols} columns.`);
+                splitImageIntoTiles(originalImage, rows, cols);
+            });
+
+            // --- Image splitting function ---
+            function splitImageIntoTiles(img, rows, cols) {
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
+                const tileWidth = Math.floor(naturalWidth / cols);
+                const tileHeight = Math.floor(naturalHeight / rows);
+
+                console.log(`Tile size: ${tileWidth}x${tileHeight}`);
+
+                if (tileWidth === 0 || tileHeight === 0) {
+                    showError('Image size too small or number of rows/columns too large.');
+                    return;
+                }
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        // Calculate exact coordinates and size for each tile
+                        const sx = c * tileWidth;
+                        const sy = r * tileHeight;
+                        // Calculate actual size for the last tile if original size is not divisible
+                        const sWidth = (c === cols - 1) ? (naturalWidth - sx) : tileWidth;
+                        const sHeight = (r === rows - 1) ? (naturalHeight - sy) : tileHeight;
+
+                        // Create temporary canvas to draw tile
+                        const canvas = document.createElement('canvas');
+                        canvas.width = sWidth; // Canvas size equals actual tile size
+                        canvas.height = sHeight;
+                        const ctx = canvas.getContext('2d');
+
+                        // Draw corresponding part of original image onto temporary canvas
+                        try {
+                            ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+
+                            // Create img tag to display tile
+                            const tileImg = document.createElement('img');
+                            // Get Data URL from canvas
+                            const dataUrl = canvas.toDataURL('image/png'); // Or 'image/jpeg'
+                            tileImg.src = dataUrl;
+                            tileImg.alt = `Tile ${r + 1}-${c + 1}`;
+
+                            // === FILE NAME MODIFICATION PART ===
+                            // Calculate incrementing number for the image tile
+                            const pieceNumber = (r * cols) + (c + 1);
+
+                            // Create download link for each tile
+                            const downloadLink = document.createElement('a');
+
+                            // New file name format: originalFileName-sequenceNumber.png
+                            // Ensure 'originalFileName' variable is defined
+                            const fileName = `${originalFileName.replace(/ /g, '_')}_tile_${pieceNumber}.png`;
+
+                            downloadLink.href = dataUrl;
+                            downloadLink.download = fileName;
+
+                            // Update link textContent accordingly
+                            downloadLink.textContent = `Download tile-${pieceNumber}`;
+                            downloadLink.classList.add('btn', 'btn-sm', 'btn-outline-secondary', 'mt-1'); // Add Bootstrap class
+                            // === END OF MODIFICATION PART ===
+
+
+                            // Create container for image and link
+                            const tileContainer = document.createElement('div');
+                            tileContainer.classList.add('tile-container');
+                            tileContainer.appendChild(tileImg);
+                            tileContainer.appendChild(downloadLink);
+
+
+                            // Add to results display area
+                            tilesOutput.appendChild(tileContainer);
+
+                        } catch (error) {
+                            console.error(`Error drawing tile (${r}, ${c}):`, error);
+                            showError(`An error occurred while processing tile (${r + 1}, ${c + 1}).`);
+                            // Can stop the loop if desired
+                            // return;
+                        }
+                    }
+                }
+                console.log("Image splitting complete.");
+            }
+
+            // --- Show error function ---
+            function showError(message) {
+                errorMessage.textContent = message;
+                console.error("Error:", message);
+            }
+
+            // Update file input label on file selection (for Bootstrap)
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Choose file...');
+            });
+
+        }); // End $(document).ready
+    </script>
+
+</body>
+
+</html>

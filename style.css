@@ -1,0 +1,676 @@
+/* style.css */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    padding-top: 56px; /* Khoảng đệm cho navbar cố định */
+    display: flex; /* Giúp footer đẩy xuống dưới */
+    flex-direction: column;
+    min-height: 100vh; /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao màn hình */
+}
+
+.game-title-area {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.game-title-area h1 {
+    margin-bottom: 5px;
+}
+
+.game-title-area h6 {
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* Container chính */
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+    /* Khoảng cách với khu vực chọn ảnh */
+}
+
+/* Khu vực ảnh tham chiếu */
+.reference-section {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.reference-section h5 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.reference-image {
+    max-width: 250px;
+    height: auto;
+    border: 2px solid #ddd;
+    padding: 5px;
+    background-color: white;
+}
+
+/* Khu vực chơi game chính */
+.main-game-section {
+    text-align: center;
+}
+
+#timer-display {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#game-table {
+    width: 306px;
+    /* 100*3 + 1*2 (borders) + 1*2 (borders) */
+    height: 306px;
+    margin: auto;
+    /* border: 1px solid black; Bỏ viền ngoài */
+    position: relative;
+    overflow: hidden;
+}
+
+.image-cell {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    float: left;
+    /* Sử dụng float cho lưới 3x3 */
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bỏ viền ngoài cùng của ô đầu tiên/cuối cùng để khớp 306px */
+/* Có thể bỏ nếu không quá quan trọng */
+
+
+/* Khu vực danh sách ảnh nguồn */
+#image-list-container {
+    text-align: center;
+    flex-basis: 100%;
+    /* Luôn chiếm dòng riêng */
+    order: 3;
+    /* Đảm bảo nó ở dưới */
+}
+
+#image-list-container h5 {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#image-list {
+    width: auto;
+    max-width: 700px;
+    min-height: 110px;
+    margin: 10px auto;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f8f8;
+}
+
+/* Ô chứa ảnh trong danh sách nguồn */
+#image-list .image-cell {
+    float: none;
+    /* Quan trọng khi dùng flex */
+    background-color: #e9e9e9;
+    border-color: #bbb;
+}
+
+.image-cell img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: cover;
+    cursor: grab;
+    transition: transform 0.2s ease-in-out, opacity 0.1s linear;
+}
+
+.image-cell img:active {
+    cursor: grabbing;
+}
+
+/* Trạng thái chiến thắng */
+#game-table.game-won {
+    border: 3px solid limegreen;
+    box-shadow: 0 0 15px limegreen;
+    /* Điều chỉnh lại kích thước để bù trừ cho border dày hơn */
+    /* Hoặc dùng outline thay vì border */
+    /* outline: 3px solid limegreen; */
+    /* border: none; */
+}
+
+#game-table.game-won .image-cell {
+    border-color: limegreen;
+}
+
+/* Hiệu ứng kéo thả */
+.drag-over-valid {
+    background-color: #d3ffd3 !important;
+    border-style: dashed !important;
+}
+
+.dragging {
+    opacity: 0.4 !important;
+    cursor: grabbing !important;
+}
+
+/* Khu vực chọn ảnh */
+#puzzle-selection {
+    text-align: center;
+    clear: both;    
+}
+
+#selection-list {
+    align-items: center;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    margin: 50px;
+    border-radius: 5px;
+}
+
+.puzzle-option {
+    max-width: 150px;
+    height: auto;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+    padding: 2px;
+    background-color: white;
+}
+
+.puzzle-option:hover {
+    border-color: #ddd;
+    transform: scale(1.03);
+}
+
+.puzzle-option.active {
+    border-color: limegreen;
+    box-shadow: 0 0 8px limegreen;
+}
+
+/* --- Footer Styles --- */
+.site-footer {
+    background-color: #26272b;
+    /* Màu nền tối */
+    padding: 45px 0 20px;
+    /* Khoảng đệm trên dưới */
+    font-size: 15px;
+    line-height: 24px;
+    color: #737373;
+    /* Màu chữ mặc định */
+    border-top: 2px solid #ffc107;
+    /* Đường viền vàng trên cùng */
+}
+
+.site-footer .copyright-text {
+    margin: 0;
+    /* Bỏ margin mặc định của p */
+    color: #a0a0a0;
+    /* Màu chữ sáng hơn một chút */
+}
+
+.site-footer .footer-links a {
+    color: #999;
+    /* Màu link */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    /* Hiệu ứng chuyển màu */
+    padding: 0 5px;
+    /* Khoảng cách giữa các link */
+}
+
+.site-footer .footer-links a:hover {
+    color: #ffc107;
+    /* Màu vàng khi hover */
+    text-decoration: none;
+}
+
+.site-footer .made-with {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.site-footer .made-with i {
+    /* Style cho trái tim */
+    font-style: normal;
+    /* Bỏ nghiêng mặc định của i */
+}
+
+/* Responsive cho footer nếu cần */
+@media (max-width: 767px) {
+    .site-footer {
+        padding: 30px 0 15px;
+    }
+}
+/* Đảm bảo nội dung chính co giãn để đẩy footer xuống */
+.main-content-area {
+    flex: 1; /* Cho phép co giãn */
+    padding: 40px 15px; /* Khoảng đệm cho nội dung */
+}
+
+
+/* ===== Custom Navbar Styles ===== */
+.custom-navbar {
+    background-color: #343a40; /* Màu nền tối (tương đương bg-dark) */
+    padding: 10px 0;         /* Khoảng đệm trên dưới */
+    position: fixed;         /* Cố định trên cùng */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;           /* Đảm bảo nổi lên trên */
+    border-bottom: 1px solid #444; /* Thêm đường viền dưới nhẹ */
+}
+
+.nav-container {
+    width: 100%;
+    max-width: 1140px; /* Hoặc 960px, tùy bạn chọn (tương đương container-lg/xl) */
+    margin: 0 auto;      /* Căn giữa container */
+    padding: 0 15px;     /* Khoảng đệm trái phải */
+    display: flex;
+    align-items: center; /* Căn giữa các item theo chiều dọc */
+    justify-content: space-between; /* Đẩy brand và menu ra hai bên */
+    flex-wrap: wrap; /* Cho phép xuống dòng nếu cần (cho toggler) */
+}
+
+.nav-brand {
+    color: #ffffff;      /* Màu chữ trắng */
+    text-decoration: none;
+    font-size: 1.25rem;  /* Cỡ chữ lớn hơn */
+    white-space: nowrap; /* Không xuống dòng */
+    display: flex;       /* Để căn giữa ảnh và text (nếu có) */
+    align-items: center;
+}
+.nav-brand:hover {
+    color: #f8f9fa;      /* Sáng hơn chút khi hover */
+    text-decoration: none;
+}
+
+/* Nút Toggler (Hamburger Menu) */
+.nav-toggler {
+    display: none; /* Mặc định ẩn trên màn hình lớn */
+    padding: 0.25rem 0.75rem;
+    font-size: 1.25rem;
+    line-height: 1;
+    background-color: transparent;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.nav-toggler-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    /* Sử dụng SVG URI cho icon hamburger màu trắng (an toàn hơn dùng ký tự) */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Nội dung có thể thu gọn */
+.nav-collapse {
+    /* Mặc định là flex trên màn hình lớn */
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    align-items: center;
+}
+
+/* Danh sách menu */
+.nav-menu {
+    display: flex;
+    flex-direction: row; /* Mặc định xếp ngang trên màn hình lớn */
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    margin-left: auto; /* Đẩy menu sang phải */
+}
+
+.nav-menu-link {
+    display: block;
+    padding: 0.5rem 1rem; /* Khoảng đệm cho link */
+    color: rgba(255, 255, 255, 0.55); /* Màu link (tương đương navbar-dark) */
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+}
+
+.nav-menu-link:hover {
+    color: rgba(255, 255, 255, 0.75); /* Sáng hơn khi hover */
+    text-decoration: none;
+}
+
+/* Style cho link active */
+.nav-menu-item.active .nav-menu-link {
+    color: #ffc107; /* Màu vàng cho active link */
+    font-weight: bold;
+}
+
+/* Class cho nội dung chỉ dành cho trình đọc màn hình */
+.screen-reader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ===== Game Style ===== */
+.game-title-area {
+            padding-top: 10px;
+        }
+
+        /* --- Thêm CSS cho lựa chọn chế độ --- */
+        .game-mode-selection {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .game-mode-selection label {
+            margin-right: 15px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .game-mode-selection input[type="radio"] {
+            cursor: pointer;
+        }
+
+        #countdown-duration-group {
+            display: inline-flex;
+            /* Sử dụng flex để căn chỉnh tốt hơn */
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        #countdown-duration-group label {
+            margin-right: 5px;
+            font-size: 0.9em;
+            margin-bottom: 0;
+            /* Bỏ margin bottom mặc định của label */
+        }
+
+        /* Style cho thanh trượt */
+        #countdown-seconds.custom-range {
+            width: auto;
+            /* Cho phép co giãn */
+            max-width: 150px;
+            /* Giới hạn chiều rộng tối đa */
+            vertical-align: middle;
+            /* Căn giữa */
+            margin: 0 5px;
+            /* Khoảng cách hai bên */
+            cursor: pointer;
+        }
+
+        #countdown-value {
+            font-weight: bold;
+            min-width: 20px;
+            /* Đảm bảo có đủ chỗ cho số 2 chữ số */
+            display: inline-block;
+            text-align: right;
+            /* Căn phải số */
+        }
+
+        /* --- Thêm CSS cho trạng thái thua --- */
+        #game-table.game-lost {
+            border: 3px solid #dc3545;
+            /* Màu đỏ Bootstrap */
+            box-shadow: 0 0 15px #dc3545;
+        }
+
+        #game-table.game-lost .image-cell {
+            border-color: #dc3545;
+            opacity: 0.7;
+            /* Hơi mờ đi */
+        }
+
+        #game-table.game-lost img {
+            cursor: not-allowed !important;
+            /* Con trỏ không cho phép */
+        }
+
+        :root {
+            --sidebar-width: 320px;
+            --transition-duration: 0.5s;
+            --sidebar-bg: #fff;
+            --header-color: #333;
+            --button-bg: #d0021b;
+            --button-color: #fff;
+            --checkout-bg: #d0021b;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .ins-sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: var(--sidebar-bg);
+            overflow-x: hidden;
+            transition: var(--transition-duration);
+            padding-top: 20px;
+            box-shadow: -2px 0px 10px var(--shadow-color);
+            z-index: 1000;
+        }
+
+        .ins-sidebar.open {
+            width: var(--sidebar-width);
+        }
+
+        .ins-header {
+            padding: 80px 20px 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ins-header h2 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .ins-content {
+            padding: 15px 20px;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .cart-item-info {
+            flex-grow: 1;
+        }
+
+        .cart-item-info p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .cart-item-info span {
+            display: block;
+            font-size: 14px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .cart-item-remove {
+            font-size: 16px;
+            cursor: pointer;
+            color: #d0021b;
+        }
+
+        .free-shipping-banner {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #d0021b;
+        }
+
+        .free-shipping-banner img {
+            width: 30px;
+            margin-left: 5px;
+        }
+
+        .cart-footer {
+            padding: 10px 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .cart-total {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-actions button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            color: var(--button-color);
+            background-color: var(--button-bg);
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .cart-actions button:hover {
+            background-color: #e14b6d;
+        }
+
+/* ===== Responsive (Tương đương navbar-expand-lg) ===== */
+/* Áp dụng cho màn hình nhỏ hơn 992px (breakpoint 'lg' của Bootstrap) */
+@media (max-width: 991.98px) {
+    .nav-toggler {
+        display: block; /* Hiện nút toggler */
+    }
+
+    .nav-collapse {
+        display: none; /* Ẩn nội dung menu mặc định */
+        width: 100%;   /* Chiếm toàn bộ chiều rộng khi xổ xuống */
+        flex-basis: 100%;
+    }
+
+    .nav-collapse.show {
+        display: block; /* Hiện nội dung khi có class 'show' (thêm bằng JS) */
+    }
+
+    .nav-menu {
+        flex-direction: column; /* Xếp menu theo chiều dọc */
+        width: 100%;          /* Chiếm toàn bộ chiều rộng */
+        margin-left: 0;       /* Reset margin */
+        padding-top: 10px;    /* Thêm khoảng cách trên */
+    }
+
+     .nav-menu-link {
+        padding: 0.6rem 0; /* Điều chỉnh padding cho menu dọc */
+        border-bottom: 1px solid #444; /* Thêm đường kẻ phân cách */
+    }
+     .nav-menu-item:last-child .nav-menu-link {
+        border-bottom: none; /* Bỏ đường kẻ cho item cuối */
+     }
+}
+
+/* style.css */
+
+/* ... các style khác của bạn ... */
+
+.footer-content-wrapper {
+    max-width: 1140px; /* Chiều rộng tối đa tương tự .container cho màn hình lớn (lg) */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;  /* Giữ padding như .container của Bootstrap */
+    padding-right: 15px; /* Giữ padding như .container của Bootstrap */
+}
+
+/* Điều chỉnh max-width cho các breakpoint khác nếu cần, tương tự như .container của Bootstrap */
+@media (min-width: 576px) {
+    .footer-content-wrapper {
+        max-width: 540px;
+    }
+}
+@media (min-width: 768px) {
+    .footer-content-wrapper {
+        max-width: 720px;
+    }
+}
+@media (min-width: 992px) {
+    .footer-content-wrapper {
+        max-width: 960px;
+    }
+}
+@media (min-width: 1200px) {
+    .footer-content-wrapper {
+        max-width: 1140px;
+    }
+}
+@media (min-width: 1400px) { /* Breakpoint mới của Bootstrap 5 */
+    .footer-content-wrapper {
+        max-width: 1320px;
+    }
+}
+
+/* Thêm style cho link navbar active */
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #ffc107; /* Màu vàng cho link active */
+    font-weight: bold;
+}

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Liên hệ với chúng tôi để đặt câu hỏi, gửi góp ý hoặc báo cáo lỗi về Game Xếp Hình & Công Cụ Ảnh.">
+    <meta name="description" lang="en" content="Contact us for questions, feedback, or bug reports regarding Jigsaw Puzzle Game & Image Tools.">
+    <title>Liên Hệ - Game Xếp Hình</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css"> <!-- Link đến file CSS chung -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <style>
+        /* Custom styles for language switcher (copied from other pages) */
+        .lang-switcher-container {
+            position: fixed;
+            top: 80px; /* Adjust based on your navbar height */
+            right: 20px;
+            z-index: 1031;
+        }
+        .lang-switcher .btn {
+            margin: 0 2px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        .lang-switcher .btn.active {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .lang-switcher .btn:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        .lang-switcher .btn:not(.active):hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+        /* Hide content by default for JS control */
+        .lang-content { display: none; }
+        .lang-content.active-lang { display: block; }
+    </style>
+</head>
+<body>
+
+<!-- Language Switcher -->
+<div class="lang-switcher-container">
+    <div class="lang-switcher btn-group">
+        <button class="btn btn-outline-secondary" data-lang="vi">VI</button>
+        <button class="btn btn-outline-secondary" data-lang="en">EN</button>
+    </div>
+</div>
+
+<!-- ===== NAVBAR START (Custom CSS) ===== -->
+<nav class="custom-navbar">
+    <div class="nav-container">
+        <a class="nav-brand" href="index.html">
+            <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
+        </a>
+        <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
+            <span class="nav-toggler-icon"></span>
+        </button>
+        <div class="nav-collapse" id="navbarNavContent">
+            <ul class="nav-menu">
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ" data-lang-en="Home">Trang Chủ</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game" data-lang-en="Play Game">Chơi Game</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu" data-lang-en="About">Giới Thiệu</a>
+                </li>
+                <li class="nav-menu-item active">
+                    <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ" data-lang-en="Contact">Liên Hệ <span class="screen-reader-only">(current)</span></a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh" data-lang-en="Image Tools">Cắt Ảnh</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <!-- Vietnamese Content -->
+    <div class="lang-content" data-lang="vi">
+        <main class="main-content-area container">
+            <h1 class="text-center mb-4">Liên Hệ Với Chúng Tôi</h1>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <p>Nếu bạn có bất kỳ câu hỏi, góp ý hoặc báo cáo lỗi nào về trò chơi, xin vui lòng liên hệ với chúng tôi qua các kênh dưới đây:</p>
+
+                    <div class="contact-info mt-4">
+                        <h5>Thông tin liên hệ:</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Email:</strong> <a href="mailto:lienhe@example.com">lienhe@example.com</a></li>
+                            <li><strong>Facebook:</strong> <a href="https://fb.com/YourGamePage" target="_blank">fb.com/YourGamePage</a></li>
+                            <!-- Thêm các kênh khác nếu có (Twitter, Discord,...) -->
+                        </ul>
+                    </div>
+                    <hr>
+                    <h5 class="mt-4">Hoặc gửi tin nhắn trực tiếp:</h5>
+                    <form id="contact-form-vi">
+                        <div class="form-group">
+                            <label for="contactNameVi">Tên của bạn</label>
+                            <input type="text" class="form-control" id="contactNameVi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmailVi">Email</label>
+                            <input type="email" class="form-control" id="contactEmailVi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactSubjectVi">Chủ đề</label>
+                            <input type="text" class="form-control" id="contactSubjectVi">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessageVi">Nội dung tin nhắn</label>
+                            <textarea class="form-control" id="contactMessageVi" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Gửi Tin Nhắn</button>
+                        <small class="form-text text-muted mt-2">(Chức năng gửi tin nhắn đang được xây dựng)</small>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- End Vietnamese Content -->
+
+    <!-- English Content -->
+    <div class="lang-content" data-lang="en">
+        <main class="main-content-area container">
+            <h1 class="text-center mb-4">Contact Us</h1>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <p>If you have any questions, feedback, or bug reports about the game, please feel free to contact us through the channels below:</p>
+                    <div class="contact-info mt-4">
+                        <h5>Contact Information:</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Email:</strong> <a href="mailto:contact@example.com">contact@example.com</a></li> <!-- Consider a different email for English or use the same -->
+                            <li><strong>Facebook:</strong> <a href="https://fb.com/YourGamePage" target="_blank">fb.com/YourGamePage</a></li>
+                            <!-- Add other channels if available (Twitter, Discord,...) -->
+                        </ul>
+                    </div>
+                    <hr>
+                    <h5 class="mt-4">Or send a direct message:</h5>
+                    <form id="contact-form-en">
+                        <div class="form-group">
+                            <label for="contactNameEn">Your Name</label>
+                            <input type="text" class="form-control" id="contactNameEn" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmailEn">Email</label>
+                            <input type="email" class="form-control" id="contactEmailEn" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactSubjectEn">Subject</label>
+                            <input type="text" class="form-control" id="contactSubjectEn">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessageEn">Message</label>
+                            <textarea class="form-control" id="contactMessageEn" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Send Message</button>
+                        <small class="form-text text-muted mt-2">(The message sending feature is under construction)</small>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- End English Content -->
+
+
+    <!-- ===== FOOTER START ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
+            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50 lang-specific" data-lang-vi="Giải trí và sáng tạo không giới hạn."
+                            data-lang-en="Unlimited entertainment and creativity."></p>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Khám Phá" data-lang-en="Explore"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Trang Chủ" data-lang-en="Home">
+                                </a>
+                            </li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Game Xếp Hình" data-lang-en="Jigsaw Game">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4 mb-3 mb-md-0">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Công cụ" data-lang-en="Tools"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Lưới" data-lang-en="Grid Image Splitter"></a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Công Cụ Cắt Ảnh Vuông" data-lang-en="Square Image Cropper"></a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light"  data-lang-vi="Thay Đổi
+                                    Kích Thước" data-lang-en="Image Resizer"></a></li>                            
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-4">
+                        <h5 class="fw-semibold lang-specific" data-lang-vi="Thông Tin" data-lang-en="Information"></h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light lang-specific active"
+                                    data-lang-vi="Giới Thiệu" data-lang-en="About">
+                                </a>
+                            </li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Liên Hệ" data-lang-en="Contact">
+                                </a>
+                            </li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light lang-specific"
+                                    data-lang-vi="Điều Khoản" data-lang-en="Terms"></a></li>
+                            <!-- Thêm link Điều khoản nếu có -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0 lang-specific"
+                            data-lang-vi="© <span id='currentYear'></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền."
+                            data-lang-en="© <span id='currentYear'></span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.">
+                        </p>
+                        <p class="small text-white-50 lang-specific"
+                            data-lang-vi="<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>"
+                            data-lang-en="<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER END ===== -->
+
+    <!-- Bootstrap JS và dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Đối tượng chứa các chuỗi dịch cho các phần tử không dễ dàng đặt data-attributes
+        const pageTranslations = {
+            vi: {
+                pageTitle: "Liên Hệ - Game Xếp Hình",
+                metaDescription: "Liên hệ với chúng tôi để đặt câu hỏi, gửi góp ý hoặc báo cáo lỗi về Game Xếp Hình & Công Cụ Ảnh.",
+                contactFormAlert: "Cảm ơn bạn đã liên hệ! Chức năng này sẽ sớm được cập nhật."
+            },
+            en: {
+                pageTitle: "Contact - Jigsaw Puzzle Game",
+                metaDescription: "Contact us for questions, feedback, or bug reports regarding Jigsaw Puzzle Game & Image Tools.",
+                contactFormAlert: "Thank you for contacting us! This feature will be updated soon."
+            }
+        };
+
+        // JavaScript cho Navbar Toggler
+        const togglerButton = document.getElementById('navbarToggler');
+        const navbarContent = document.getElementById('navbarNavContent');
+        if (togglerButton && navbarContent) {
+            togglerButton.addEventListener('click', function () {
+                navbarContent.classList.toggle('show');
+            });
+        }
+
+        // JavaScript cho chuyển đổi ngôn ngữ
+        document.addEventListener('DOMContentLoaded', function () {
+            const langSwitcherButtons = document.querySelectorAll('.lang-switcher .btn');
+            const allLangContents = document.querySelectorAll('.lang-content');
+            const langSpecificElements = document.querySelectorAll('.lang-specific');
+            const pageTitleElement = document.querySelector('title');
+            const metaDescriptionTag = document.querySelector('meta[name="description"]');
+
+            function updateFooterYear() {
+                const currentYearViSpan = document.getElementById('currentYearVi');
+                const currentYearEnSpan = document.getElementById('currentYearEn');
+                const year = new Date().getFullYear();
+                if (currentYearViSpan) currentYearViSpan.textContent = year;
+                if (currentYearEnSpan) currentYearEnSpan.textContent = year;
+            }
+
+
+            function switchLanguage(selectedLang) {
+                const currentTranslations = pageTranslations[selectedLang] || pageTranslations.vi;
+
+                allLangContents.forEach(content => {
+                    content.style.display = 'none';
+                    content.classList.remove('active-lang');
+                });
+
+                const activeContentBlock = document.querySelector(`.lang-content[data-lang="${selectedLang}"]`);
+                if (activeContentBlock) {
+                    activeContentBlock.style.display = 'block';
+                    activeContentBlock.classList.add('active-lang');
+                }
+
+                langSwitcherButtons.forEach(button => {
+                    button.classList.toggle('active', button.dataset.lang === selectedLang);
+                });
+
+                langSpecificElements.forEach(element => {
+                    const viText = element.dataset.langVi;
+                    const enText = element.dataset.langEn;
+                    let textToSet = '';
+
+                    if (selectedLang === 'vi' && viText) textToSet = viText;
+                    else if (selectedLang === 'en' && enText) textToSet = enText;
+                    else if (viText) textToSet = viText;
+
+                    if (element.tagName === 'P' && (element.id === 'copyright-vi' || element.id === 'copyright-en' || element.innerHTML.includes("<span id='currentYear"))) {
+                        const yearSpanId = selectedLang === 'vi' ? 'currentYearVi' : 'currentYearEn';
+                        const year = new Date().getFullYear();
+                        if (selectedLang === 'vi') {
+                            element.innerHTML = `© <span id="${yearSpanId}">${year}</span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.`;
+                        } else {
+                            element.innerHTML = `© <span id="${yearSpanId}">${year}</span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.`;
+                        }
+                         if (element.dataset.langVi && element.dataset.langVi.includes("Xây dựng với")) {
+                             if (selectedLang === 'vi') {
+                                element.innerHTML = `<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>`;
+                            } else {
+                                element.innerHTML = `<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>`;
+                            }
+                        }
+                    }
+                     else if (element.innerHTML.includes("<small>")) { // For "Built with..."
+                        element.innerHTML = selectedLang === 'vi' ? element.dataset.langVi : element.dataset.langEn;
+                    }
+                    else if (element.tagName === 'A' && element.classList.contains('nav-menu-link') && element.href.includes('contact.html')) {
+                        const currentText = selectedLang === 'vi' ? ' (current)' : ' (current)';
+                        element.innerHTML = textToSet + `<span class="screen-reader-only">${currentText}</span>`;
+                    } else {
+                        element.textContent = textToSet;
+                    }
+
+                    if(element.tagName === 'A' && element.href && element.href.includes('contact.html') && element.closest('footer')) {
+                        element.classList.add('active');
+                    } else if (element.tagName === 'A' && element.closest('footer')) {
+                        element.classList.remove('active');
+                    }
+                });
+
+                if (pageTitleElement) pageTitleElement.textContent = currentTranslations.pageTitle;
+                if (metaDescriptionTag) metaDescriptionTag.setAttribute('content', currentTranslations.metaDescription);
+                document.documentElement.lang = selectedLang;
+                localStorage.setItem('preferredLanguage', selectedLang);
+                updateFooterYear();
+            }
+
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'vi';
+            switchLanguage(preferredLanguage);
+
+            langSwitcherButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    switchLanguage(this.dataset.lang);
+                });
+            });
+
+            // Update contact form alert message based on language
+            function updateContactFormAlert(lang) {
+                const alertMessage = pageTranslations[lang].contactFormAlert || pageTranslations.vi.contactFormAlert;
+                // Cập nhật cho cả hai form nếu cần, hoặc chỉ form đang hiển thị
+                const formVi = document.getElementById('contact-form-vi');
+                const formEn = document.getElementById('contact-form-en');
+                if(formVi) {
+                    $(formVi).off('submit').on('submit', function(e) {
+                        e.preventDefault();
+                        alert(alertMessage);
+                    });
+                }
+                 if(formEn) {
+                    $(formEn).off('submit').on('submit', function(e) {
+                        e.preventDefault();
+                        alert(alertMessage);
+                    });
+                }
+            }
+            updateContactFormAlert(preferredLanguage); // Initial setup
+            // Update on language change as well
+            langSwitcherButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    updateContactFormAlert(this.dataset.lang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
