@@ -1,201 +1,102 @@
+# 🧩 Jigsaw Puzzle Game & 🛠️ Image Processing Tools
 
-# Handwriting Signature Writer Identification using CNN
+Welcome to the versatile web project where you can both entertain yourself with an engaging jigsaw puzzle game and utilize powerful tools to professionally and easily customize and process your images!
 
-This project implements a Convolutional Neural Network (CNN) model to identify the writer of a given handwritten signature. The model is trained on a dataset of genuine and forged signatures, and it aims to classify a new signature sample to its respective writer.
-
-Developed in Google Colab using TensorFlow and Keras.
-
-![Example Prediction Output](images/example_prediction.png) <!-- Replace with your result screenshot -->
+![Homepage Screenshot](img/homepage-screenshot.png)
+*<p align="center">Main interface of the website</p>*
 
 ---
 
-## Table of Contents
+## 🌟 General Introduction
 
-- [Project Overview](#project-overview)
-- [Dataset](#dataset)
-- [Methodology](#methodology)
-  - [Data Preprocessing](#data-preprocessing)
-  - [Model Architecture](#model-architecture)
-  - [Training](#training)
-- [Results](#results)
-- [How to Use](#how-to-use)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
-  - [Running the Notebook](#running-the-notebook)
-- [Future Work](#future-work)
-- [Author](#author)
-- [Acknowledgments](#acknowledgments)
+This project was created with a dual purpose:
+
+1.  **Entertainment:** To provide moments of relaxation and intellectual challenge through a jigsaw puzzle game featuring diverse image sets.
+2.  **Utility:** To offer online image processing tools, enabling users to easily perform common image editing tasks without needing to install complex software.
+
+We believe that the combination of entertainment and utility will provide a unique and beneficial experience for users.
 
 ---
 
-## Project Overview
+## ✨ Key Features
 
-The goal is to build a system that identifies the author of a handwritten signature. This has applications in forensics and document verification. A CNN is used due to its effectiveness in image recognition tasks.
+The website includes the following standout features:
+
+### 🧩 Jigsaw Puzzle Game
+
+*   **Intuitive Gameplay:** Click to rotate puzzle pieces 90 degrees and drag-and-drop them into the correct position on the 3x3 game board.
+*   **Diverse Image Sets:** Choose from multiple image sets with various themes.
+*   **Two Game Modes:**
+    *   **Classic Mode:** Play without a time limit; a timer will record your completion time.
+    *   **Countdown Mode:** Challenge yourself to complete the puzzle within a set time limit (20-60 seconds).
+*   **Reference Image:** A complete original image is always available for reference during gameplay.
+*   **Result Notifications:** Displays a congratulatory message upon winning or a notification when time runs out.
+
+### ✂️ Image Processing Tools
+
+1.  **Crop Image to Square (1:1):**
+    *   Perfect for creating avatars, social media thumbnails, or any image requiring a square aspect ratio.
+    *   Upload any image, preview it, and intuitively adjust a square selection area.
+    *   Easily drag-and-drop to move and resize the selection area, ensuring the 1:1 ratio is always maintained.
+    *   Preview the result and download the cropped square image.
+
+2.  **Split Image into Grid (e.g., 3x3):**
+    *   Divide a large image into multiple smaller, equal pieces in a customizable grid format (rows x columns).
+    *   Ideal for creating jigsaw puzzle pieces, unique grid photo effects for Instagram or Pinterest, or breaking down large images for easier sharing.
+    *   Upload an image, enter the desired number of rows and columns, and the tool will automatically cut and allow you to download each piece.
+
+3.  **Resize Image Dimensions:**
+    *   Easily adjust the width and height of your images in pixels.
+    *   **"Lock Aspect Ratio" Option:**
+        *   If checked, entering one dimension will automatically calculate the other to maintain the original aspect ratio, preventing distortion.
+        *   If unchecked, you can freely enter both width and height.
+    *   Preview and download the resized image, very useful for specific dimension requirements.
 
 ---
 
-## Dataset
+## 🛠️ Technologies Used
 
-The dataset contains handwritten signatures from multiple writers, including both genuine (`full_org`) and forged (`full_forg`) samples.
-
-- **Source:** [Add dataset name/link or brief explanation if private]
-- **Structure:**
-  - Example filenames: `original_58_1.png`, `forgeries_1_10.png`
-- **Image Format:** PNG, TIFF, or JPG
-
-> **Note on Privacy:** All data has been anonymized and used solely for research purposes. Ensure proper consent when using real signature data.
-
----
-
-## Methodology
-
-### Data Preprocessing
-
-- **Loading:** Signature paths collected from Google Drive
-- **Labeling:** Writer IDs extracted from filenames
-- **Encoding:** String IDs converted to integers
-- **Splitting:** 80/20 train-validation split (with stratification)
-- **Image Processing:**
-  - Resize to `64x256`
-  - Grayscale (1 channel)
-  - Normalize pixel values `[0, 1]`
-
-> **TensorFlow Dataset Pipeline** is used for efficient loading, batching, and prefetching.
-
----
-
-### Model Architecture
-
-CNN model structure:
-
-```text
-Model: "sequential"
-_________________________________________________________________
- Layer (type)                Output Shape              Param #
-=================================================================
- conv2d (Conv2D)             (None, 62, 254, 32)       320
- max_pooling2d (MaxPooling2D) (None, 31, 127, 32)      0
- conv2d_1 (Conv2D)           (None, 29, 125, 64)       18496
- max_pooling2d_1 (MaxPooling2D) (None, 14, 62, 64)     0
- conv2d_2 (Conv2D)           (None, 12, 60, 128)       73856
- max_pooling2d_2 (MaxPooling2D) (None, 6, 30, 128)     0
- flatten (Flatten)           (None, 23040)             0
- dense (Dense)               (None, 128)               2949248
- dropout (Dropout)           (None, 128)               0
- dense_1 (Dense)             (None, 55)                7095
-=================================================================
-Total params: 3,046,015
-Trainable params: 3,046,015
-Non-trainable params: 0
-_________________________________________________________________
-```
-
+*   **HTML5:** The foundational structure of the web pages.
+*   **CSS3:** Styling, visual formatting, animations, and layout.
+*   **JavaScript (ES6+):** Handles all the logic for the jigsaw puzzle game (rotation, drag-and-drop, timer, win/lose conditions, puzzle set switching) and the image processing tools (cropping, grid splitting, resizing on HTML canvas).
+*   **jQuery:** A JavaScript library used to simplify DOM manipulation and event handling.
+*   **Bootstrap (Version 4 or 5):** A CSS/JS framework that aids in building responsive UIs and provides pre-built components.
 
 
 ---
 
-### Training
+## 🚀 Getting Started
 
-* **Optimizer:** Adam
-* **Loss:** `SparseCategoricalCrossentropy(from_logits=True)`
-* **Metrics:** Accuracy
-* **Epochs:** 30 (or adjust as needed)
-
-Training history includes plots for accuracy and loss across epochs.
-
----
-
-## Results
-
-On validation set:
-
-* **Validation Accuracy:** 95.83%
-* **Validation Loss:** 0.25
-
-**Training and Validation Accuracy:**
-![Accuracy Plot](images/accuracy_plot.png)
-
-**Training and Validation Loss:**
-![Loss Plot](images/loss_plot.png)
-
-**Example Test (Writer ID: 58):**
-
-* **Accuracy:** 95.83% (23/24 correct)
+1.  Open the `index.html` file in your web browser to access the homepage.
+2.  From the homepage, you can navigate to:
+    *   **Play Game:** To start challenging yourself with the jigsaw puzzles.
+    *   **Image Tools:** To use the square crop, grid split, or resize features.
+    *   Other pages like About, Contact.
+3.  Follow the specific instructions on each page to use the features.
 
 ---
 
-## How to Use
+## 🌐 Multi-Language Support
 
-### Prerequisites
-
-* Google Colab or local Python environment
-* Python Libraries:
-
-  * TensorFlow (2.x)
-  * NumPy
-  * Matplotlib
-  * scikit-learn
-  * Pillow
-
-### Setup
-
-1.  **Clone the repo (optional):**
-
-    ```bash
-    git clone https://github.com/TranHuuDat2004/handwriting-signature-recognition.git
-    cd handwriting-signature-recognition
-    ```
-
-2.  **Upload Notebook to Colab**
-
-3.  **Prepare Dataset:**
-
-    *   Upload dataset to Google Drive
-    *   Update `BASE_DATA_DIR` in the notebook:
-
-        ```python
-        BASE_DATA_DIR = '/content/drive/MyDrive/YOUR_PATH_TO/SIGNATURES'
-        ```
+The website supports switching between Vietnamese (VI) and English (EN) to provide the best experience for a wider audience. Your language preference will be saved for future visits.
 
 ---
 
-### Running the Notebook
+## 🤝 Contributing
 
-1.  **Mount Google Drive**
-2.  **Run cells sequentially:**
-
-    *   Collect paths and labels
-    *   Preprocess images
-    *   Create Dataset objects
-    *   Build and train the model
-    *   Evaluate and save model
-    *   Predict single or batch samples
-    *   Evaluate on a specific writer ID
+Ideas for improvements, bug reports, or contributions are welcome! Please [Open an Issue on GitHub (if applicable)] or contact the author directly via the information in the "Author" section.
 
 ---
 
-## Future Work
+## 📝 License
 
-* Try ResNet, VGG, or MobileNet
-* Improve data augmentation
-* Explore Siamese Networks for signature verification
-* Build a web interface (e.g., with Streamlit)
-* Train on larger datasets
+This project is licensed under the [MIT License]. See the `LICENSE` file for more details.
 
 ---
 
-## Author
+## 👤 Author
 
-**Tran Huu Dat**
-GitHub: [@TranHuuDat2004](https://github.com/TranHuuDat2004)
-\[LinkedIn or Portfolio link - optional]
+*   **Trần Hữu Đạt**
 
----
 
-## Acknowledgments
-
-* TensorFlow and Keras for deep learning frameworks
-* Google Colab for providing a free GPU environment
-* [Your dataset source or research papers if applicable]
-
----
+Thank you for exploring the Jigsaw Puzzle Game & Image Processing Tools project! We hope you find it useful and have fun.
