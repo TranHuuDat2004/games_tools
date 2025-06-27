@@ -3,7 +3,7 @@
 Welcome to the versatile web project where you can both entertain yourself with an engaging jigsaw puzzle game and utilize powerful tools to professionally and easily customize and process your images!
 
 <p align="center">
-  <img src="screenshot/mainpage.PNG" alt="Banner" width="1800"/>
+  <img src="screenshot/mainpage.PNG" alt="Banner"/>
 </p>
 
 *<p align="center">Main interface of the website / Giao diện chính của trang web</p>*
