@@ -70,7 +70,7 @@ The website includes the following standout features:
 
 | **Main Page** | **Game Interface** | **About Page** |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
+| ![Main Page](screenshot/mainpage_resized.png) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
 | **Square Crop Tool** | **Grid Split Tool** | **Resize Tool** |
 | ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
 
@@ -178,7 +178,7 @@ Trang web bao gồm các tính năng nổi bật sau:
 
 | **Trang chính** | **Giao diện Trò chơi** | **Trang Giới thiệu** |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
+| ![Main Page](screenshot/mainpage_resized.png) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
 | **Công Cụ Cắt Ảnh Vuông** | **Công Cụ Cắt Ảnh Lưới** | **Công Cụ Thay Đổi Kích Thước** |
 | ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
 
