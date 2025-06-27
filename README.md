@@ -2,7 +2,7 @@
 
 Welcome to the versatile web project where you can both entertain yourself with an engaging jigsaw puzzle game and utilize powerful tools to professionally and easily customize and process your images!
 
-![Homepage Screenshot](screenshot/mainpage.PNG) 
+![Homepage Screenshot](screenshot/mainpage.png) 
 *<p align="center">Main interface of the website / Giao diện chính của trang web</p>*
 
 ---
@@ -68,11 +68,11 @@ The website includes the following standout features:
 
 ### 🖼️ Screenshots
 
-| **Main Page** | **Game Interface** |  **About Page**  |
+| **Main Page** | **Game Interface** | **About Page** |
 | :---: | :---: |:---: |
-| <img src="screenshot/mainpage.PNG" alt="Main Page" height="250"> | <img src="screenshot/game.PNG" alt="Game Interface" height="250"> | <img src="screenshot/about.PMG" alt="About Page" height="250"> |
+| ![Main Page](screenshot/mainpage.png) | ![Game Interface](screenshot/game.png) | ![About Page](screenshot/about.png) |
 | **Square Crop Tool** | **Grid Split Tool** | **Resize Tool** |
-| <img src="screenshot/crop.PMG" alt="Square Crop Tool" height="250"> | <img src="screenshot/split.PMG" alt="Grid Split Tool" height="250"> | <img src="screenshot/resize.PMG" alt="Resize Tool" height="250"> |
+| ![Square Crop Tool](screenshot/crop.png) | ![Grid Split Tool](screenshot/split.png) | ![Resize Tool](screenshot/resize.png) |
 
 ---
 
@@ -178,9 +178,9 @@ Trang web bao gồm các tính năng nổi bật sau:
 
 | **Trang chính** | **Giao diện Trò chơi** | **Trang Giới thiệu** |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
+| ![Main Page](screenshot/mainpage.png) | ![Game Interface](screenshot/game.png) | ![About Page](screenshot/about.png) |
 | **Công Cụ Cắt Ảnh Vuông** | **Công Cụ Cắt Ảnh Lưới** | **Công Cụ Thay Đổi Kích Thước** |
-| ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
+| ![Square Crop Tool](screenshot/crop.png) | ![Grid Split Tool](screenshot/split.png) | ![Resize Tool](screenshot/resize.png) |
 
 ---
 
