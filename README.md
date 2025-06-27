@@ -68,11 +68,11 @@ The website includes the following standout features:
 
 ### 🖼️ Screenshots
 
-| **Main Page** | **Game Interface** | **About Page** |
+| **Main Page** | **Game Interface** |  **About Page**  |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
+| <img src="img/main_page.png" alt="Main Page" height="250"> | <img src="img/game.png" alt="Game Interface" height="250"> | <img src="img/about.png" alt="About Page" height="250"> |
 | **Square Crop Tool** | **Grid Split Tool** | **Resize Tool** |
-| ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
+| <img src="img/crop_tool.png" alt="Square Crop Tool" height="250"> | <img src="img/split_tool.png" alt="Grid Split Tool" height="250"> | <img src="img/resize_tool.png" alt="Resize Tool" height="250"> |
 
 ---
 
