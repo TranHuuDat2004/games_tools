@@ -2,7 +2,7 @@
 
 Welcome to the versatile web project where you can both entertain yourself with an engaging jigsaw puzzle game and utilize powerful tools to professionally and easily customize and process your images!
 
-![Homepage Screenshot](screenshot/mainpage.png) 
+![Homepage Screenshot](screenshot/mainpage.PNG) 
 *<p align="center">Main interface of the website / Giao diện chính của trang web</p>*
 
 ---
@@ -70,9 +70,9 @@ The website includes the following standout features:
 
 | **Main Page** | **Game Interface** | **About Page** |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.png) | ![Game Interface](screenshot/game.png) | ![About Page](screenshot/about.png) |
+| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
 | **Square Crop Tool** | **Grid Split Tool** | **Resize Tool** |
-| ![Square Crop Tool](screenshot/crop.png) | ![Grid Split Tool](screenshot/split.png) | ![Resize Tool](screenshot/resize.png) |
+| ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
 
 ---
 
@@ -178,9 +178,9 @@ Trang web bao gồm các tính năng nổi bật sau:
 
 | **Trang chính** | **Giao diện Trò chơi** | **Trang Giới thiệu** |
 | :---: | :---: |:---: |
-| ![Main Page](screenshot/mainpage.png) | ![Game Interface](screenshot/game.png) | ![About Page](screenshot/about.png) |
+| ![Main Page](screenshot/mainpage.PNG) | ![Game Interface](screenshot/game.PNG) | ![About Page](screenshot/about.PNG) |
 | **Công Cụ Cắt Ảnh Vuông** | **Công Cụ Cắt Ảnh Lưới** | **Công Cụ Thay Đổi Kích Thước** |
-| ![Square Crop Tool](screenshot/crop.png) | ![Grid Split Tool](screenshot/split.png) | ![Resize Tool](screenshot/resize.png) |
+| ![Square Crop Tool](screenshot/crop.PNG) | ![Grid Split Tool](screenshot/split.PNG) | ![Resize Tool](screenshot/resize.PNG) |
 
 ---
 
