@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <title data-translate="docTitle">Game Cờ Caro</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="caro.css">
+    <link rel="icon" href="favicon.png" type="image/png">
+</head>
+<style>
+    .game-title-area {
+        padding-top: 10px;
+    }
+
+    .game-mode-selection {
+        text-align: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .game-mode-selection label {
+        margin-right: 15px;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
+    .game-mode-selection input[type="radio"] {
+        cursor: pointer;
+    }
+
+    #countdown-duration-group {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    #countdown-duration-group label {
+        margin-right: 5px;
+        font-size: 0.9em;
+        margin-bottom: 0;
+    }
+
+    #countdown-seconds.custom-range {
+        width: auto;
+        max-width: 150px;
+        vertical-align: middle;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    #countdown-value {
+        font-weight: bold;
+        min-width: 20px;
+        display: inline-block;
+        text-align: right;
+    }
+
+    #game-table.game-lost {
+        border: 3px solid #dc3545;
+        box-shadow: 0 0 15px #dc3545;
+    }
+
+    #game-table.game-lost .image-cell {
+        border-color: #dc3545;
+        opacity: 0.7;
+    }
+
+    #game-table.game-lost img {
+        cursor: not-allowed !important;
+    }
+
+    :root {
+        --sidebar-width: 320px;
+        --transition-duration: 0.5s;
+        --sidebar-bg: #fff;
+        --header-color: #333;
+        --button-bg: #d0021b;
+        --button-color: #fff;
+        --checkout-bg: #d0021b;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .ins-sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: var(--sidebar-bg);
+        overflow-x: hidden;
+        transition: var(--transition-duration);
+        padding-top: 20px;
+        box-shadow: -2px 0px 10px var(--shadow-color);
+        z-index: 1000;
+    }
+
+    .ins-sidebar.open {
+        width: var(--sidebar-width);
+    }
+
+    .ins-header {
+        padding: 80px 20px 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ins-header p strong {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .close-btn {
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .ins-content {
+        padding: 15px 20px;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+    }
+
+    /* ... other existing styles for sidebar, cart etc. ... */
+
+    /* --- NEW Custom styles for language switcher --- */
+    .lang-switcher-container {
+        position: fixed;
+        top: 80px;
+        /* Adjust based on your navbar height and preference */
+        right: 20px;
+        z-index: 1031;
+        /* Above navbar content, potentially below modals if they have higher z-index */
+    }
+
+    .lang-switcher .btn {
+        margin: 0 2px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        min-width: 50px;
+        /* Slightly adjusted for VI/EN */
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .lang-switcher .btn.active {
+        /* This class will be toggled by JS */
+        background-color: #ffc107;
+        /* Bootstrap warning color */
+        border-color: #ffc107;
+        color: #212529;
+        /* Dark text for better contrast on yellow */
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .lang-switcher .btn:not(.active) {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+    }
+
+    .lang-switcher .btn:not(.active):hover {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+    }
+
+    /* .lang-content styles are not directly used by the primary translation mechanism here,
+           but kept if you plan to use them for block-level language switching elsewhere. */
+    .lang-content {
+        display: none;
+    }
+
+    .lang-content.active-lang {
+        display: block;
+    }
+
+    /* Tăng khoảng cách và làm nổi bật nút được chọn */
+    .game-mode-selection .btn-group {
+        gap: 8px;
+        /* Tạo khoảng cách 8px giữa các nút */
+    }
+
+    .game-mode-selection .btn-group .btn {
+        border-radius: .25rem !important;
+        /* Đảm bảo các nút có bo góc đều */
+    }
+
+    /* Thêm hiệu ứng cho nút đang active */
+    .game-mode-selection .btn.active {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .5);
+        z-index: 2;
+    }
+</style>
+
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group" role="group" aria-label="Language selector">
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Custom CSS) ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo"
+                    data-translate="navLogoAlt">
+            </a>
+
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation"
+                data-translate="navToggleLabel">
+                <span class="nav-toggler-icon"></span>
+            </button>
+
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item ">
+                        <!-- Note: The 'active' class on li might need dynamic handling if this page is not index.html -->
+                        <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ"
+                            data-lang-en="Home">Trang Chủ <span class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game"
+                            data-lang-en="Play Game">Chơi Game</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu"
+                            data-lang-en="About">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ"
+                            data-lang-en="Contact">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh"
+                            data-lang-en="Image Tools">Cắt Ảnh</a>
+                    </li>
+                </ul>
+                <!-- Old language switcher placeholder removed -->
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+
+    <!-- ===== TIÊU ĐỀ VÀ HƯỚNG DẪN (CẬP NHẬT) ===== -->
+    <div class="game-title-area text-center">
+        <h1 data-translate="caroTitle">Game Cờ Caro (Gomoku)</h1>
+        <h6 data-translate="caroSubtitle">Cố gắng đạt được 5 quân cờ trên một hàng ngang, dọc hoặc chéo.</h6>
+        <button class="btn btn-warning" id="insBtn" data-translate="howToPlayButton">Hướng dẫn cách chơi</button>
+    </div>
+
+    <!-- Sidebar Hướng Dẫn (Cập nhật) -->
+    <div id="insSidebar" class="ins-sidebar">
+        <div class="ins-header">
+            <p><strong data-translate="sidebarTitle">Luật Chơi Cờ Caro</strong></p>
+            <span id="closeSidebar" class="close-btn">X</span>
+        </div>
+        <div class="ins-content" data-translate="sidebarContentHTML">
+            <p data-translate="sidebarWelcome">Chào mừng bạn đến với trận đấu trí Caro!</p>
+            <p data-translate="sidebarObjective"><strong>Mục tiêu:</strong> Là người đầu tiên có được một chuỗi 5 quân
+                cờ liên tiếp theo hàng ngang, hàng dọc, hoặc đường chéo.</p>
+            <p data-translate="sidebarTurn"><strong>Cách chơi:</strong> Lần lượt mỗi người chơi sẽ đặt quân cờ (X hoặc
+                O) của mình vào một ô trống trên bàn cờ.</p>
+            <p data-translate="sidebarWin"><strong>Chiến thắng:</strong> Người chơi nào tạo được chuỗi 5 quân trước sẽ
+                là người chiến thắng. Nếu bàn cờ đầy mà không ai thắng, ván cờ sẽ hòa.</p>
+            <hr>
+            <p><strong data-translate="sidebarChallenge">Chế độ chơi:</strong></p>
+            <p data-translate="sidebarModes">Bạn có thể thử sức với một người bạn trong chế độ <strong>Người vs
+                    Người</strong>, hoặc đối đầu với AI thông minh của máy trong chế độ <strong>Người vs Máy</strong>.
+            </p>
+            <p data-translate="sidebarEnjoy">Chúc bạn có những ván cờ cân não!</p>
+        </div>
+    </div>
+
+    <!-- ===== LỰA CHỌN CHẾ ĐỘ CHƠI (THAY THẾ) ===== -->
+    <div class="game-mode-selection text-center my-3">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-info" id="pvp-btn" data-translate="modePVP">Người vs Người</button>
+            <button type="button" class="btn btn-primary" id="pvc-x-btn" data-translate="modePVC_X">Đấu Máy (Đi
+                trước)</button>
+            <button type="button" class="btn btn-secondary" id="pvc-o-btn" data-translate="modePVC_O">Đấu Máy (Đi
+                sau)</button>
+        </div>
+    </div>
+
+    <!-- ===== KHU VỰC GAME CARO (THAY THẾ) ===== -->
+    <div class="caro-game-wrapper container mt-4"> <!-- Ban đầu ẩn đi -->
+        <div class="row">
+            <!-- Bảng điều khiển bên trái -->
+            <div class="col-lg-3 col-md-4">
+                <div class="info-panel text-center p-3 border rounded bg-light text-dark">
+                    <div class="turn-container">
+                        <h5 data-translate="turnTitle">Lượt của</h5>
+                        <div class="turn-box-wrapper">
+                            <div class="turn-box turn-x">X</div>
+                            <div class="turn-box turn-o">O</div>
+                            <div class="bg-turn-indicator"></div>
+                        </div>
+                    </div>
+                    <h4 id="results" class="mt-3"></h4>
+                    <button id="play-again" class="btn btn-danger mt-2" style="display: none;"
+                        data-translate="playAgain">Chơi Lại</button>
+                </div>
+            </div>
+            <!-- Bàn cờ bên phải -->
+            <div class="col-lg-9 col-md-8">
+                <div class="board-container">
+                    <div id="caro-board"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- ===== FOOTER BẮT ĐẦU ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <div class="footer-content-wrapper">
+                <div class="row">
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
+                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn.</p>
+                    </div>
+
+                    <div class="col-md-3 col-6 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Khám Phá</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang Chủ</a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp Hình</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3 mb-md-0">
+                        <h5 class="fw-semibold">Công Cụ</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Lưới</a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt Vuông</a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light">Thay đổi kích thước </a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <h5 class="fw-semibold">Thông Tin</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới Thiệu</a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên Hệ</a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều Khoản</a></li> <!-- Giả sử tên file là dieu-khoan.html -->
+                        </ul>
+                    </div>
+                </div>
+                <hr class="my-3 border-secondary">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="small text-white-50 mb-0">
+                            © <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.
+                        </p>
+                        <p class="small text-white-50">
+                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
+                            <!-- Lưu ý: Bootstrap 5 không yêu cầu jQuery, nếu bạn dùng BS5 có thể bỏ jQuery -->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== FOOTER KẾT THÚC ===== -->
+
+    <!-- Modal Thông Báo (Cập nhật) -->
+    <div class="modal fade" id="endGameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="endGameModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body" id="endGameModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        data-translate="winModalClose">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="modal-play-again-btn"
+                        data-translate="winModalPlayAgain">Chơi Lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script dịch thuật và script game CARO -->
+    <script src="lang.js"></script> <!-- File dịch thuật riêng -->
+    <script src="caro-game.js"></script> <!-- File game mới -->
+
+</body>
+
+</html>
