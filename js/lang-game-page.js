@@ -69,3 +69,4 @@ function setLanguage(lang) {
 
     localStorage.setItem('preferredLanguage', lang);
 }
+

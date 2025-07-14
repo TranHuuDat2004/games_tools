@@ -15,7 +15,6 @@
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- Sử dụng lại style của trang about.html -->
     <style>
         .feature-card {
             border: 1px solid #e9ecef;
@@ -37,12 +36,40 @@
             color: #343a40;
         }
 
-        .feature-card .game-image {
-            max-width: 300px;
-            inline-size: center;
-            object-fit: cover;
-            border-radius: 5px;
+        /* --- PHẦN SỬA ĐỔI VÀ THÊM MỚI --- */
+
+        /* 1. Tạo một div bọc ngoài ảnh để dễ dàng căn giữa và set chiều cao */
+        .game-image-wrapper {
+            height: 220px;
+            /* <<<< ĐẶT CHIỀU CAO CỐ ĐỊNH CHO KHUNG ẢNH */
+            display: flex;
+            /* Sử dụng flexbox để căn giữa */
+            justify-content: center;
+            /* Căn giữa theo chiều ngang */
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
             margin-bottom: 20px;
+            overflow: hidden;
+            /* Ẩn phần thừa của ảnh nếu nó không vừa */
+        }
+
+        .feature-card .game-image {
+            /* Bỏ các thuộc tính căn giữa và kích thước cũ */
+            /* display: block; */
+            /* margin-left: auto; */
+            /* margin-right: auto; */
+
+            /* Ảnh sẽ tự lấp đầy khung chứa nó */
+            max-width: 100%;
+            max-height: 100%;
+
+            /* Dùng object-fit để ảnh không bị méo */
+            object-fit: contain;
+            /* <<<< CHỌN `contain` SẼ TỐT HƠN `cover` */
+            /* `contain`: hiển thị toàn bộ ảnh bên trong khung */
+            /* `cover`: lấp đầy khung và có thể bị cắt xén */
+
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -64,7 +91,11 @@
             <!-- Card cho Game Cờ Caro -->
             <div class="col-lg-5 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
-                    <img src="img/demo_caro.png" alt="Game Cờ Caro" class="game-image">
+                    <!-- <<< THÊM DIV WRAPPER Ở ĐÂY >>> -->
+                    <div class="game-image-wrapper">
+                        <img src="img/demo_caro.png" alt="Game Cờ Caro" class="game-image">
+                    </div>
+
                     <h3 class="text-center" data-translate="caroCardTitle">Cờ Caro (Gomoku)</h3>
                     <p data-translate="caroCardDesc">
                         Một trò chơi chiến thuật kinh điển. Hãy sắp xếp 5 quân cờ của bạn thành một hàng trước đối thủ.
@@ -81,15 +112,19 @@
 
             <!-- Card cho Game Xếp Hình -->
             <div class="col-lg-5 col-md-6 mb-4">
-                <div class="feature-card h-100 d-flex flex-column ">
-                    <img src="img/demo_game.png" alt="Game Xếp Hình" class="game-image">
+                <div class="feature-card h-100 d-flex flex-column">
+                    <!-- <<< THÊM DIV WRAPPER Ở ĐÂY >>> -->
+                    <div class="game-image-wrapper">
+                        <img src="img/demo_game.png" alt="Game Xếp Hình" class="game-image">
+                    </div>
+
                     <h3 class="text-center" data-translate="puzzleCardTitle">Game Xếp Hình</h3>
                     <p data-translate="puzzleCardDesc">
                         Thư giãn và rèn luyện óc quan sát với những bức tranh đầy màu sắc. Kéo, thả và xoay các mảnh
                         ghép để hoàn thành thử thách.
                     </p>
                     <div class="text-center mt-auto">
-                        <a href="puzzle.html" class="btn btn-warning btn-lg"> <!-- Giả sử tên file là puzzle.html -->
+                        <a href="puzzle.html" class="btn btn-warning btn-lg">
                             <i class="fas fa-puzzle-piece mr-2"></i>
                             <span data-translate="playButton">Chơi Ngay</span>
                         </a>
@@ -108,6 +143,8 @@
     <script src="js/header.js"></script>
     <script src="js/footer.js"></script>
     <script src="js/lang-game-page.js"></script>
+
+<script src="js/i18n.js"></script>
 </body>
 
 </html>

@@ -5,10 +5,13 @@
 
 body {
     font-family: sans-serif;
-    padding-top: 56px; /* Khoảng đệm cho navbar cố định */
-    display: flex; /* Giúp footer đẩy xuống dưới */
+    padding-top: 56px;
+    /* Khoảng đệm cho navbar cố định */
+    display: flex;
+    /* Giúp footer đẩy xuống dưới */
     flex-direction: column;
-    min-height: 100vh; /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao màn hình */
+    min-height: 100vh;
+    /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao màn hình */
 }
 
 .game-title-area {
@@ -173,7 +176,7 @@ body {
 /* Khu vực chọn ảnh */
 #puzzle-selection {
     text-align: center;
-    clear: both;    
+    clear: both;
 }
 
 #selection-list {
@@ -260,52 +263,73 @@ body {
         padding: 30px 0 15px;
     }
 }
+
 /* Đảm bảo nội dung chính co giãn để đẩy footer xuống */
 .main-content-area {
-    flex: 1; /* Cho phép co giãn */
-    padding: 40px 15px; /* Khoảng đệm cho nội dung */
+    flex: 1;
+    /* Cho phép co giãn */
+    padding: 40px 15px;
+    /* Khoảng đệm cho nội dung */
 }
 
 
 /* ===== Custom Navbar Styles ===== */
 .custom-navbar {
-    background-color: #343a40; /* Màu nền tối (tương đương bg-dark) */
-    padding: 10px 0;         /* Khoảng đệm trên dưới */
-    position: fixed;         /* Cố định trên cùng */
+    background-color: #343a40;
+    /* Màu nền tối (tương đương bg-dark) */
+    padding: 10px 0;
+    /* Khoảng đệm trên dưới */
+    position: fixed;
+    /* Cố định trên cùng */
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1030;           /* Đảm bảo nổi lên trên */
-    border-bottom: 1px solid #444; /* Thêm đường viền dưới nhẹ */
+    z-index: 1030;
+    /* Đảm bảo nổi lên trên */
+    border-bottom: 1px solid #444;
+    /* Thêm đường viền dưới nhẹ */
 }
 
 .nav-container {
     width: 100%;
-    max-width: 1140px; /* Hoặc 960px, tùy bạn chọn (tương đương container-lg/xl) */
-    margin: 0 auto;      /* Căn giữa container */
-    padding: 0 15px;     /* Khoảng đệm trái phải */
+    max-width: 1140px;
+    /* Hoặc 960px, tùy bạn chọn (tương đương container-lg/xl) */
+    margin: 0 auto;
+    /* Căn giữa container */
+    padding: 0 15px;
+    /* Khoảng đệm trái phải */
     display: flex;
-    align-items: center; /* Căn giữa các item theo chiều dọc */
-    justify-content: space-between; /* Đẩy brand và menu ra hai bên */
-    flex-wrap: wrap; /* Cho phép xuống dòng nếu cần (cho toggler) */
+    align-items: center;
+    /* Căn giữa các item theo chiều dọc */
+    justify-content: space-between;
+    /* Đẩy brand và menu ra hai bên */
+    flex-wrap: wrap;
+    /* Cho phép xuống dòng nếu cần (cho toggler) */
 }
 
 .nav-brand {
-    color: #ffffff;      /* Màu chữ trắng */
+    color: #ffffff;
+    /* Màu chữ trắng */
     text-decoration: none;
-    font-size: 1.25rem;  /* Cỡ chữ lớn hơn */
-    white-space: nowrap; /* Không xuống dòng */
-    display: flex;       /* Để căn giữa ảnh và text (nếu có) */
+    font-size: 1.25rem;
+    /* Cỡ chữ lớn hơn */
+    white-space: nowrap;
+    /* Không xuống dòng */
+    display: flex;
+    /* Để căn giữa ảnh và text (nếu có) */
     align-items: center;
 }
+
 .nav-brand:hover {
-    color: #f8f9fa;      /* Sáng hơn chút khi hover */
+    color: #f8f9fa;
+    /* Sáng hơn chút khi hover */
     text-decoration: none;
 }
 
 /* Nút Toggler (Hamburger Menu) */
 .nav-toggler {
-    display: none; /* Mặc định ẩn trên màn hình lớn */
+    display: none;
+    /* Mặc định ẩn trên màn hình lớn */
     padding: 0.25rem 0.75rem;
     font-size: 1.25rem;
     line-height: 1;
@@ -338,29 +362,35 @@ body {
 /* Danh sách menu */
 .nav-menu {
     display: flex;
-    flex-direction: row; /* Mặc định xếp ngang trên màn hình lớn */
+    flex-direction: row;
+    /* Mặc định xếp ngang trên màn hình lớn */
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
-    margin-left: auto; /* Đẩy menu sang phải */
+    margin-left: auto;
+    /* Đẩy menu sang phải */
 }
 
 .nav-menu-link {
     display: block;
-    padding: 0.5rem 1rem; /* Khoảng đệm cho link */
-    color: rgba(255, 255, 255, 0.55); /* Màu link (tương đương navbar-dark) */
+    padding: 0.5rem 1rem;
+    /* Khoảng đệm cho link */
+    color: rgba(255, 255, 255, 0.55);
+    /* Màu link (tương đương navbar-dark) */
     text-decoration: none;
     transition: color 0.15s ease-in-out;
 }
 
 .nav-menu-link:hover {
-    color: rgba(255, 255, 255, 0.75); /* Sáng hơn khi hover */
+    color: rgba(255, 255, 255, 0.75);
+    /* Sáng hơn khi hover */
     text-decoration: none;
 }
 
 /* Style cho link active */
 .nav-menu-item.active .nav-menu-link {
-    color: #ffc107; /* Màu vàng cho active link */
+    color: #ffc107;
+    /* Màu vàng cho active link */
     font-weight: bold;
 }
 
@@ -379,255 +409,267 @@ body {
 
 /* ===== Game Style ===== */
 .game-title-area {
-            padding-top: 10px;
-        }
+    padding-top: 10px;
+}
 
-        /* --- Thêm CSS cho lựa chọn chế độ --- */
-        .game-mode-selection {
-            text-align: center;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 5px;
-        }
+/* --- Thêm CSS cho lựa chọn chế độ --- */
+.game-mode-selection {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-        .game-mode-selection label {
-            margin-right: 15px;
-            margin-left: 5px;
-            cursor: pointer;
-        }
+.game-mode-selection label {
+    margin-right: 15px;
+    margin-left: 5px;
+    cursor: pointer;
+}
 
-        .game-mode-selection input[type="radio"] {
-            cursor: pointer;
-        }
+.game-mode-selection input[type="radio"] {
+    cursor: pointer;
+}
 
-        #countdown-duration-group {
-            display: inline-flex;
-            /* Sử dụng flex để căn chỉnh tốt hơn */
-            align-items: center;
-            /* Căn giữa theo chiều dọc */
-            margin-left: 10px;
-            vertical-align: middle;
-        }
+#countdown-duration-group {
+    display: inline-flex;
+    /* Sử dụng flex để căn chỉnh tốt hơn */
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    margin-left: 10px;
+    vertical-align: middle;
+}
 
-        #countdown-duration-group label {
-            margin-right: 5px;
-            font-size: 0.9em;
-            margin-bottom: 0;
-            /* Bỏ margin bottom mặc định của label */
-        }
+#countdown-duration-group label {
+    margin-right: 5px;
+    font-size: 0.9em;
+    margin-bottom: 0;
+    /* Bỏ margin bottom mặc định của label */
+}
 
-        /* Style cho thanh trượt */
-        #countdown-seconds.custom-range {
-            width: auto;
-            /* Cho phép co giãn */
-            max-width: 150px;
-            /* Giới hạn chiều rộng tối đa */
-            vertical-align: middle;
-            /* Căn giữa */
-            margin: 0 5px;
-            /* Khoảng cách hai bên */
-            cursor: pointer;
-        }
+/* Style cho thanh trượt */
+#countdown-seconds.custom-range {
+    width: auto;
+    /* Cho phép co giãn */
+    max-width: 150px;
+    /* Giới hạn chiều rộng tối đa */
+    vertical-align: middle;
+    /* Căn giữa */
+    margin: 0 5px;
+    /* Khoảng cách hai bên */
+    cursor: pointer;
+}
 
-        #countdown-value {
-            font-weight: bold;
-            min-width: 20px;
-            /* Đảm bảo có đủ chỗ cho số 2 chữ số */
-            display: inline-block;
-            text-align: right;
-            /* Căn phải số */
-        }
+#countdown-value {
+    font-weight: bold;
+    min-width: 20px;
+    /* Đảm bảo có đủ chỗ cho số 2 chữ số */
+    display: inline-block;
+    text-align: right;
+    /* Căn phải số */
+}
 
-        /* --- Thêm CSS cho trạng thái thua --- */
-        #game-table.game-lost {
-            border: 3px solid #dc3545;
-            /* Màu đỏ Bootstrap */
-            box-shadow: 0 0 15px #dc3545;
-        }
+/* --- Thêm CSS cho trạng thái thua --- */
+#game-table.game-lost {
+    border: 3px solid #dc3545;
+    /* Màu đỏ Bootstrap */
+    box-shadow: 0 0 15px #dc3545;
+}
 
-        #game-table.game-lost .image-cell {
-            border-color: #dc3545;
-            opacity: 0.7;
-            /* Hơi mờ đi */
-        }
+#game-table.game-lost .image-cell {
+    border-color: #dc3545;
+    opacity: 0.7;
+    /* Hơi mờ đi */
+}
 
-        #game-table.game-lost img {
-            cursor: not-allowed !important;
-            /* Con trỏ không cho phép */
-        }
+#game-table.game-lost img {
+    cursor: not-allowed !important;
+    /* Con trỏ không cho phép */
+}
 
-        :root {
-            --sidebar-width: 320px;
-            --transition-duration: 0.5s;
-            --sidebar-bg: #fff;
-            --header-color: #333;
-            --button-bg: #d0021b;
-            --button-color: #fff;
-            --checkout-bg: #d0021b;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
+:root {
+    --sidebar-width: 320px;
+    --transition-duration: 0.5s;
+    --sidebar-bg: #fff;
+    --header-color: #333;
+    --button-bg: #d0021b;
+    --button-color: #fff;
+    --checkout-bg: #d0021b;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
 
-        .ins-sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            top: 0;
-            right: 0;
-            background-color: var(--sidebar-bg);
-            overflow-x: hidden;
-            transition: var(--transition-duration);
-            padding-top: 20px;
-            box-shadow: -2px 0px 10px var(--shadow-color);
-            z-index: 1000;
-        }
+.ins-sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: var(--sidebar-bg);
+    overflow-x: hidden;
+    transition: var(--transition-duration);
+    padding-top: 20px;
+    box-shadow: -2px 0px 10px var(--shadow-color);
+    z-index: 1000;
+}
 
-        .ins-sidebar.open {
-            width: var(--sidebar-width);
-        }
+.ins-sidebar.open {
+    width: var(--sidebar-width);
+}
 
-        .ins-header {
-            padding: 80px 20px 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.ins-header {
+    padding: 80px 20px 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .ins-header h2 {
-            font-size: 18px;
-            margin: 0;
-            font-weight: bold;
-        }
+.ins-header h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: bold;
+}
 
-        .close-btn {
-            font-size: 24px;
-            cursor: pointer;
-        }
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+}
 
-        .ins-content {
-            padding: 15px 20px;
-            max-height: calc(100vh - 150px);
-            overflow-y: auto;
-        }
+.ins-content {
+    padding: 15px 20px;
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+}
 
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
 
-        .cart-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 10px;
-        }
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+}
 
-        .cart-item-info {
-            flex-grow: 1;
-        }
+.cart-item-info {
+    flex-grow: 1;
+}
 
-        .cart-item-info p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
+.cart-item-info p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
 
-        .cart-item-info span {
-            display: block;
-            font-size: 14px;
-            color: #888;
-            margin-top: 2px;
-        }
+.cart-item-info span {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin-top: 2px;
+}
 
-        .cart-item-remove {
-            font-size: 16px;
-            cursor: pointer;
-            color: #d0021b;
-        }
+.cart-item-remove {
+    font-size: 16px;
+    cursor: pointer;
+    color: #d0021b;
+}
 
-        .free-shipping-banner {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #d0021b;
-        }
+.free-shipping-banner {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #d0021b;
+}
 
-        .free-shipping-banner img {
-            width: 30px;
-            margin-left: 5px;
-        }
+.free-shipping-banner img {
+    width: 30px;
+    margin-left: 5px;
+}
 
-        .cart-footer {
-            padding: 10px 20px;
-            border-top: 1px solid #e0e0e0;
-        }
+.cart-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #e0e0e0;
+}
 
-        .cart-total {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+.cart-total {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
-        .cart-actions {
-            display: flex;
-            justify-content: space-between;
-        }
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+}
 
-        .cart-actions button {
-            flex: 1;
-            margin: 0 5px;
-            padding: 10px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            color: var(--button-color);
-            background-color: var(--button-bg);
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
+.cart-actions button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--button-color);
+    background-color: var(--button-bg);
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
 
-        .cart-actions button:hover {
-            background-color: #e14b6d;
-        }
+.cart-actions button:hover {
+    background-color: #e14b6d;
+}
 
 /* ===== Responsive (Tương đương navbar-expand-lg) ===== */
 /* Áp dụng cho màn hình nhỏ hơn 992px (breakpoint 'lg' của Bootstrap) */
 @media (max-width: 991.98px) {
     .nav-toggler {
-        display: block; /* Hiện nút toggler */
+        display: block;
+        /* Hiện nút toggler */
     }
 
     .nav-collapse {
-        display: none; /* Ẩn nội dung menu mặc định */
-        width: 100%;   /* Chiếm toàn bộ chiều rộng khi xổ xuống */
+        display: none;
+        /* Ẩn nội dung menu mặc định */
+        width: 100%;
+        /* Chiếm toàn bộ chiều rộng khi xổ xuống */
         flex-basis: 100%;
     }
 
     .nav-collapse.show {
-        display: block; /* Hiện nội dung khi có class 'show' (thêm bằng JS) */
+        display: block;
+        /* Hiện nội dung khi có class 'show' (thêm bằng JS) */
     }
 
     .nav-menu {
-        flex-direction: column; /* Xếp menu theo chiều dọc */
-        width: 100%;          /* Chiếm toàn bộ chiều rộng */
-        margin-left: 0;       /* Reset margin */
-        padding-top: 10px;    /* Thêm khoảng cách trên */
+        flex-direction: column;
+        /* Xếp menu theo chiều dọc */
+        width: 100%;
+        /* Chiếm toàn bộ chiều rộng */
+        margin-left: 0;
+        /* Reset margin */
+        padding-top: 10px;
+        /* Thêm khoảng cách trên */
     }
 
-     .nav-menu-link {
-        padding: 0.6rem 0; /* Điều chỉnh padding cho menu dọc */
-        border-bottom: 1px solid #444; /* Thêm đường kẻ phân cách */
+    .nav-menu-link {
+        padding: 0.6rem 0;
+        /* Điều chỉnh padding cho menu dọc */
+        border-bottom: 1px solid #444;
+        /* Thêm đường kẻ phân cách */
     }
-     .nav-menu-item:last-child .nav-menu-link {
-        border-bottom: none; /* Bỏ đường kẻ cho item cuối */
-     }
+
+    .nav-menu-item:last-child .nav-menu-link {
+        border-bottom: none;
+        /* Bỏ đường kẻ cho item cuối */
+    }
 }
 
 /* style.css */
@@ -635,11 +677,14 @@ body {
 /* ... các style khác của bạn ... */
 
 .footer-content-wrapper {
-    max-width: 1140px; /* Chiều rộng tối đa tương tự .container cho màn hình lớn (lg) */
+    max-width: 1140px;
+    /* Chiều rộng tối đa tương tự .container cho màn hình lớn (lg) */
     margin-left: auto;
     margin-right: auto;
-    padding-left: 15px;  /* Giữ padding như .container của Bootstrap */
-    padding-right: 15px; /* Giữ padding như .container của Bootstrap */
+    padding-left: 15px;
+    /* Giữ padding như .container của Bootstrap */
+    padding-right: 15px;
+    /* Giữ padding như .container của Bootstrap */
 }
 
 /* Điều chỉnh max-width cho các breakpoint khác nếu cần, tương tự như .container của Bootstrap */
@@ -648,22 +693,28 @@ body {
         max-width: 540px;
     }
 }
+
 @media (min-width: 768px) {
     .footer-content-wrapper {
         max-width: 720px;
     }
 }
+
 @media (min-width: 992px) {
     .footer-content-wrapper {
         max-width: 960px;
     }
 }
+
 @media (min-width: 1200px) {
     .footer-content-wrapper {
         max-width: 1140px;
     }
 }
-@media (min-width: 1400px) { /* Breakpoint mới của Bootstrap 5 */
+
+@media (min-width: 1400px) {
+
+    /* Breakpoint mới của Bootstrap 5 */
     .footer-content-wrapper {
         max-width: 1320px;
     }
@@ -671,6 +722,53 @@ body {
 
 /* Thêm style cho link navbar active */
 .navbar-dark .navbar-nav .nav-link.active {
-    color: #ffc107; /* Màu vàng cho link active */
+    color: #ffc107;
+    /* Màu vàng cho link active */
     font-weight: bold;
+}
+
+/* CSS tùy chỉnh cho bộ chuyển đổi ngôn ngữ */
+.lang-switcher-container {
+    position: fixed;
+    top: 80px;
+    /* Điều chỉnh dựa trên chiều cao navbar của bạn */
+    right: 20px;
+    z-index: 1031;
+}
+
+.lang-switcher .btn {
+    margin: 0 2px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    min-width: 60px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.lang-switcher .btn.active {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.lang-switcher .btn:not(.active) {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #495057;
+}
+
+.lang-switcher .btn:not(.active):hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+/* Ẩn nội dung theo mặc định để JS kiểm soát */
+.lang-content {
+    display: none;
+}
+
+/* Hiển thị nội dung ngôn ngữ đang hoạt động */
+.lang-content.active-lang {
+    display: block;
 }

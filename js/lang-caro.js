@@ -5,7 +5,7 @@ const translations = {
         caroTitle: "Gomoku (Caro) Game",
         caroSubtitle: "Try to get 5 pieces in a row, column, or diagonal.",
         howToPlayButton: "How to Play",
-        sidebarTitle: "<strong>Caro Rules</strong>",
+        sidebarTitle: "Caro Rule",
         sidebarContentHTML: `<p>Welcome to the Caro showdown!</p>
                              <p><strong>Objective:</strong> Be the first to get a continuous line of 5 of your pieces horizontally, vertically, or diagonally.</p>
                              <p><strong>How to Play:</strong> Players take turns placing their piece (X or O) on an empty cell on the board.</p>
@@ -17,7 +17,7 @@ const translations = {
         modePVP: "Player vs Player",
         modePVC_X: "vs CPU (Play First)",
         modePVC_O: "vs CPU (Play Second)",
-        turnTitle: "Turn For",
+        turnTitle: "Turn",
         playAgain: "Play Again",
         winModalTitle: "🎉 Congratulations! 🎉",
         winModalBodyWin: "<strong>{symbol}</strong> is the winner!", // {symbol} is a placeholder
@@ -31,7 +31,7 @@ const translations = {
         caroTitle: "Game Cờ Caro (Gomoku)",
         caroSubtitle: "Cố gắng đạt được 5 quân cờ trên một hàng ngang, dọc hoặc chéo.",
         howToPlayButton: "Hướng dẫn cách chơi",
-        sidebarTitle: "<strong>Luật Chơi Cờ Caro</strong>",
+        sidebarTitle: "Luật Chơi Cờ Caro",
         sidebarContentHTML: `<p>Chào mừng bạn đến với trận đấu trí Caro!</p>
                              <p><strong>Mục tiêu:</strong> Là người đầu tiên có được một chuỗi 5 quân cờ liên tiếp theo hàng ngang, hàng dọc, hoặc đường chéo.</p>
                              <p><strong>Cách chơi:</strong> Lần lượt mỗi người chơi sẽ đặt quân cờ (X hoặc O) của mình vào một ô trống trên bàn cờ.</p>
@@ -43,7 +43,7 @@ const translations = {
         modePVP: "Người vs Người",
         modePVC_X: "Đấu Máy (Đi trước)",
         modePVC_O: "Đấu Máy (Đi sau)",
-        turnTitle: "Lượt của",
+        turnTitle: "Lượt",
         playAgain: "Chơi Lại",
         winModalTitle: "🎉 Chúc Mừng! 🎉",
         winModalBodyWin: "Người chơi <strong>{symbol}</strong> đã chiến thắng!",
