@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <title data-translate="docTitle">Game Xếp Hình</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- CSS riêng cho Tetris -->
+    <link rel="stylesheet" href="css/tetris.css">
+    <link rel="icon" href="favicon.png" type="image/png">
+</head>
+
+<body>
+    <!-- Language Switcher (giữ nguyên) -->
+    <div class="lang-switcher-container">
+        <div class="lang-switcher btn-group" role="group" aria-label="Language selector">
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
+            <button type="button" class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR START (Sửa lại class 'active') ===== -->
+    <nav class="custom-navbar">
+        <div class="nav-container">
+            <a class="nav-brand" href="index.html">
+                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo"
+                    data-translate="navLogoAlt">
+            </a>
+            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation"
+                data-translate="navToggleLabel">
+                <span class="nav-toggler-icon"></span>
+            </button>
+            <div class="nav-collapse" id="navbarNavContent">
+                <ul class="nav-menu">
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ"
+                            data-lang-en="Home">Trang Chủ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Cờ Caro"
+                            data-lang-en="Play Caro">Chơi Cờ Caro</a>
+                    </li>
+                    <!-- Thêm mục menu mới và đặt active -->
+                    <li class="nav-menu-item active">
+                        <a class="nav-menu-link lang-specific" href="tetris.html" data-lang-vi="Game Xếp Hình"
+                            data-lang-en="Tetris Game">Game Xếp Hình <span
+                                class="screen-reader-only">(current)</span></a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu"
+                            data-lang-en="About">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ"
+                            data-lang-en="Contact">Liên Hệ</a>
+                    </li>
+                    <li class="nav-menu-item">
+                        <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh"
+                            data-lang-en="Image Tools">Cắt Ảnh</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- ===== NAVBAR END ===== -->
+
+    <!-- ===== TIÊU ĐỀ ===== -->
+    <div class="game-title-area text-center">
+        <h1 data-translate="tetrisTitle">Game Xếp Hình (Tetris)</h1>
+        <h6 data-translate="tetrisSubtitle">Sử dụng các phím mũi tên để di chuyển và xoay các khối. Lấp đầy các hàng để
+            ghi điểm!</h6>
+    </div>
+
+    <!-- ===== KHU VỰC GAME TETRIS ===== -->
+    <div class="tetris-game-wrapper container mt-4">
+        <div class="row justify-content-center">
+            <!-- Bảng điều khiển (bên trái trên Desktop, bên trên trên Mobile) -->
+            <div class="col-lg-4 col-md-5 order-md-2">
+                <div class="info-panel text-center p-3 border rounded bg-light text-dark">
+                    <!-- Thông tin game -->
+                    <div class="game-stats">
+                        <h5 data-translate="scoreLabel">Điểm</h5>
+                        <p id="score">0</p>
+                        <!-- ===== THÊM PHẦN NÀY ===== -->
+                        <h5 data-translate="highScoreLabel">Điểm Cao</h5>
+                        <p id="high-score">0</p>
+                        <!-- ========================= -->
+                        <h5 data-translate="linesLabel">Hàng</h5>
+                        <p id="lines">0</p>
+                        <h5 data-translate="levelLabel">Cấp độ</h5>
+                        <p id="level">1</p>
+                    </div>
+
+                    <!-- Khối tiếp theo -->
+                    <div class="next-piece-area mt-3">
+                        <h5 data-translate="nextPieceLabel">Tiếp theo</h5>
+                        <canvas id="next-piece-canvas" width="120" height="120"></canvas>
+                    </div>
+
+                    <!-- Nút điều khiển chính -->
+                    <div class="main-controls mt-3">
+                        <button id="start-pause-btn" class="btn btn-success btn-lg" data-translate-start="Bắt Đầu"
+                            data-translate-pause="Tạm Dừng">Bắt Đầu</button>
+                        <button id="restart-btn" class="btn btn-danger btn-lg" data-translate="restartBtn">Chơi
+                            Lại</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bàn chơi game (bên phải trên Desktop, bên dưới trên Mobile) -->
+            <div class="col-lg-5 col-md-7 order-md-1">
+                <div class="board-container">
+                    <canvas id="tetris-board"></canvas>
+                    <div id="game-over-message" class="game-over-overlay" style="display: none;">
+                        <h2 data-translate="gameOverTitle">GAME OVER</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút điều khiển cho di động -->
+        <div class="mobile-controls d-lg-none">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="move-controls">
+                    <button id="move-left-btn" class="btn btn-control"><i class="fas fa-arrow-left"></i></button>
+                    <button id="move-right-btn" class="btn btn-control"><i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="action-controls">
+                    <button id="rotate-btn" class="btn btn-control btn-action"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="drop-controls">
+                    <button id="move-down-btn" class="btn btn-control"><i class="fas fa-arrow-down"></i></button>
+                </div>
+            </div>
+            <button id="hard-drop-btn" class="btn btn-control btn-block mt-2" data-translate="hardDrop">Thả
+                Nhanh</button>
+        </div>
+    </div>
+
+    <div style="padding-top: 20px;"></div>
+
+    <!-- ===== FOOTER (giữ nguyên) ===== -->
+    <footer class="site-footer bg-dark text-white py-4">
+        <div class="container-fluid">
+            <!-- Nội dung footer y hệt trang Cờ Caro -->
+        </div>
+    </footer>
+    <!-- ===== FOOTER KẾT THÚC ===== -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script dịch thuật và script game TETRIS -->
+    <script src="js/lang-tetris.js"></script> <!-- File dịch thuật riêng -->
+    <script src="js/tetris-game.js"></script> <!-- File game mới -->
+
+</body>
+
+</html>

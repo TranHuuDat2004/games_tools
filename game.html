@@ -77,7 +77,6 @@
 <body>
     <!-- Sử dụng Component Header -->
     <div id="header-placeholder"></div>
-
     <!-- ===== MAIN CONTENT START ===== -->
     <main class="main-content-area container py-5">
 
@@ -88,14 +87,12 @@
         </div>
 
         <div class="row justify-content-center">
-            <!-- Card cho Game Cờ Caro -->
-            <div class="col-lg-5 col-md-6 mb-4">
+            <!-- Card cho Game Cờ Caro (Đổi col-lg-5 -> col-lg-4) -->
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
-                    <!-- <<< THÊM DIV WRAPPER Ở ĐÂY >>> -->
                     <div class="game-image-wrapper">
                         <img src="img/demo_caro.png" alt="Game Cờ Caro" class="game-image">
                     </div>
-
                     <h3 class="text-center" data-translate="caroCardTitle">Cờ Caro (Gomoku)</h3>
                     <p data-translate="caroCardDesc">
                         Một trò chơi chiến thuật kinh điển. Hãy sắp xếp 5 quân cờ của bạn thành một hàng trước đối thủ.
@@ -110,14 +107,12 @@
                 </div>
             </div>
 
-            <!-- Card cho Game Xếp Hình -->
-            <div class="col-lg-5 col-md-6 mb-4">
+            <!-- Card cho Game Xếp Hình (Đổi col-lg-5 -> col-lg-4) -->
+            <div class="col-lg-4 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
-                    <!-- <<< THÊM DIV WRAPPER Ở ĐÂY >>> -->
                     <div class="game-image-wrapper">
                         <img src="img/demo_game.png" alt="Game Xếp Hình" class="game-image">
                     </div>
-
                     <h3 class="text-center" data-translate="puzzleCardTitle">Game Xếp Hình</h3>
                     <p data-translate="puzzleCardDesc">
                         Thư giãn và rèn luyện óc quan sát với những bức tranh đầy màu sắc. Kéo, thả và xoay các mảnh
@@ -132,9 +127,34 @@
                 </div>
             </div>
 
+            <!-- ===== CARD MỚI CHO GAME TETRIS (Thêm vào đây) ===== -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card h-100 d-flex flex-column">
+                    <div class="game-image-wrapper">
+                        <!-- Bạn cần tạo ảnh demo cho Tetris và đặt vào thư mục img -->
+                        <img src="img/demo_tetris.png" alt="Game Xếp Gạch Tetris" class="game-image"
+                            data-translate-attr="alt:tetrisCardAlt">
+                    </div>
+                    <h3 class="text-center" data-translate="tetrisCardTitle">Xếp Gạch (Tetris)</h3>
+                    <p data-translate="tetrisCardDesc">
+                        Trò chơi kinh điển thách thức tốc độ và khả năng sắp xếp của bạn. Xếp các khối gạch để lấp đầy
+                        các hàng và ghi điểm cao nhất có thể!
+                    </p>
+                    <div class="text-center mt-auto">
+                        <!-- Đổi link href và icon -->
+                        <a href="tetris.html" class="btn btn-warning btn-lg">
+                            <i class="fas fa-cubes mr-2"></i>
+                            <span data-translate="playButton">Chơi Ngay</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- ======================================================== -->
+
         </div>
 
     </main>
+
     <!-- ===== MAIN CONTENT END ===== -->
 
     <footer-placeholder></footer-placeholder>
@@ -144,7 +164,7 @@
     <script src="js/footer.js"></script>
     <script src="js/lang-game-page.js"></script>
 
-<script src="js/i18n.js"></script>
+    <script src="js/i18n.js"></script>
 </body>
 
 </html>
