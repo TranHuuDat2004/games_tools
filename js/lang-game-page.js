@@ -14,6 +14,10 @@ const translations = {
         puzzleCardTitle: "Jigsaw Puzzle",
         puzzleCardDesc: "Relax and train your observation skills with colorful pictures. Drag, drop, and rotate the pieces to complete the challenge.",
         playButton: "Play Now",
+        // ===== THÊM CÁC KEY MỚI CHO TETRIS =====
+        tetrisCardTitle: "Block Puzzle (Tetris)",
+        tetrisCardDesc: "The classic game that challenges your speed and arrangement skills. Stack the blocks to fill rows and get the highest score possible!",
+        tetrisCardAlt: "Tetris block game"
     },
     vi: {
         // ... các key cũ của bạn ...
@@ -28,6 +32,10 @@ const translations = {
         puzzleCardTitle: "Game Xếp Hình",
         puzzleCardDesc: "Thư giãn và rèn luyện óc quan sát với những bức tranh đầy màu sắc. Kéo, thả và xoay các mảnh ghép để hoàn thành thử thách.",
         playButton: "Chơi Ngay",
+         // ===== THÊM CÁC KEY MỚI CHO TETRIS =====
+        tetrisCardTitle: "Xếp Gạch (Tetris)",
+        tetrisCardDesc: "Trò chơi kinh điển thách thức tốc độ và khả năng sắp xếp của bạn. Xếp các khối gạch để lấp đầy các hàng và ghi điểm cao nhất có thể!",
+        tetrisCardAlt: "Game xếp gạch Tetris"
     }
 };
 
