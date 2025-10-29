@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resize Tool Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <h1>Resize Tool Test Page</h1>
+    <p>Open the console (F12) to see test results.</p>
+
+    <div class="container">
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-12 form-group">
+                <label for="image-input">Select image file:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="image-input"
+                        accept="image/png, image/jpeg, image/gif, image/webp">
+                    <label class="custom-file-label" for="image-input">Choose file...</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-3 form-group">
+                <label for="width-input">Width (px):</label>
+                <input type="number" class="form-control" id="width-input" min="1" placeholder="e.g., 800">
+            </div>
+            <div class="col-md-3 form-group">
+                <label for="height-input">Height (px):</label>
+                <input type="number" class="form-control" id="height-input" min="1" placeholder="e.g., 600">
+            </div>
+            <div class="col-md-3 form-group d-flex align-items-center pt-4">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aspect-ratio-lock" checked>
+                    <label class="custom-control-label" for="aspect-ratio-lock">Lock aspect ratio</label>
+                </div>
+            </div>
+            <div class="col-md-3 form-group">
+                <button id="resize-button" class="btn btn-warning btn-block" disabled>Resize Image</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Original Image</h5>
+                    <span id="original-preview-placeholder" class="preview-placeholder">No image selected</span>
+                    <img id="original-preview-image" src="#" alt="Original image preview">
+                    <p id="original-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="preview-section">
+                    <h5>Resized Image</h5>
+                    <span id="resized-preview-placeholder" class="preview-placeholder">No result yet</span>
+                    <img id="resized-preview-image" src="#" alt="Resized image preview">
+                    <p id="resized-dimensions" class="mt-2 small text-muted"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-message" class="text-center mb-3"></div>
+
+        <div class="row mt-3 mb-4">
+            <div class="col-md-6 offset-md-3">
+                <button id="download-button" class="btn btn-success btn-block" disabled>Download Resized Image</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/setLanguage.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../resize.html"></script> <!-- Load the script from resize.html -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Running resize tool tests...");
+
+            const imageInput = document.getElementById('image-input');
+            const widthInput = document.getElementById('width-input');
+            const heightInput = document.getElementById('height-input');
+            const resizeButton = document.getElementById('resize-button');
+            const errorMessage = document.getElementById('error-message');
+            const originalDimensionsP = document.getElementById('original-dimensions');
+            const resizedDimensionsP = document.getElementById('resized-dimensions');
+
+            // Mock a file input change event
+            function mockFileInput(file) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageInput.files = dataTransfer.files;
+                imageInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // Test Case 1: Invalid file type
+            console.log("Test Case 1: Invalid file type");
+            const invalidFile = new File(["dummy content"], "test.txt", { type: "text/plain" });
+            mockFileInput(invalidFile);
+            console.assert(errorMessage.textContent.includes('file ảnh hợp lệ'), "Test 1 Failed: Should show invalid file type error.");
+
+            // Test Case 2: Valid image, resize to specific dimensions
+            console.log("Test Case 2: Valid image, resize to specific dimensions");
+            const img = new Image();
+            img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="; // 1x1 transparent PNG
+            img.onload = () => {
+                const originalNaturalWidth = 1;
+                const originalNaturalHeight = 1;
+
+                // Simulate file selection
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(new File([""], "test.png", { type: "image/png" }));
+                imageInput.files = dataTransfer.files;
+                imageInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                // Wait for image to load and UI to update
+                setTimeout(() => {
+                    widthInput.value = 100;
+                    heightInput.value = 50;
+                    resizeButton.click();
+
+                    setTimeout(() => {
+                        console.assert(resizedDimensionsP.textContent.includes('100x50px'), "Test 2 Failed: Resized dimensions should be 100x50px.");
+                        console.assert(errorMessage.textContent === '', "Test 2 Failed: Should not show error.");
+                    }, 500);
+                }, 500);
+            };
+
+            // Test Case 3: Resize with aspect ratio locked
+            console.log("Test Case 3: Resize with aspect ratio locked");
+            const img2 = new Image();
+            img2.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAQAAAC1HwMwAAAAFUlEQVR42mNkYGBgYmBgYmBgYgABAAQAAx4y2gAAAAAASUVORK5CYII="; // 2x2 transparent PNG
+            img2.onload = () => {
+                // Simulate file selection
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(new File([""], "test2.png", { type: "image/png" }));
+                imageInput.files = dataTransfer.files;
+                imageInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                setTimeout(() => {
+                    widthInput.value = 200;
+                    // heightInput should automatically update to 200 due to aspect ratio lock
+                    resizeButton.click();
+
+                    setTimeout(() => {
+                        console.assert(resizedDimensionsP.textContent.includes('200x200px'), "Test 3 Failed: Resized dimensions should be 200x200px.");
+                        console.assert(errorMessage.textContent === '', "Test 3 Failed: Should not show error.");
+                    }, 500);
+                }, 500);
+            };
+
+        });
+    </script>
+</body>
+</html>

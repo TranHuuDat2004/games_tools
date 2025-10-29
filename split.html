@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="splitPageTitle">Công Cụ Cắt Ảnh</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/split.css"> <!-- Link đến file CSS riêng của split -->
     <link rel="icon" href="favicon.png" type="image/png">
 </head>
 
@@ -176,9 +177,9 @@
     </footer>
     <!-- ===== FOOTER END ===== -->
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
@@ -186,7 +187,7 @@
 
     <!-- Custom JavaScript -->
     <script>
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
             const imageInput = document.getElementById('image-input');
             const previewImage = document.getElementById('preview-image');
             const previewPlaceholder = document.getElementById('preview-placeholder');
@@ -195,67 +196,62 @@
             const splitButton = document.getElementById('split-button');
             const tilesOutput = document.getElementById('tiles-output');
             const errorMessage = document.getElementById('error-message');
-            const fileLabel = $('.custom-file-label'); // Lấy label của input file
+            const fileLabel = document.querySelector('.custom-file-label');
 
-            let originalImage = null; // Lưu trữ đối tượng Image gốc
-            let originalFileName = 'image'; // Tên file gốc để đặt tên cho các mảnh
+            let originalImage = null;
+            let originalFileName = 'image';
 
-            // --- Xử lý chọn file ---
             imageInput.addEventListener('change', function (e) {
-                errorMessage.textContent = ''; // Xóa lỗi cũ
-                tilesOutput.innerHTML = ''; // Xóa kết quả cũ
+                errorMessage.textContent = '';
+                tilesOutput.innerHTML = '';
                 const file = e.target.files[0];
                 if (!file) {
                     previewImage.style.display = 'none';
                     previewPlaceholder.style.display = 'inline';
                     splitButton.disabled = true;
-                    fileLabel.text('Chọn file...');
+                    fileLabel.textContent = 'Chọn file...';
                     originalImage = null;
                     return;
                 }
 
-                // Kiểm tra loại file
                 if (!file.type.startsWith('image/')) {
                     showError('Vui lòng chọn một file ảnh hợp lệ (png, jpg, gif, webp).');
                     previewImage.style.display = 'none';
                     previewPlaceholder.style.display = 'inline';
                     splitButton.disabled = true;
-                    fileLabel.text('Chọn file...');
-                    imageInput.value = ''; // Reset input file
+                    fileLabel.textContent = 'Chọn file...';
+                    imageInput.value = '';
                     originalImage = null;
                     return;
                 }
 
-                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image'; // Lấy tên file gốc (bỏ phần mở rộng)
+                originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
 
-                // Đọc file và hiển thị preview
                 const reader = new FileReader();
                 reader.onload = function (event) {
                     previewImage.src = event.target.result;
                     previewImage.style.display = 'block';
                     previewPlaceholder.style.display = 'none';
 
-                    // Quan trọng: Tạo đối tượng Image để lấy kích thước thực
                     originalImage = new Image();
                     originalImage.onload = () => {
                         console.log(`Ảnh đã tải: ${originalImage.naturalWidth}x${originalImage.naturalHeight}`);
-                        splitButton.disabled = false; // Kích hoạt nút cắt khi ảnh đã sẵn sàng
+                        splitButton.disabled = false;
                     };
                     originalImage.onerror = () => {
                         showError('Không thể tải ảnh để xử lý.');
                         splitButton.disabled = true;
                         originalImage = null;
                     };
-                    originalImage.src = event.target.result; // Gán src cho đối tượng Image
+                    originalImage.src = event.target.result;
                 }
                 reader.readAsDataURL(file);
-                fileLabel.text(file.name); // Hiển thị tên file đã chọn
+                fileLabel.textContent = file.name;
             });
 
-            // --- Xử lý nhấn nút Cắt Ảnh ---
             splitButton.addEventListener('click', function () {
-                errorMessage.textContent = ''; // Xóa lỗi cũ
-                tilesOutput.innerHTML = ''; // Xóa kết quả cũ
+                errorMessage.textContent = '';
+                tilesOutput.innerHTML = '';
 
                 if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
                     showError('Ảnh chưa được tải hoặc không hợp lệ. Vui lòng chọn lại ảnh.');
@@ -274,7 +270,6 @@
                 splitImageIntoTiles(originalImage, rows, cols);
             });
 
-            // --- Hàm cắt ảnh ---
             function splitImageIntoTiles(img, rows, cols) {
                 const naturalWidth = img.naturalWidth;
                 const naturalHeight = img.naturalHeight;
@@ -288,94 +283,62 @@
                     return;
                 }
 
-                // Giả sử originalFileName và numCols (ở đây là cols) đã được định nghĩa
-                // Ví dụ: const originalFileName = "anh"; // Lấy từ tên file gốc, không có đuôi
-                // const numCols = cols; // Số cột chính là biến cols truyền vào hàm
-
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
-                        // Tính toán tọa độ và kích thước chính xác cho từng mảnh
-                        // Sử dụng kích thước đã làm tròn để tránh lỗi pixel lẻ
                         const sx = c * tileWidth;
                         const sy = r * tileHeight;
-                        // Tính kích thước thực tế cho mảnh cuối cùng nếu kích thước gốc không chia hết
                         const sWidth = (c === cols - 1) ? (naturalWidth - sx) : tileWidth;
                         const sHeight = (r === rows - 1) ? (naturalHeight - sy) : tileHeight;
 
-                        // Tạo canvas tạm để vẽ mảnh ảnh
                         const canvas = document.createElement('canvas');
-                        canvas.width = sWidth; // Kích thước canvas bằng kích thước mảnh thực tế
+                        canvas.width = sWidth;
                         canvas.height = sHeight;
                         const ctx = canvas.getContext('2d');
 
-                        // Vẽ phần ảnh tương ứng từ ảnh gốc lên canvas tạm
-                        // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
                         try {
                             ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
 
-                            // Tạo thẻ img để hiển thị mảnh
                             const tileImg = document.createElement('img');
-                            // Lấy Data URL từ canvas (chất lượng cao hơn nếu dùng toBlob nhưng phức tạp hơn)
-                            const dataUrl = canvas.toDataURL('image/png'); // Hoặc 'image/jpeg'
+                            const dataUrl = canvas.toDataURL('image/png');
                             tileImg.src = dataUrl;
                             tileImg.alt = `Mảnh ${r + 1}-${c + 1}`;
 
-                            // === PHẦN SỬA ĐỔI TÊN FILE ===
-                            // Tính toán số thứ tự tăng dần cho mảnh ảnh
-                            const pieceNumber = (r * cols) + (c + 1); // Sử dụng 'cols' trực tiếp từ tham số hàm
-
-                            // Tạo link tải về cho từng mảnh
+                            const pieceNumber = (r * cols) + (c + 1);
                             const downloadLink = document.createElement('a');
-
-                            // Tên file mới theo dạng: originalFileName-sốThứTự.png
-                            // Cần đảm bảo biến 'originalFileName' đã được định nghĩa ở đâu đó ngoài hàm này,
-                            // hoặc bạn cần một cách để lấy tên file gốc ở đây.
-                            // Ví dụ: const originalFileNameFromFile = uploadedFileName.split('.').slice(0, -1).join('.');
-                            const fileName = `anh_${pieceNumber}.png`; // Giả sử originalFileName là tên gốc không đuôi
+                            const fileName = `anh_${pieceNumber}.png`;
 
                             downloadLink.href = dataUrl;
                             downloadLink.download = fileName;
-
-                            // Cập nhật textContent của link cho phù hợp
                             downloadLink.textContent = `Tải ảnh-${pieceNumber}`;
-                            downloadLink.classList.add('btn', 'btn-sm', 'btn-outline-secondary', 'mt-1'); // Thêm class Bootstrap
-                            // === KẾT THÚC PHẦN SỬA ĐỔI ===
+                            downloadLink.classList.add('btn', 'btn-sm', 'btn-outline-secondary', 'mt-1');
 
-
-                            // Tạo container cho ảnh và link
                             const tileContainer = document.createElement('div');
                             tileContainer.classList.add('tile-container');
                             tileContainer.appendChild(tileImg);
                             tileContainer.appendChild(downloadLink);
 
-
-                            // Thêm vào khu vực hiển thị kết quả
                             tilesOutput.appendChild(tileContainer);
 
                         } catch (error) {
                             console.error(`Lỗi khi vẽ mảnh (${r}, ${c}):`, error);
                             showError(`Có lỗi xảy ra khi xử lý mảnh ảnh (${r + 1}, ${c + 1}).`);
-                            // Có thể dừng vòng lặp nếu muốn
-                            // return;
                         }
                     }
                 }
                 console.log("Cắt ảnh hoàn tất.");
             }
 
-            // --- Hàm hiển thị lỗi ---
             function showError(message) {
                 errorMessage.textContent = message;
                 console.error("Lỗi:", message);
             }
 
-            // Cập nhật label của input file khi chọn file (cho Bootstrap)
-            $('.custom-file-input').on('change', function () {
-                let fileName = $(this).val().split('\\').pop();
-                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Chọn file...');
+            document.querySelector('.custom-file-input').addEventListener('change', function () {
+                let fileName = this.value.split('\\').pop();
+                this.nextElementSibling.classList.add("selected");
+                this.nextElementSibling.innerHTML = fileName || 'Chọn file...';
             });
-
-        }); // End $(document).ready
+        });
     </script>
 
 </body>

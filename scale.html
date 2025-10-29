@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/scale.css"> <!-- Link đến file CSS riêng của scale -->
     <link rel="icon" href="favicon.png" type="image/png">
 </head>
 
@@ -182,9 +183,9 @@
     <!-- ===== FOOTER END ===== -->
      
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
@@ -192,46 +193,42 @@
 
     <!-- Custom JavaScript -->
     <script>
-        $(document).ready(function () {
-            // --- Lấy các phần tử DOM ---
+        document.addEventListener('DOMContentLoaded', function () {
             const imageInput = document.getElementById('image-upload');
-            const originalImage = document.getElementById('original-image'); // Thẻ img hiển thị
-            const previewPlaceholder = document.getElementById('preview-placeholder');
+            const originalImage = document.getElementById('original-image');
             const errorMessage = document.getElementById('error-message');
-            const fileLabel = $('.custom-file-label');
+            const fileLabel = document.querySelector('.custom-file-label');
             const imageContainer = document.getElementById('image-crop-container');
             const cropBox = document.getElementById('crop-box');
-            const cropHandles = cropBox ? cropBox.querySelectorAll('.crop-handle') : [];
+            const cropHandles = cropBox.querySelectorAll('.crop-handle');
             const cropResultDiv = document.getElementById('crop-result');
             const croppedImagePreview = document.getElementById('cropped-image-preview');
             const downloadLink = document.getElementById('download-link');
             const cropButton = document.getElementById('crop-button');
 
-            // --- KHAI BÁO BIẾN Ở SCOPE CHUNG ---
             let originalFileName = 'anh_goc';
-            let img = new Image(); // Đối tượng ảnh ẩn để load và lấy kích thước thực
+            let img = new Image();
             let isDragging = false;
             let isResizing = false;
             let currentHandle = null;
             let startX, startY, initialX, initialY, initialWidth, initialHeight;
 
-            // --- Xử lý chọn file ---
             imageInput.addEventListener('change', function (e) {
                 resetState();
                 const file = e.target.files[0];
                 if (!file) {
-                    fileLabel.text('Chọn file...');
+                    fileLabel.textContent = 'Chọn file...';
                     return;
                 }
                 if (!file.type.startsWith('image/')) {
                     showError('Vui lòng chọn một file ảnh hợp lệ (png, jpg, gif, webp).');
                     imageInput.value = '';
-                    fileLabel.text('Chọn file...');
+                    fileLabel.textContent = 'Chọn file...';
                     return;
                 }
 
                 originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
-                fileLabel.text(file.name);
+                fileLabel.textContent = file.name;
 
                 const reader = new FileReader();
                 reader.onload = function (event) {
@@ -239,8 +236,6 @@
                         originalImage.src = event.target.result;
                         originalImage.style.display = 'block';
                         originalImage.classList.add('loaded');
-                        if (previewPlaceholder) previewPlaceholder.style.display = 'none';
-                        console.log(`Ảnh đã tải: ${img.naturalWidth}x${img.naturalHeight}`);
                         initializeCropBox();
                         if (cropButton) cropButton.disabled = false;
                     };
@@ -258,8 +253,6 @@
                 reader.readAsDataURL(file);
             });
 
-
-            // --- Hàm Khởi tạo Crop Box ---
             function initializeCropBox() {
                 if (!cropBox || !img || img.naturalWidth === 0 || !originalImage || !imageContainer) {
                     console.warn("initializeCropBox: Các phần tử cần thiết chưa sẵn sàng.");
@@ -267,18 +260,14 @@
                 }
                 if (cropResultDiv) cropResultDiv.style.display = 'none';
                 cropBox.style.display = 'block';
-                const containerWidth = imageContainer.clientWidth;
-                const containerHeight = imageContainer.clientHeight;
                 const displayWidth = originalImage.clientWidth;
                 const displayHeight = originalImage.clientHeight;
 
                 if (displayWidth === 0 || displayHeight === 0) {
-                    console.warn("initializeCropBox: Kích thước hiển thị là 0, thử lại...");
                     setTimeout(initializeCropBox, 100);
                     return;
                 }
                 let initialSize = Math.min(displayWidth, displayHeight) * 0.8;
-                initialSize = Math.min(initialSize, displayWidth, displayHeight);
                 initialSize = Math.max(20, initialSize);
                 const cropBoxTopRelativeToImage = (displayHeight - initialSize) / 2;
                 const cropBoxLeftRelativeToImage = (displayWidth - initialSize) / 2;
@@ -295,7 +284,6 @@
                 });
             }
 
-            // === CÁC HÀM XỬ LÝ TƯƠNG TÁC CHUNG (CHUỘT VÀ CHẠM) ===
             function getCoords(e) {
                 if (e.touches && e.touches.length > 0) {
                     return { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -335,213 +323,146 @@
 
             function handleInteractionMove(e) {
                 if (!isDragging && !isResizing) return;
-                e.preventDefault(); // Ngăn cuộn trang trên mobile
+                e.preventDefault();
                 const coords = getCoords(e);
-                const currentX = coords.x;
-                const currentY = coords.y;
-                const deltaX = currentX - startX;
-                const deltaY = currentY - startY;
+                const deltaX = coords.x - startX;
+                const deltaY = coords.y - startY;
                 const displayWidth = originalImage.clientWidth;
                 const displayHeight = originalImage.clientHeight;
                 const offsetX = originalImage.offsetLeft;
                 const offsetY = originalImage.offsetTop;
 
-                if (displayWidth === 0 || displayHeight === 0) return;
-
                 if (isDragging) {
                     let newLeft = initialX + deltaX;
                     let newTop = initialY + deltaY;
-                    const minLeft = offsetX;
                     const maxLeft = offsetX + displayWidth - cropBox.offsetWidth;
-                    const minTop = offsetY;
                     const maxTop = offsetY + displayHeight - cropBox.offsetHeight;
-                    newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
-                    newTop = Math.max(minTop, Math.min(newTop, maxTop));
+                    newLeft = Math.max(offsetX, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(offsetY, Math.min(newTop, maxTop));
                     cropBox.style.left = `${newLeft}px`;
                     cropBox.style.top = `${newTop}px`;
                 } else if (isResizing) {
-                    let newLeft = initialX; let newTop = initialY;
-                    let newWidth = initialWidth; let newHeight = initialHeight;
-                    const imageLeftEdge = offsetX;
-                    const imageTopEdge = offsetY;
-                    const imageRightEdge = offsetX + displayWidth;
-                    const imageBottomEdge = offsetY + displayHeight;
+                    let newWidth = initialWidth;
+                    let newHeight = initialHeight;
+                    let newLeft = initialX;
+                    let newTop = initialY;
 
                     if (currentHandle.classList.contains('handle-se')) {
-                        newWidth = initialWidth + deltaX; newHeight = initialHeight + deltaY;
-                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
-                        newWidth = Math.min(newWidth, imageRightEdge - initialX);
-                        newHeight = Math.min(newHeight, imageBottomEdge - initialY);
-                        newWidth = newHeight = Math.min(newWidth, newHeight);
+                        newWidth = initialWidth + deltaX;
+                        newHeight = initialHeight + deltaY;
+                        newWidth = newHeight = Math.max(newWidth, newHeight);
                     } else if (currentHandle.classList.contains('handle-nw')) {
-                        newWidth = initialWidth - deltaX; newHeight = initialHeight - deltaY;
-                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
-                        let tempLeft = initialX + (initialWidth - newWidth);
-                        let tempTop = initialY + (initialHeight - newHeight);
-                        if (tempLeft < imageLeftEdge) { newWidth -= (imageLeftEdge - tempLeft); tempLeft = imageLeftEdge; }
-                        if (tempTop < imageTopEdge) { newHeight -= (imageTopEdge - tempTop); tempTop = imageTopEdge; }
-                        newWidth = newHeight = Math.min(newWidth, newHeight);
-                        if (newWidth >= 20) { newLeft = tempLeft; newTop = tempTop; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                        newWidth = initialWidth - deltaX;
+                        newHeight = initialHeight - deltaY;
+                        newWidth = newHeight = Math.max(newWidth, newHeight);
+                        newLeft = initialX + (initialWidth - newWidth);
+                        newTop = initialY + (initialHeight - newHeight);
                     } else if (currentHandle.classList.contains('handle-ne')) {
-                        newWidth = initialWidth + deltaX; newHeight = initialHeight - deltaY;
-                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
-                        let tempTop = initialY + (initialHeight - newHeight);
-                        if (tempTop < imageTopEdge) { newHeight -= (imageTopEdge - tempTop); tempTop = imageTopEdge; }
-                        newWidth = Math.min(newWidth, imageRightEdge - initialX);
-                        newWidth = newHeight = Math.min(newWidth, newHeight);
-                        if (newHeight >= 20) { newTop = tempTop; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                        newWidth = initialWidth + deltaX;
+                        newHeight = initialHeight - deltaY;
+                        newWidth = newHeight = Math.max(newWidth, newHeight);
+                        newTop = initialY + (initialHeight - newHeight);
                     } else if (currentHandle.classList.contains('handle-sw')) {
-                        newWidth = initialWidth - deltaX; newHeight = initialHeight + deltaY;
-                        newWidth = newHeight = Math.max(20, Math.max(newWidth, newHeight));
-                        let tempLeft = initialX + (initialWidth - newWidth);
-                        if (tempLeft < imageLeftEdge) { newWidth -= (imageLeftEdge - tempLeft); tempLeft = imageLeftEdge; }
-                        newHeight = Math.min(newHeight, imageBottomEdge - initialY);
-                        newWidth = newHeight = Math.min(newWidth, newHeight);
-                        if (newWidth >= 20) { newLeft = tempLeft; } else { newWidth = initialWidth; newHeight = initialHeight; }
+                        newWidth = initialWidth - deltaX;
+                        newHeight = initialHeight + deltaY;
+                        newWidth = newHeight = Math.max(newWidth, newHeight);
+                        newLeft = initialX + (initialWidth - newWidth);
                     }
-                    if (newWidth >= 20 && newHeight >= 20) {
-                        Object.assign(cropBox.style, {
-                            width: `${newWidth}px`, height: `${newHeight}px`,
-                            top: `${newTop}px`, left: `${newLeft}px`
-                        });
-                    }
+
+                    newWidth = Math.max(20, newWidth);
+                    newHeight = Math.max(20, newHeight);
+
+                    const maxDim = Math.min(originalImage.width - newLeft + offsetX, originalImage.height - newTop + offsetY);
+                    newWidth = newHeight = Math.min(newWidth, maxDim);
+
+                    cropBox.style.width = `${newWidth}px`;
+                    cropBox.style.height = `${newHeight}px`;
+                    cropBox.style.left = `${newLeft}px`;
+                    cropBox.style.top = `${newTop}px`;
                 }
             }
 
             function handleInteractionEnd(e) {
-                if (isDragging || isResizing) {
-                    isDragging = false;
-                    isResizing = false;
-                    currentHandle = null;
-                    if (cropBox) cropBox.style.cursor = 'move';
-                    document.removeEventListener('mousemove', handleInteractionMove);
-                    document.removeEventListener('touchmove', handleInteractionMove);
-                    document.removeEventListener('mouseup', handleInteractionEnd);
-                    document.removeEventListener('touchend', handleInteractionEnd);
+                isDragging = false;
+                isResizing = false;
+                currentHandle = null;
+                cropBox.style.cursor = 'move';
+                document.removeEventListener('mousemove', handleInteractionMove);
+                document.removeEventListener('touchmove', handleInteractionMove);
+                document.removeEventListener('mouseup', handleInteractionEnd);
+                document.removeEventListener('touchend', handleInteractionEnd);
+            }
+
+            cropBox.addEventListener('mousedown', handleInteractionStart);
+            cropBox.addEventListener('touchstart', handleInteractionStart, { passive: false });
+
+            cropButton.addEventListener('click', function () {
+                if (!img || !img.complete || img.naturalWidth === 0) {
+                    showError('Ảnh gốc chưa sẵn sàng hoặc không hợp lệ.');
+                    return;
                 }
-            }
+                if (!cropBox || cropBox.style.display === 'none') {
+                    showError('Vùng chọn chưa được khởi tạo hoặc đang ẩn.');
+                    return;
+                }
+                const scaleX = img.naturalWidth / originalImage.clientWidth;
+                const scaleY = img.naturalHeight / originalImage.clientHeight;
+                const sourceX = (cropBox.offsetLeft - originalImage.offsetLeft) * scaleX;
+                const sourceY = (cropBox.offsetTop - originalImage.offsetTop) * scaleY;
+                const sourceSize = cropBox.offsetWidth * scaleX;
 
-            // --- Gắn Listener Ban Đầu ---
-            if (cropBox) {
-                cropBox.addEventListener('mousedown', handleInteractionStart);
-                cropBox.addEventListener('touchstart', handleInteractionStart, { passive: false });
-            }
-            if (cropHandles) {
-                cropHandles.forEach(handle => {
-                    handle.addEventListener('mousedown', handleInteractionStart);
-                    handle.addEventListener('touchstart', handleInteractionStart, { passive: false });
-                });
-            }
+                if (sourceSize <= 0) {
+                    showError('Kích thước vùng cắt không hợp lệ (quá nhỏ hoặc nằm ngoài ảnh).');
+                    return;
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = sourceSize;
+                canvas.height = sourceSize;
+                const ctx = canvas.getContext('2d');
+                try {
+                    ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, 0, 0, sourceSize, sourceSize);
+                    const croppedImageDataUrl = canvas.toDataURL('image/png');
+                    croppedImagePreview.src = croppedImageDataUrl;
+                    downloadLink.href = croppedImageDataUrl;
+                    downloadLink.download = `${originalFileName}_square.png`;
+                    downloadLink.style.display = 'inline-block';
+                    cropResultDiv.style.display = 'block';
+                    errorMessage.textContent = '';
+                } catch (error) {
+                    console.error("Lỗi khi cắt ảnh:", error);
+                    showError("Đã xảy ra lỗi trong quá trình cắt ảnh.");
+                    cropResultDiv.style.display = 'none';
+                }
+            });
 
-            // --- Xử lý nhấn nút Cắt Ảnh ---
-            if (cropButton) {
-                cropButton.addEventListener('click', function () {
-                    if (!img || !img.complete || img.naturalWidth === 0) {
-                        showError('Ảnh gốc chưa sẵn sàng hoặc không hợp lệ.');
-                        return;
-                    }
-                    if (!cropBox || cropBox.style.display === 'none') {
-                        showError('Vùng chọn chưa được khởi tạo hoặc đang ẩn.');
-                        return;
-                    }
-                    const boxLeft = cropBox.offsetLeft;
-                    const boxTop = cropBox.offsetTop;
-                    const boxSize = cropBox.offsetWidth;
-                    const displayWidth = originalImage.clientWidth;
-                    const displayHeight = originalImage.clientHeight;
-                    const offsetX = originalImage.offsetLeft;
-                    const offsetY = originalImage.offsetTop;
-
-                    if (displayWidth === 0 || displayHeight === 0) {
-                        showError('Không thể xác định kích thước ảnh hiển thị.');
-                        return;
-                    }
-                    const scaleX = img.naturalWidth / displayWidth;
-                    const scaleY = img.naturalHeight / displayHeight;
-                    const boxLeftImage = boxLeft - offsetX;
-                    const boxTopImage = boxTop - offsetY;
-                    const sourceX = boxLeftImage * scaleX;
-                    const sourceY = boxTopImage * scaleY;
-                    const sourceCropBoxWidth = boxSize * scaleX;
-                    const sourceCropBoxHeight = boxSize * scaleY;
-                    const effectiveSourceSize = Math.min(sourceCropBoxWidth, sourceCropBoxHeight);
-                    const effectiveSourceX = Math.max(0, sourceX);
-                    const effectiveSourceY = Math.max(0, sourceY);
-                    const finalCropSize = Math.min(
-                        effectiveSourceSize,
-                        img.naturalWidth - effectiveSourceX,
-                        img.naturalHeight - effectiveSourceY
-                    );
-
-                    if (finalCropSize <= 0) {
-                        showError('Kích thước vùng cắt không hợp lệ (quá nhỏ hoặc nằm ngoài ảnh).');
-                        return;
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = finalCropSize;
-                    canvas.height = finalCropSize;
-                    const ctx = canvas.getContext('2d');
-                    try {
-                        ctx.drawImage(
-                            img,
-                            effectiveSourceX, effectiveSourceY,
-                            finalCropSize, finalCropSize,
-                            0, 0,
-                            canvas.width, canvas.height
-                        );
-                        const croppedImageDataUrl = canvas.toDataURL('image/png');
-                        if (croppedImagePreview) croppedImagePreview.src = croppedImageDataUrl;
-                        if (downloadLink) {
-                            downloadLink.href = croppedImageDataUrl;
-                            downloadLink.download = `${(originalFileName || 'anh_da_cat').replace(/ /g, '_')}_vuong.png`;
-                            downloadLink.style.display = 'inline-block';
-                        }
-                        if (cropResultDiv) cropResultDiv.style.display = 'block';
-                        if (errorMessage) errorMessage.textContent = '';
-                    } catch (error) {
-                        console.error("Lỗi khi cắt ảnh:", error);
-                        showError("Đã xảy ra lỗi trong quá trình cắt ảnh.");
-                        if (cropResultDiv) cropResultDiv.style.display = 'none';
-                    }
-                });
-            }
-
-            // --- Hàm hiển thị lỗi ---
             function showError(message) {
-                if (errorMessage) errorMessage.textContent = message;
+                errorMessage.textContent = message;
                 console.error("Lỗi:", message);
             }
 
-            // --- Hàm reset trạng thái ---
             function resetState() {
-                if (errorMessage) errorMessage.textContent = '';
-                if (cropButton) cropButton.disabled = true;
-                // Xóa luôn nút cắt lưới nếu nó còn tồn tại trong DOM (mặc dù không dùng)
-                const splitBtn = document.getElementById('split-button');
-                if (splitBtn) splitBtn.disabled = true;
-
-                if (cropBox) cropBox.style.display = 'none';
-                if (cropResultDiv) cropResultDiv.style.display = 'none';
-                if (downloadLink) downloadLink.style.display = 'none';
-                if (originalImage) {
-                    originalImage.src = '#';
-                    originalImage.style.display = 'none';
-                    originalImage.classList.remove('loaded');
-                }
-                if (previewPlaceholder) previewPlaceholder.style.display = 'inline';
+                errorMessage.textContent = '';
+                cropButton.disabled = true;
+                cropBox.style.display = 'none';
+                cropResultDiv.style.display = 'none';
+                downloadLink.style.display = 'none';
+                originalImage.src = '#';
+                originalImage.style.display = 'none';
+                originalImage.classList.remove('loaded');
                 img = new Image();
                 originalFileName = 'anh_goc';
-                if (fileLabel) fileLabel.text('Chọn file...');
-                isDragging = false; isResizing = false; currentHandle = null;
+                fileLabel.textContent = 'Chọn file...';
+                isDragging = false;
+                isResizing = false;
+                currentHandle = null;
             }
 
-            // --- Cập nhật label của input file (Bootstrap) ---
-            $('.custom-file-input').on('change', function () {
-                let fileName = $(this).val().split('\\').pop();
-                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Chọn file...');
+            imageInput.addEventListener('change', function () {
+                let fileName = this.value.split('\\').pop();
+                this.nextElementSibling.classList.add("selected");
+                this.nextElementSibling.innerHTML = fileName || 'Chọn file...';
             });
-
-        }); // End $(document).ready
+        });
     </script>
 </body>
 

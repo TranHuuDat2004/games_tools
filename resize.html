@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="resizePageTitle">Công Cụ Thay Đổi Kích Thước Ảnh</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/resize.css"> <!-- Link đến file CSS riêng của resize -->
     <link rel="icon" href="favicon.png" type="image/png">
 </head>
 
@@ -178,9 +179,9 @@
     <!-- ===== FOOTER END ===== -->
 
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
     
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
@@ -188,23 +189,23 @@
 
     <!-- Custom JavaScript -->
     <script>
-        $(document).ready(function () {
-            const imageInput = $('#image-input');
-            const originalPreviewImage = $('#original-preview-image');
-            const originalPreviewPlaceholder = $('#original-preview-placeholder');
-            const originalDimensionsP = $('#original-dimensions');
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageInput = document.getElementById('image-input');
+            const originalPreviewImage = document.getElementById('original-preview-image');
+            const originalPreviewPlaceholder = document.getElementById('original-preview-placeholder');
+            const originalDimensionsP = document.getElementById('original-dimensions');
 
-            const resizedPreviewImage = $('#resized-preview-image');
-            const resizedPreviewPlaceholder = $('#resized-preview-placeholder');
-            const resizedDimensionsP = $('#resized-dimensions');
+            const resizedPreviewImage = document.getElementById('resized-preview-image');
+            const resizedPreviewPlaceholder = document.getElementById('resized-preview-placeholder');
+            const resizedDimensionsP = document.getElementById('resized-dimensions');
 
-            const widthInput = $('#width-input');
-            const heightInput = $('#height-input');
-            const aspectRatioLock = $('#aspect-ratio-lock');
-            const resizeButton = $('#resize-button');
-            const downloadButton = $('#download-button');
-            const errorMessage = $('#error-message');
-            const fileLabel = $('.custom-file-label');
+            const widthInput = document.getElementById('width-input');
+            const heightInput = document.getElementById('height-input');
+            const aspectRatioLock = document.getElementById('aspect-ratio-lock');
+            const resizeButton = document.getElementById('resize-button');
+            const downloadButton = document.getElementById('download-button');
+            const errorMessage = document.getElementById('error-message');
+            const fileLabel = document.querySelector('.custom-file-label');
 
             let originalImage = null; // Đối tượng Image gốc
             let originalFileName = 'image'; // Tên file gốc
@@ -212,7 +213,7 @@
             let resizedImageDataUrl = null; // Data URL của ảnh đã resize
 
             // --- Xử lý chọn file ---
-            imageInput.on('change', function (e) {
+            imageInput.addEventListener('change', function (e) {
                 resetUI();
                 const file = e.target.files[0];
                 if (!file) {
@@ -221,26 +222,27 @@
 
                 if (!file.type.startsWith('image/')) {
                     showError('Vui lòng chọn một file ảnh hợp lệ (png, jpg, gif, webp).');
-                    imageInput.val(''); // Reset input file
-                    fileLabel.text('Chọn file...');
+                    imageInput.value = ''; // Reset input file
+                    fileLabel.textContent = 'Chọn file...';
                     return;
                 }
 
                 originalFileName = file.name.split('.').slice(0, -1).join('.') || 'image';
-                fileLabel.text(file.name);
+                fileLabel.textContent = file.name;
 
                 const reader = new FileReader();
                 reader.onload = function (event) {
-                    originalPreviewImage.attr('src', event.target.result).show();
-                    originalPreviewPlaceholder.hide();
+                    originalPreviewImage.src = event.target.result;
+                    originalPreviewImage.style.display = 'block';
+                    originalPreviewPlaceholder.style.display = 'none';
 
                     originalImage = new Image();
                     originalImage.onload = () => {
                         originalAspectRatio = originalImage.naturalWidth / originalImage.naturalHeight;
-                        widthInput.val(originalImage.naturalWidth);
-                        heightInput.val(originalImage.naturalHeight);
-                        originalDimensionsP.text(`Kích thước gốc: ${originalImage.naturalWidth}x${originalImage.naturalHeight}px`);
-                        resizeButton.prop('disabled', false);
+                        widthInput.value = originalImage.naturalWidth;
+                        heightInput.value = originalImage.naturalHeight;
+                        originalDimensionsP.textContent = `Kích thước gốc: ${originalImage.naturalWidth}x${originalImage.naturalHeight}px`;
+                        resizeButton.disabled = false;
                     };
                     originalImage.onerror = () => {
                         showError('Không thể tải ảnh để xử lý.');
@@ -252,34 +254,34 @@
             });
 
             // --- Xử lý thay đổi kích thước khi nhập ---
-            widthInput.on('input', function () {
-                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
-                    const newWidth = parseInt($(this).val());
+            widthInput.addEventListener('input', function () {
+                if (aspectRatioLock.checked && originalImage && originalAspectRatio) {
+                    const newWidth = parseInt(this.value);
                     if (newWidth > 0) {
-                        heightInput.val(Math.round(newWidth / originalAspectRatio));
+                        heightInput.value = Math.round(newWidth / originalAspectRatio);
                     }
                 }
             });
 
-            heightInput.on('input', function () {
-                if (aspectRatioLock.is(':checked') && originalImage && originalAspectRatio) {
-                    const newHeight = parseInt($(this).val());
+            heightInput.addEventListener('input', function () {
+                if (aspectRatioLock.checked && originalImage && originalAspectRatio) {
+                    const newHeight = parseInt(this.value);
                     if (newHeight > 0) {
-                        widthInput.val(Math.round(newHeight * originalAspectRatio));
+                        widthInput.value = Math.round(newHeight * originalAspectRatio);
                     }
                 }
             });
 
-            aspectRatioLock.on('change', function () {
+            aspectRatioLock.addEventListener('change', function () {
                 // Khi thay đổi checkbox, nếu đang giữ tỷ lệ, cập nhật lại 1 chiều dựa trên chiều kia
-                if ($(this).is(':checked') && originalImage && originalAspectRatio) {
-                    const currentWidth = parseInt(widthInput.val());
+                if (this.checked && originalImage && originalAspectRatio) {
+                    const currentWidth = parseInt(widthInput.value);
                     if (currentWidth > 0) {
-                        heightInput.val(Math.round(currentWidth / originalAspectRatio));
+                        heightInput.value = Math.round(currentWidth / originalAspectRatio);
                     } else {
-                        const currentHeight = parseInt(heightInput.val());
+                        const currentHeight = parseInt(heightInput.value);
                         if (currentHeight > 0) {
-                            widthInput.val(Math.round(currentHeight * originalAspectRatio));
+                            widthInput.value = Math.round(currentHeight * originalAspectRatio);
                         }
                     }
                 }
@@ -287,12 +289,13 @@
 
 
             // --- Xử lý nhấn nút Thay Đổi Kích Thước ---
-            resizeButton.on('click', function () {
-                errorMessage.text('');
-                resizedPreviewImage.hide();
-                resizedPreviewPlaceholder.text('Đang xử lý...').show();
-                resizedDimensionsP.text('');
-                downloadButton.prop('disabled', true);
+            resizeButton.addEventListener('click', function () {
+                errorMessage.textContent = '';
+                resizedPreviewImage.style.display = 'none';
+                resizedPreviewPlaceholder.textContent = 'Đang xử lý...';
+                resizedPreviewPlaceholder.style.display = 'block';
+                resizedDimensionsP.textContent = '';
+                downloadButton.disabled = true;
                 resizedImageDataUrl = null;
 
                 if (!originalImage || !originalImage.complete || originalImage.naturalWidth === 0) {
@@ -300,12 +303,12 @@
                     return;
                 }
 
-                const targetWidth = parseInt(widthInput.val());
-                const targetHeight = parseInt(heightInput.val());
+                const targetWidth = parseInt(widthInput.value);
+                const targetHeight = parseInt(heightInput.value);
 
                 if (isNaN(targetWidth) || isNaN(targetHeight) || targetWidth < 1 || targetHeight < 1) {
                     showError('Chiều rộng và chiều cao phải là số nguyên dương.');
-                    resizedPreviewPlaceholder.text('Chưa có kết quả');
+                    resizedPreviewPlaceholder.textContent = 'Chưa có kết quả';
                     return;
                 }
 
@@ -320,20 +323,21 @@
                     ctx.drawImage(originalImage, 0, 0, targetWidth, targetHeight);
 
                     resizedImageDataUrl = canvas.toDataURL('image/png'); // Hoặc 'image/jpeg' tùy thuộc vào file gốc
-                    resizedPreviewImage.attr('src', resizedImageDataUrl).show();
-                    resizedPreviewPlaceholder.hide();
-                    resizedDimensionsP.text(`Kích thước mới: ${targetWidth}x${targetHeight}px`);
-                    downloadButton.prop('disabled', false);
+                    resizedPreviewImage.src = resizedImageDataUrl;
+                    resizedPreviewImage.style.display = 'block';
+                    resizedPreviewPlaceholder.style.display = 'none';
+                    resizedDimensionsP.textContent = `Kích thước mới: ${targetWidth}x${targetHeight}px`;
+                    downloadButton.disabled = false;
 
                 } catch (error) {
                     console.error('Lỗi khi thay đổi kích thước ảnh:', error);
                     showError('Có lỗi xảy ra khi thay đổi kích thước ảnh.');
-                    resizedPreviewPlaceholder.text('Lỗi xử lý');
+                    resizedPreviewPlaceholder.textContent = 'Lỗi xử lý';
                 }
             });
 
             // --- Xử lý nhấn nút Tải Ảnh ---
-            downloadButton.on('click', function () {
+            downloadButton.addEventListener('click', function () {
                 if (!resizedImageDataUrl) {
                     showError('Không có ảnh đã thay đổi kích thước để tải xuống.');
                     return;
@@ -351,49 +355,54 @@
 
             // --- Hàm hiển thị lỗi ---
             function showError(message) {
-                errorMessage.text(message);
+                errorMessage.textContent = message;
                 console.error("Lỗi:", message);
             }
 
             // --- Hàm reset UI ---
             function resetUI() {
-                errorMessage.text('');
-                originalPreviewImage.attr('src', '#').hide();
-                originalPreviewPlaceholder.text('Chưa có ảnh nào được chọn').show();
-                originalDimensionsP.text('');
+                errorMessage.textContent = '';
+                originalPreviewImage.src = '#';
+                originalPreviewImage.style.display = 'none';
+                originalPreviewPlaceholder.textContent = 'Chưa có ảnh nào được chọn';
+                originalPreviewPlaceholder.style.display = 'block';
+                originalDimensionsP.textContent = '';
 
-                resizedPreviewImage.attr('src', '#').hide();
-                resizedPreviewPlaceholder.text('Chưa có kết quả').show();
-                resizedDimensionsP.text('');
+                resizedPreviewImage.src = '#';
+                resizedPreviewImage.style.display = 'none';
+                resizedPreviewPlaceholder.textContent = 'Chưa có kết quả';
+                resizedPreviewPlaceholder.style.display = 'block';
+                resizedDimensionsP.textContent = '';
 
-                widthInput.val('');
-                heightInput.val('');
-                // aspectRatioLock.prop('checked', true); // Giữ nguyên trạng thái checkbox
+                widthInput.value = '';
+                heightInput.value = '';
+                // aspectRatioLock.checked = true; // Giữ nguyên trạng thái checkbox
 
-                resizeButton.prop('disabled', true);
-                downloadButton.prop('disabled', true);
+                resizeButton.disabled = true;
+                downloadButton.disabled = true;
                 originalImage = null;
                 originalAspectRatio = 0;
                 resizedImageDataUrl = null;
-                // fileLabel.text('Chọn file...'); // Không reset tên file ở đây để người dùng biết file nào đang chọn
+                // fileLabel.textContent = 'Chọn file...'; // Không reset tên file ở đây để người dùng biết file nào đang chọn
             }
 
 
             // Cập nhật label của input file khi chọn file (cho Bootstrap)
-            $('.custom-file-input').on('change', function () {
-                let fileName = $(this).val().split('\\').pop();
-                $(this).siblings('.custom-file-label').addClass("selected").html(fileName || 'Chọn file...');
+            imageInput.addEventListener('change', function () {
+                let fileName = this.value.split('\\').pop();
+                this.nextElementSibling.classList.add("selected");
+                this.nextElementSibling.innerHTML = fileName || 'Chọn file...';
             });
 
             // Navbar toggler for custom navbar
-            $('#navbarToggler').on('click', function () {
-                $('#navbarNavContent').toggleClass('show');
+            document.getElementById('navbarToggler').addEventListener('click', function () {
+                document.getElementById('navbarNavContent').classList.toggle('show');
             });
 
             // Cập nhật năm hiện tại ở footer
-            $('#currentYear').text(new Date().getFullYear());
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-        }); // End $(document).ready
+        });
     </script>
 
 </body>
