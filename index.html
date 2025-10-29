@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="" data-translate="metaDescription">
-    <title data-translate="pageTitle">Trang Chủ - Game Xếp Hình & Công Cụ Ảnh</title>
+    <title data-translate="pageTitle"></title>
     <link rel="icon" href="favicon.png" type="image/png">
 
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -19,8 +20,6 @@
 
     <!-- Thư viện Fireworks-JS -->
     <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
-    <!-- Bootstrap JS (nếu cần cho các component khác) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- CSS tùy chỉnh của bạn -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -49,19 +48,19 @@
             <div class="nav-collapse" id="navbarNavContent">
                 <ul class="nav-menu">
                     <li class="nav-menu-item active">
-                        <a class="nav-menu-link" href="index.html" data-translate="navHome">Trang Chủ <span class="screen-reader-only">(hiện tại)</span></a>
+                        <a class="nav-menu-link" href="index.html" data-translate="navHome"></a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                        <a class="nav-menu-link" href="game.html" data-translate="navPlayGame"></a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="about.html" data-translate="navAbout">Giới Thiệu</a>
+                        <a class="nav-menu-link" href="about.html" data-translate="navAbout"></a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="contact.html" data-translate="navContact">Liên Hệ</a>
+                        <a class="nav-menu-link" href="contact.html" data-translate="navContact"></a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="scale.html" data-translate="navImageTools">Công Cụ Ảnh</a>
+                        <a class="nav-menu-link" href="scale.html" data-translate="navImageTools"></a>
                     </li>
                 </ul>
             </div>
@@ -69,20 +68,18 @@
     </nav>
     <!-- ===== NAVBAR KẾT THÚC (CSS Tùy Chỉnh) ===== -->
 
-    <div class="main-content-area"> <!-- Bắt đầu nội dung tiếng Việt -->
+    <main class="main-content-area">
         <!-- ===== PHẦN HERO BẮT ĐẦU ===== -->
         <header class="hero-section-fireworks mt-navbar-offset">
             <div id="fireworks-canvas"></div>
             <div class="container">
-                <h1 class="display-3 fw-bolder mb-3" data-translate="heroTitle">Chào Mừng Đến Với Game Xếp Hình & Công Cụ Ảnh!</h1>
-                <p class="lead col-lg-9 mx-auto mb-4" data-translate="heroSubtitle">
-                    Giải trí đỉnh cao với game giải đố trí tuệ và thỏa sức sáng tạo với các công cụ xử lý ảnh mạnh mẽ. Tất cả trong một!
-                </p>
+                <h1 class="display-3 fw-bolder mb-3" data-translate="heroTitle"></h1>
+                <p class="lead col-lg-9 mx-auto mb-4" data-translate="heroSubtitle"></p>
                 <a class="btn btn-warning btn-lg px-4 me-sm-3 mb-3 mb-sm-0" href="#game-section-vi" role="button">
-                    <i class="fas fa-puzzle-piece me-2"></i><span data-translate="heroButtonGame">Thử Game Xếp Hình</span>
+                    <i class="fas fa-puzzle-piece me-2"></i><span data-translate="heroButtonGame"></span>
                 </a>
                 <a class="btn btn-outline-light btn-lg px-4" href="#image-tools-section-vi" role="button">
-                    <i class="fas fa-crop-alt me-2"></i><span data-translate="heroButtonTools">Khám Phá Công Cụ Ảnh</span>
+                    <i class="fas fa-crop-alt me-2"></i><span data-translate="heroButtonTools"></span>
                 </a>
             </div>
         </header>
@@ -96,17 +93,15 @@
                         <img src="img/demo_game.png" alt="Demo Game Xếp Hình" class="img-fluid rounded">
                     </div>
                     <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="gameIntroTitle">Thử Thách Trí Tuệ với Game Xếp Hình</h2>
-                        <p class="lead text-muted" data-translate="gameIntroDesc">
-                            Đắm mình trong thế giới của những mảnh ghép đầy màu sắc. Rèn luyện kỹ năng quan sát, tư duy logic và sự kiên nhẫn.
-                        </p>
+                        <h2 class="display-5 fw-bold mb-3" data-translate="gameIntroTitle"></h2>
+                        <p class="lead text-muted" data-translate="gameIntroDesc"></p>
                         <ul class="list-unstyled mb-4 fs-5">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature1">Bộ sưu tập ảnh đa dạng, cập nhật thường xuyên.</span></li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature2">Cơ chế xoay mảnh ghép, kéo thả trực quan.</span></li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature3">Phù hợp mọi lứa tuổi, mang lại giây phút thư giãn.</span></li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature1"></span></li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature2"></span></li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature3"></span></li>
                         </ul>
                         <a href="game.html" class="btn btn-primary btn-lg">
-                            <i class="fas fa-play me-2"></i><span data-translate="gameIntroButton">Chơi Ngay!</span>
+                            <i class="fas fa-play me-2"></i><span data-translate="gameIntroButton"></span>
                         </a>
                     </div>
                 </div>
@@ -119,24 +114,22 @@
                 <div class="row align-items-center">
                     <!-- Cột nội dung (bên trái) -->
                     <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="caroIntroTitle">Đấu Trí Cùng Cờ Caro Chiến Thuật</h2>
-                        <p class="lead text-muted" data-translate="caroIntroDesc">
-                            Trò chơi cờ bàn kinh điển đã trở lại, thử thách khả năng tư duy chiến thuật và phán đoán của bạn.
-                        </p>
+                        <h2 class="display-5 fw-bold mb-3" data-translate="caroIntroTitle"></h2>
+                        <p class="lead text-muted" data-translate="caroIntroDesc"></p>
                         <ul class="list-unstyled mb-4 fs-5">
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature1">Lối chơi đơn giản, chiều sâu chiến thuật bất tận.</span>
+                                <span data-translate="caroFeature1"></span>
                             </li>
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature2">Đối đầu AI thông minh với nhiều cấp độ tư duy.</span>
+                                <span data-translate="caroFeature2"></span>
                             </li>
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature3">Chế độ 2 người chơi để thử tài cùng bạn bè.</span>
+                                <span data-translate="caroFeature3"></span>
                             </li>
                         </ul>
                         <a href="caro.html" class="btn btn-primary btn-lg">
                             <i class="fas fa-chess-board me-2"></i>
-                            <span data-translate="caroPlayButton">Thử Sức Ngay!</span>
+                            <span data-translate="caroPlayButton"></span>
                         </a>
                     </div>
                     <!-- Cột hình ảnh (bên phải) -->
@@ -159,24 +152,22 @@
                     </div>
                     <!-- Cột nội dung (bên phải) -->
                     <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="tetrisIntroTitle">Kinh Điển Bất Tận Cùng Xếp Gạch</h2>
-                        <p class="lead text-muted" data-translate="tetrisIntroDesc">
-                            Thử thách phản xạ, tốc độ và khả năng ra quyết định trong trò chơi huyền thoại. Liệu bạn có thể đạt điểm số kỷ lục?
-                        </p>
+                        <h2 class="display-5 fw-bold mb-3" data-translate="tetrisIntroTitle"></h2>
+                        <p class="lead text-muted" data-translate="tetrisIntroDesc"></p>
                         <ul class="list-unstyled mb-4 fs-5">
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature1">Lối chơi gây nghiện quen thuộc, dễ chơi nhưng khó thành thạo.</span>
+                                <span data-translate="tetrisFeature1"></span>
                             </li>
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature2">Hệ thống khối hình đa dạng, không ván nào giống ván nào.</span>
+                                <span data-translate="tetrisFeature2"></span>
                             </li>
                             <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature3">Lưu lại điểm số cao nhất để thách thức chính bản thân.</span>
+                                <span data-translate="tetrisFeature3"></span>
                             </li>
                         </ul>
                         <a href="tetris.html" class="btn btn-primary btn-lg">
                             <i class="fas fa-cubes me-2"></i>
-                            <span data-translate="tetrisPlayButton">Chơi Thử Ngay!</span>
+                            <span data-translate="tetrisPlayButton"></span>
                         </a>
                     </div>
                 </div>
@@ -189,10 +180,8 @@
         <section id="image-tools-section-vi" class="image-tools-section py-5">
             <div class="container">
                 <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold" data-translate="toolsTitle">Bộ Công Cụ Xử Lý Ảnh Đa Năng</h2>
-                    <p class="lead text-muted col-lg-8 mx-auto" data-translate="toolsSubtitle">
-                        Hoàn thiện bức ảnh của bạn với các công cụ cắt, chia và thay đổi kích thước ảnh chuyên nghiệp, dễ sử dụng.
-                    </p>
+                    <h2 class="display-5 fw-bold" data-translate="toolsTitle"></h2>
+                    <p class="lead text-muted col-lg-8 mx-auto" data-translate="toolsSubtitle"></p>
                 </div>
                 <div class="row g-4 justify-content-center">
                     <!-- Card Cắt Ảnh Vuông -->
@@ -202,13 +191,11 @@
                                 <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông"
                                     class="img-fluid tool-demo-img rounded">
                             </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolSquareCropTitle">Cắt Ảnh Thành Hình Vuông (1:1)</h3>
-                            <p class="text-muted small" data-translate="toolSquareCropDesc">
-                                Nhanh chóng tạo ảnh đại diện, ảnh thu nhỏ hoặc bất kỳ ảnh nào yêu cầu tỷ lệ vuông. Tải lên, kéo và điều chỉnh vùng chọn trực quan.
-                            </p>
+                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolSquareCropTitle"></h3>
+                            <p class="text-muted small" data-translate="toolSquareCropDesc"></p>
                             <div class="mt-auto text-center">
                                 <a href="scale.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-vector-square me-2"></i><span data-translate="toolSquareCropButton">Thử Cắt Vuông</span>
+                                    <i class="fas fa-vector-square me-2"></i><span data-translate="toolSquareCropButton"></span>
                                 </a>
                             </div>
                         </div>
@@ -220,13 +207,11 @@
                                 <img src="img/demo_split.png" alt="Demo Chia Ảnh Lưới"
                                     class="img-fluid tool-demo-img rounded">
                             </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolGridSplitTitle">Chia Ảnh Thành Lưới (VD: 3x3)</h3>
-                            <p class="text-muted small" data-translate="toolGridSplitDesc">
-                                Chia một ảnh lớn thành nhiều mảnh bằng nhau theo lưới tùy chỉnh (số hàng x số cột). Lý tưởng để tạo mảnh ghép game hoặc hiệu ứng ảnh độc đáo.
-                            </p>
+                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolGridSplitTitle"></h3>
+                            <p class="text-muted small" data-translate="toolGridSplitDesc"></p>
                             <div class="mt-auto text-center">
                                 <a href="split.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-th-large me-2"></i><span data-translate="toolGridSplitButton">Thử Chia Lưới</span>
+                                    <i class="fas fa-th-large me-2"></i><span data-translate="toolGridSplitButton"></span>
                                 </a>
                             </div>
                         </div>
@@ -236,15 +221,12 @@
                         <div class="feature-card h-100 d-flex flex-column">
                             <div class="text-center mb-3">
                                 <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước Ảnh"  class="img-fluid tool-demo-img rounded">
-                                <!-- Bạn cần có ảnh demo_resize.png trong thư mục img/ -->
                             </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolResizeTitle">Thay Đổi Kích Thước Ảnh</h3>
-                            <p class="text-muted small" data-translate="toolResizeDesc">
-                                Dễ dàng điều chỉnh chiều rộng và chiều cao của ảnh theo ý muốn. Hỗ trợ giữ nguyên tỷ lệ khung hình hoặc tùy chỉnh tự do.
-                            </p>
+                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolResizeTitle"></h3>
+                            <p class="text-muted small" data-translate="toolResizeDesc"></p>
                             <div class="mt-auto text-center">
                                 <a href="resize.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-expand-arrows-alt me-2"></i><span data-translate="toolResizeButton">Thử Resize Ảnh</span>
+                                    <i class="fas fa-expand-arrows-alt me-2"></i><span data-translate="toolResizeButton"></span>
                                 </a>
                             </div>
                         </div>
@@ -252,7 +234,7 @@
                 </div>
                 <div class="text-center mt-5">
                     <a href="about.html#image-tools-section" class="btn btn-secondary">
-                        <i class="fas fa-info-circle me-2"></i><span data-translate="toolsViewDetails">Xem Chi Tiết Các Công Cụ</span>
+                        <i class="fas fa-info-circle me-2"></i><span data-translate="toolsViewDetails"></span>
                     </a>
                 </div>
             </div>
@@ -264,36 +246,35 @@
         <section class="highlights-section py-5 bg-light">
             <div class="container">
                 <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold" data-translate="whyUsTitle">Tại Sao Chọn Chúng Tôi?</h2>
+                    <h2 class="display-5 fw-bold" data-translate="whyUsTitle"></h2>
                 </div>
                 <div class="row text-center g-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="p-4 bg-white shadow-sm rounded h-100">
                             <i class="fas fa-user-friends fa-3x text-primary mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsEasyTitle">Dễ Sử Dụng</h3>
-                            <p class="text-muted small" data-translate="whyUsEasyDesc">Giao diện trực quan, thân thiện, không yêu cầu kỹ năng cao.</p>
+                            <h3 class="h5 fw-semibold" data-translate="whyUsEasyTitle"></h3>
+                            <p class="text-muted small" data-translate="whyUsEasyDesc"></p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="p-4 bg-white shadow-sm rounded h-100">
                             <i class="fas fa-bolt fa-3x text-success mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsFastTitle">Nhanh & Hiệu Quả</h3>
-                            <p class="text-muted small" data-translate="whyUsFastDesc">Xử lý tác vụ nhanh chóng, tiết kiệm thời gian của bạn.</p>
+                            <h3 class="h5 fw-semibold" data-translate="whyUsFastTitle"></h3>
+                            <p class="text-muted small" data-translate="whyUsFastDesc"></p>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6">
                         <div class="p-4 bg-white shadow-sm rounded h-100">
                             <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsFreeTitle">Miễn Phí & Bảo Mật</h3>
-                            <p class="text-muted small" data-translate="whyUsFreeDesc">Hoàn toàn miễn phí sử dụng, và chúng tôi tôn trọng quyền riêng tư của bạn.</p>
+                            <h3 class="h5 fw-semibold" data-translate="whyUsFreeTitle"></h3>
+                            <p class="text-muted small" data-translate="whyUsFreeDesc"></p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- ===== TẠI SAO CHỌN CHÚNG TÔI KẾT THÚC ===== -->
-    </div>
-    <!-- Kết thúc nội dung tiếng Việt -->
+    </main>
 
 
     <!-- ===== FOOTER BẮT ĐẦU ===== -->
@@ -303,30 +284,30 @@
                 <div class="row">
                     <div class="col-md-3 mb-3 mb-md-0">
                         <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50" data-translate="footerUnlimited">Giải trí và sáng tạo không giới hạn.</p>
+                        <p class="small text-white-50" data-translate="footerUnlimited"></p>
                     </div>
 
                     <div class="col-md-3 col-6 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerExplore">Khám Phá</h5>
+                        <h5 class="fw-semibold" data-translate="footerExplore"></h5>
                         <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerHome">Trang Chủ</a></li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerHome"></a></li>
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerJigsaw"></a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 col-6 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerTools">Công Cụ</h5>
+                        <h5 class="fw-semibold" data-translate="footerTools"></h5>
                         <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerGridSplit">Công Cụ Cắt Lưới</a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerSquareCrop">Công Cụ Cắt Vuông</a></li>
-                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerResize">Thay đổi kích thước </a></li>
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerGridSplit"></a></li>
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerSquareCrop"></a></li>
+                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerResize"></a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 col-6">
-                        <h5 class="fw-semibold" data-translate="footerInfo">Thông Tin</h5>
+                        <h5 class="fw-semibold" data-translate="footerInfo"></h5>
                         <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerAbout">Giới Thiệu</a></li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerContact">Liên Hệ</a></li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerTerms">Điều Khoản</a></li>
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerAbout"></a></li>
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerContact"></a></li>
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerTerms"></a></li>
                         </ul>
                     </div>
                 </div>
