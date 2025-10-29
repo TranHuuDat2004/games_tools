@@ -12,6 +12,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     /* Đảm bảo body chiếm ít nhất toàn bộ chiều cao màn hình */
+    background-color: #f8f9fa;
 }
 
 .game-title-area {
@@ -771,4 +772,233 @@ body {
 /* Hiển thị nội dung ngôn ngữ đang hoạt động */
 .lang-content.active-lang {
     display: block;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    /* Giới hạn chiều rộng */
+}
+
+.preview-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px dashed #ccc;
+    background-color: #f1f1f1;
+    text-align: center;
+    /* Căn giữa placeholder */
+}
+
+.preview-section h5 {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#original-preview-image,
+#resized-preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    /* Giới hạn chiều cao preview */
+    display: none;
+    /* Ẩn ban đầu */
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+#preview-placeholder {
+    color: #999;
+    font-style: italic;
+    display: block;
+    /* Để placeholder chiếm toàn bộ không gian khi không có ảnh */
+    min-height: 100px;
+    /* Chiều cao tối thiểu cho placeholder */
+    line-height: 100px;
+    /* Căn giữa placeholder theo chiều dọc */
+}
+
+/* Nút */
+#resize-button,
+#download-button {
+    width: 100%;
+}
+
+/* Thông báo lỗi */
+#error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+/* Tùy chỉnh input number */
+input[type=number] {
+    max-width: 100px;
+    /* Giới hạn chiều rộng ô nhập số */
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+#image-crop-container {
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    /* Để container co giãn theo ảnh */
+    margin: 20px auto;
+    /* Căn giữa */
+    border: 1px solid #ddd;
+    background-color: #eee;
+    /* Nền khi chưa có ảnh */
+    min-height: 200px;
+    /* Chiều cao tối thiểu */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    /* Ngăn chọn text khi kéo */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+#original-image {
+    display: block;
+    /* Quan trọng để tính toán kích thước */
+    max-width: 100%;
+    /* Ảnh không vượt quá container */
+    transition: opacity 0.3s ease;
+}
+
+/* Vùng chọn hình vuông */
+#crop-box {
+    position: absolute;
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+    /* Làm mờ vùng ngoài */
+    cursor: move;
+    display: none;
+    /* Ẩn ban đầu */
+}
+
+/* Các điểm điều khiển kích thước */
+.crop-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #555;
+    border-radius: 50%;
+    /* Bo tròn */
+}
+
+/* Định vị các điểm điều khiển */
+.handle-nw {
+    top: -6px;
+    left: -6px;
+    cursor: nwse-resize;
+}
+
+.handle-ne {
+    top: -6px;
+    right: -6px;
+    cursor: nesw-resize;
+}
+
+.handle-sw {
+    bottom: -6px;
+    left: -6px;
+    cursor: nesw-resize;
+}
+
+.handle-se {
+    bottom: -6px;
+    right: -6px;
+    cursor: nwse-resize;
+}
+
+#crop-result {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+#cropped-image-preview {
+    max-width: 250px;
+    /* Kích thước preview ảnh đã cắt */
+    height: auto;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+#download-link {
+    display: none;
+    /* Ẩn ban đầu */
+}
+
+#preview-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    min-height: 150px;
+    /* Chiều cao tối thiểu để dễ nhìn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f1f1f1;
+}
+
+#preview-image {
+    max-width: 100%;
+    max-height: 400px;
+    /* Giới hạn chiều cao preview */
+    display: none;
+    /* Ẩn ban đầu */
+}
+
+#tiles-output {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    display: flex;
+    /* Hiển thị các mảnh theo hàng */
+    flex-wrap: wrap;
+    /* Cho phép xuống dòng */
+    gap: 10px;
+    /* Khoảng cách giữa các mảnh */
+    background-color: #fdfdfd;
+    padding: 15px;
+    border: 1px solid #eee;
+    min-height: 50px;
+}
+
+.tile-container {
+    border: 1px solid #ddd;
+    padding: 3px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    /* Căn giữa link download */
+}
+
+.tile-container img {
+    width: 145px;
+    /* Giới hạn kích thước hiển thị mảnh */
+    height: auto;
+    display: block;
+    /* Để link download xuống dưới */
+    margin-bottom: 5px;
+}
+
+.tile-container a {
+    font-size: 0.8em;
+}
+
+#split-button {
+    width: 100%;
+    /* Nút chiếm hết cột */
 }

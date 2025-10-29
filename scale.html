@@ -4,192 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cắt Ảnh Thành Hình Vuông</title>
+    <title data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
     <link rel="icon" href="favicon.png" type="image/png">
-    <style>
-        body {
-            padding-top: 100px;
-            /* Khoảng đệm trên */
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        /* Container chứa ảnh và vùng cắt */
-        #image-crop-container {
-            position: relative;
-            overflow: hidden;
-            max-width: 100%;
-            /* Để container co giãn theo ảnh */
-            margin: 20px auto;
-            /* Căn giữa */
-            border: 1px solid #ddd;
-            background-color: #eee;
-            /* Nền khi chưa có ảnh */
-            min-height: 200px;
-            /* Chiều cao tối thiểu */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none;
-            /* Ngăn chọn text khi kéo */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        #original-image {
-            display: block;
-            /* Quan trọng để tính toán kích thước */
-            max-width: 100%;
-            /* Ảnh không vượt quá container */
-            transition: opacity 0.3s ease;
-        }
-
-        /* Vùng chọn hình vuông */
-        #crop-box {
-            position: absolute;
-            border: 2px dashed rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5);
-            /* Làm mờ vùng ngoài */
-            cursor: move;
-            display: none;
-            /* Ẩn ban đầu */
-        }
-
-        /* Các điểm điều khiển kích thước */
-        .crop-handle {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #555;
-            border-radius: 50%;
-            /* Bo tròn */
-        }
-
-        /* Định vị các điểm điều khiển */
-        .handle-nw {
-            top: -6px;
-            left: -6px;
-            cursor: nwse-resize;
-        }
-
-        .handle-ne {
-            top: -6px;
-            right: -6px;
-            cursor: nesw-resize;
-        }
-
-        .handle-sw {
-            bottom: -6px;
-            left: -6px;
-            cursor: nesw-resize;
-        }
-
-        .handle-se {
-            bottom: -6px;
-            right: -6px;
-            cursor: nwse-resize;
-        }
-
-        /* Có thể thêm các điểm giữa cạnh nếu muốn */
-        /* .handle-n { top: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } */
-        /* .handle-s { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; } */
-        /* .handle-w { top: 50%; left: -6px; transform: translateY(-50%); cursor: ew-resize; } */
-        /* .handle-e { top: 50%; right: -6px; transform: translateY(-50%); cursor: ew-resize; } */
-
-        /* Khu vực kết quả */
-        #crop-result {
-            margin-top: 30px;
-            text-align: center;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        #cropped-image-preview {
-            max-width: 250px;
-            /* Kích thước preview ảnh đã cắt */
-            height: auto;
-            border: 1px solid #ccc;
-            margin-bottom: 15px;
-        }
-
-        #download-link {
-            display: none;
-            /* Ẩn ban đầu */
-        }
-
-        /* Thông báo lỗi */
-        #error-message {
-            color: red;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-                /* --- NEW Custom styles for language switcher --- */
-        .lang-switcher-container {
-            position: fixed;
-            top: 80px; /* Adjust based on your navbar height and preference */
-            right: 20px;
-            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
-        }
-        .lang-switcher .btn {
-            margin: 0 2px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            min-width: 50px; /* Slightly adjusted for VI/EN */
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
-        }
-        .lang-switcher .btn.active { /* This class will be toggled by JS */
-            background-color: #ffc107; /* Bootstrap warning color */
-            border-color: #ffc107;
-            color: #212529; /* Dark text for better contrast on yellow */
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        .lang-switcher .btn:not(.active) {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
-        }
-        .lang-switcher .btn:not(.active):hover {
-            background-color: #e9ecef;
-            border-color: #ced4da;
-        }
-        /* .lang-content styles are not directly used by the primary translation mechanism here,
-           but kept if you plan to use them for block-level language switching elsewhere. */
-        .lang-content {
-            display: none;
-        }
-        .lang-content.active-lang {
-            display: block;
-        }
-    </style>
 </head>
 
 <body>
         <!-- Language Switcher -->
     <div class="lang-switcher-container">
         <div class="lang-switcher btn-group">
-            <a href="scale.html"><button class="btn btn-outline-secondary lang-btn active" data-lang="vi">VI</button></a> 
-            <a href="scale_en.html"><button class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button></a> 
+            <button class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
+            <button class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
         </div>
     </div>
 
@@ -198,8 +24,6 @@
         <div class="nav-container">
             <a class="nav-brand" href="index.html">
                 <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
-                <!-- Optional: Thêm tên thương hiệu dạng text -->
-                <!-- <span style="vertical-align: middle; margin-left: 5px;">Game Xếp Hình</span> -->
             </a>
 
             <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
@@ -209,20 +33,20 @@
             <div class="nav-collapse" id="navbarNavContent">
                 <ul class="nav-menu">
                     <li class="nav-menu-item ">
-                        <a class="nav-menu-link" href="index.html">Trang Chủ <span
+                        <a class="nav-menu-link" href="index.html" data-translate="navHome">Trang Chủ <span
                                 class="screen-reader-only">(current)</span></a>
                     </li>
                     <li class="nav-menu-item ">
-                        <a class="nav-menu-link" href="game.html">Chơi Game</a>
+                        <a class="nav-menu-link" href="game.html" data-translate="navPlayGame">Chơi Game</a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="about.html">Giới Thiệu</a>
+                        <a class="nav-menu-link" href="about.html" data-translate="navAbout">Giới Thiệu</a>
                     </li>
                     <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="contact.html">Liên Hệ</a>
+                        <a class="nav-menu-link" href="contact.html" data-translate="navContact">Liên Hệ</a>
                     </li>
                     <li class="nav-menu-item active">
-                        <a class="nav-menu-link" href="split.html">Cắt Ảnh</a>
+                        <a class="nav-menu-link" href="split.html" data-translate="navImageTools">Cắt Ảnh</a>
                     </li>
                 </ul>
             </div>
@@ -235,27 +59,27 @@
         <!-- Tab lựa chọn công cụ (Tùy chọn, có thể bỏ nếu trang này chỉ làm resize) -->
         <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="crop-square-tab" href="scale.html" role="tab">Cắt Ảnh Vuông</a>
+                <a class="nav-link active" id="crop-square-tab" href="scale.html" role="tab" data-translate="toolSquareCropTitle">Cắt Ảnh Vuông</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="split-grid-tab" href="split.html" role="tab">Cắt Ảnh Lưới</a>
+                <a class="nav-link" id="split-grid-tab" href="split.html" role="tab" data-translate="toolGridSplitTitle">Cắt Ảnh Lưới</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " id="resize-image-tab" href="resize.html" role="tab">Thay Đổi Kích Thước</a>
+                <a class="nav-link " id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
             </li>
         </ul>
-        <h1 class="text-center">Cắt Ảnh Thành Hình Vuông (1:1)</h1>
-        <div class="alert alert-info">
+        <h1 class="text-center" data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông (1:1)</h1>
+        <div class="alert alert-info" data-translate="scaleAlert">
             Chọn ảnh từ máy tính, chọn khu vực để cắt ảnh, sau đó nhấn "Cắt Ảnh".
         </div>
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <div class="form-group">
-                    <label for="image-upload">Chọn Ảnh Gốc:</label>
+                    <label for="image-upload" data-translate="scaleSelectImage">Chọn Ảnh Gốc:</label>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="image-upload"
                             accept="image/png, image/jpeg, image/gif, image/webp">
-                        <label class="custom-file-label" for="image-upload" data-browse="Duyệt">Chọn file...</label>
+                        <label class="custom-file-label" for="image-upload" data-browse="Duyệt" data-translate="resizeChooseFile">Chọn file...</label>
                     </div>
                 </div>
             </div>
@@ -277,7 +101,7 @@
 
         <!-- Nút thực hiện cắt -->
         <div class="text-center mt-3">
-            <button id="crop-button" class="btn btn-warning" disabled>Cắt Ảnh</button>
+            <button id="crop-button" class="btn btn-warning" disabled data-translate="scaleCropButton">Cắt Ảnh</button>
         </div>
 
         <!-- Thông báo lỗi -->
@@ -285,10 +109,10 @@
 
         <!-- Khu vực hiển thị kết quả -->
         <div id="crop-result" style="display: none;">
-            <h5>Ảnh Vuông Đã Cắt:</h5>
+            <h5 data-translate="scaleCroppedImage">Ảnh Vuông Đã Cắt:</h5>
             <img id="cropped-image-preview" src="#" alt="Ảnh đã cắt">
             <br>
-            <a id="download-link" class="btn btn-success" href="#" download="anh_vuong.png">Tải Ảnh Vuông</a>
+            <a id="download-link" class="btn btn-success" href="#" download="anh_vuong.png" data-translate="scaleDownloadButton">Tải Ảnh Vuông</a>
         </div>
 
     </div>
@@ -303,38 +127,38 @@
                 <div class="row">
                     <div class="col-md-3 mb-3 mb-md-0">
                         <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn. .</p>
+                        <p class="small text-white-50" data-translate="footerUnlimited">Giải trí và sáng tạo không giới hạn. .</p>
                     </div>
                     <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold">Khám Phá</h5>
+                        <h5 class="fw-semibold" data-translate="footerExplore">Khám Phá</h5>
                         <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang
+                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerHome">Trang
                                     Chủ</a>
                             </li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp
+                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerJigsaw">Game Xếp
                                     Hình</a>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold">Công cụ</h5>
+                        <h5 class="fw-semibold" data-translate="footerTools">Công cụ</h5>
                         <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
+                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerGridSplit">Công Cụ Cắt
                                     Ảnh Lưới</a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
+                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerSquareCrop">Công Cụ Cắt
                                     Ảnh Vuông</a></li>
                         </ul>
                     </div>
                     <div class="col-md-3 col-4">
-                        <h5 class="fw-semibold">Thông Tin</h5>
+                        <h5 class="fw-semibold" data-translate="footerInfo">Thông Tin</h5>
                         <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới
+                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerAbout">Giới
                                     Thiệu</a>
                             </li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên
+                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerContact">Liên
                                     Hệ</a>
                             </li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều
+                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerTerms">Điều
                                     Khoản</a></li>
                             <!-- Thêm link Điều khoản nếu có -->
                         </ul>
@@ -343,13 +167,12 @@
                 <hr class="my-3 border-secondary">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <p class="small text-white-50 mb-0">
+                        <p class="small text-white-50 mb-0" data-translate="footerCopyright">
                             © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi
                             quyền.
                         </p>
-                        <p class="small text-white-50">
+                        <p class="small text-white-50" data-translate="footerBuiltWith">
                             <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
-                            <!-- Lưu ý: Bootstrap 5 không cần jQuery, nếu bạn dùng BS5 thì có thể bỏ jQuery -->
                         </p>
                     </div>
                 </div>
@@ -362,6 +185,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="js/translations.js"></script>
+    <script src="js/setLanguage.js"></script>
+    <script src="js/i18n.js"></script>
 
     <!-- Custom JavaScript -->
     <script>
