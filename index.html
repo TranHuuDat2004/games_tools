@@ -5,354 +5,918 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="" data-translate="metaDescription">
-    <title data-translate="pageTitle"></title>
+    <title data-translate="pageTitle">Game & Image Pro</title>
     <link rel="icon" href="favicon.png" type="image/png">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
     <!-- Font Awesome (cho biểu tượng) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 
     <!-- Thư viện Fireworks-JS -->
     <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
-    <!-- CSS tùy chỉnh của bạn -->
-    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Dán toàn bộ nội dung file CSS của bạn vào đây */
+        /* ====================================================== */
+        /* --- BIẾN MÀU VÀ THIẾT LẬP CHUNG --- */
+        /* ====================================================== */
+        :root {
+            /* Bảng màu mới */
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
+            --gradient-green: #4ade80;
+            --gradient-yellow: #facc15;
+            --resume-button-bg: var(--gradient-green);
+        }
+
+        /* === BỔ SUNG: BIẾN MÀU CHO LIGHT MODE === */
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
+            --resume-button-bg: #18181b;
+            /* Nút resume nền đen chữ trắng */
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            /* Font mới */
+            font-family: 'Sora', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--gradient-purple);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Helper class cho hiệu ứng kính mờ */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* ====================================================== */
+        /* --- THANH TIẾN TRÌNH & HEADER --- */
+        /* ====================================================== */
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        .main-header {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            z-index: 999;
+
+            width: 1000px; /* Để header tự co giãn theo nội dung */
+
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            transform: translate(-50%, -100px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, width 0.3s ease-in-out;
+        }
+        
+        .main-header.visible {
+            opacity: 1;
+            transform: translateX(-50%);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            background: linear-gradient(to right, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo img {
+            max-height: 28px;
+        }
+
+
+        .header-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .main-nav a {
+            position: relative;
+            z-index: 1;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.is-active {
+            color: var(--text-primary);
+        }
+        
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+
+        .lang-switcher button {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .lang-switcher button:first-child {
+            border-top-left-radius: 999px;
+            border-bottom-left-radius: 999px;
+            border-right: none;
+        }
+        .lang-switcher button:last-child {
+            border-top-right-radius: 999px;
+            border-bottom-right-radius: 999px;
+        }
+
+        .lang-switcher button:hover,
+        .lang-switcher button.active {
+            background-color: var(--gradient-purple);
+            color: var(--text-primary);
+            border-color: var(--gradient-purple);
+        }
+
+
+        /* ====================================================== */
+        /* --- HERO SECTION --- */
+        /* ====================================================== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-top: 8rem;
+            text-align: center;
+        }
+
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            opacity: 0.8;
+        }
+        #fireworks-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(18, 18, 18, 0.2) 0%, rgba(18, 18, 18, 0.8) 70%);
+            z-index: -1;
+        }
+        
+        .hero-text-content h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text-content p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        .hero-buttons {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .scroll-down-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+        }
+
+        .scroll-down-indicator::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            animation: scroll-down-anim 2s infinite;
+        }
+
+        @keyframes scroll-down-anim {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            40% { opacity: 1; }
+            80% { transform: translate(-50%, 16px); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* ====================================================== */
+        /* --- CÁC SECTION NỘI DUNG CHUNG --- */
+        /* ====================================================== */
+        .content-section {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .title-underline {
+            width: 6rem;
+            height: 4px;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            border-radius: 9999px;
+            margin: 0.75rem auto 0 auto;
+        }
+
+        /* Section Specific Styles */
+        .game-intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .game-intro-grid.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+        .game-intro-grid.reverse .game-image {
+            order: 2;
+        }
+        .game-intro-grid.reverse .game-text {
+            order: 1;
+        }
+
+        .game-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        .game-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .game-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .feature-list i {
+            color: var(--gradient-green);
+        }
+
+        .image-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+        .tool-card img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .tool-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .tool-card .btn {
+            margin-top: auto;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .highlight-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        .highlight-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .highlight-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .view-all-container {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        .main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
+        }
+
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE --- */
+        
+        /* === UPDATE HERE === */
+        @media (max-width: 1300px) {
+
+            .main-header {
+                /* Căn logo sang trái, các nút điều khiển sang phải */
+                justify-content: space-between;
+                max-width: 1200px;
+                
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .game-intro-grid, .game-intro-grid.reverse {
+                grid-template-columns: 1fr;
+            }
+             .game-intro-grid .game-image,
+             .game-intro-grid.reverse .game-image {
+                order: -1; /* Luôn đưa ảnh lên đầu trên mobile */
+                margin-bottom: 2rem;
+            }
+            .image-tools-grid { grid-template-columns: 1fr 1fr; }
+            .highlights-grid { grid-template-columns: 1fr; }
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .footer-about {
+                grid-column: 1 / -1;
+            }
+        }
+        @media (max-width: 768px) {
+            .image-tools-grid { grid-template-columns: 1fr; }
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-about p {
+                margin: 0 auto;
+            }
+            .footer-logo {
+                justify-content: center;
+            }
+        }
+
+    </style>
 
 </head>
 
 <body>
+    <!-- Thanh tiến trình cuộn -->
+    <div class="scroll-progress-bar"></div>
 
-    <!-- Bộ chuyển đổi ngôn ngữ -->
-    <div class="lang-switcher-container">
-        <div class="lang-switcher btn-group">
-            <button class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
-            <button class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
-        </div>
-    </div>
-
-    <!-- ===== NAVBAR BẮT ĐẦU (Custom CSS) ===== -->
-    <nav class="custom-navbar fixed-top">
-        <div class="nav-container">
-            <a class="nav-brand" href="index.html">
-                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
-            </a>
-
-            <button class="nav-toggler" id="navbarToggler" aria-label="Chuyển đổi điều hướng">
-                <span class="nav-toggler-icon"></span>
+    <!-- Header mới -->
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="Logo">
+        </a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" class="is-active" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" data-translate="navContact">Liên hệ</a>
+                <a href="scale.html" data-translate="navImageTools">Công cụ ảnh</a>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
             </button>
+        </nav>
+    </header>
 
-            <div class="nav-collapse" id="navbarNavContent">
-                <ul class="nav-menu">
-                    <li class="nav-menu-item active">
-                        <a class="nav-menu-link" href="index.html" data-translate="navHome"></a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="game.html" data-translate="navPlayGame"></a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="about.html" data-translate="navAbout"></a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="contact.html" data-translate="navContact"></a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="scale.html" data-translate="navImageTools"></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- ===== NAVBAR KẾT THÚC (Custom CSS) ===== -->
 
-    <main class="main-content-area">
-        <!-- ===== PHẦN HERO BẮT ĐẦU ===== -->
-        <header class="hero-section-fireworks">
+    <main>
+        <!-- Hero Section mới -->
+        <section class="hero-section">
             <div id="fireworks-canvas"></div>
-            <div class="container">
-                <h1 class="display-3 fw-bolder mb-3" data-translate="heroTitle"></h1>
-                <p class="lead col-lg-9 mx-auto mb-4" data-translate="heroSubtitle"></p>
-                <a class="btn btn-warning btn-lg px-4 me-sm-3 mb-3 mb-sm-0" href="#game-section-vi" role="button">
-                    <i class="fas fa-puzzle-piece me-2"></i><span data-translate="heroButtonGame"></span>
-                </a>
-                <a class="btn btn-outline-light btn-lg px-4" href="#image-tools-section-vi" role="button">
-                    <i class="fas fa-crop-alt me-2"></i><span data-translate="heroButtonTools"></span>
-                </a>
+            <div class="container hero-text-content">
+                <h1 data-translate="heroTitle">
+                    <span class="gradient-text">Giải Trí & Sáng Tạo</span> Không Giới Hạn
+                </h1>
+                <p data-translate="heroSubtitle">Khám phá thế giới game giải đố hấp dẫn và bộ công cụ xử lý ảnh mạnh
+                    mẽ, tất cả trong một nơi. Nhanh chóng, miễn phí và dễ sử dụng.</p>
+                <div class="hero-buttons">
+                    <a href="#games" class="btn btn-primary">
+                        <i class="fas fa-puzzle-piece"></i><span data-translate="heroButtonGame">Thử Game Ngay</span>
+                    </a>
+                    <a href="#tools" class="btn btn-secondary">
+                        <i class="fas fa-crop-alt"></i><span data-translate="heroButtonTools">Dùng Công Cụ Ảnh</span>
+                    </a>
+                </div>
             </div>
-        </header>
-        <!-- ===== PHẦN HERO KẾT THÚC ===== -->
+            <div class="scroll-down-indicator"></div>
+        </section>
 
-        <!-- ===== PHẦN GIỚI THIỆU GAME BẮT ĐẦU ===== -->
-        <section id="game-section-vi" class="game-intro-section py-5 bg-light">
+        <!-- Phần Game -->
+        <section id="games" class="content-section">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <img src="img/demo_game.png" alt="Demo Game Xếp Hình" class="img-fluid rounded">
+                <!-- Game 1: Jigsaw -->
+                <div class="game-intro-grid animate-on-scroll">
+                    <div class="game-image">
+                        <img src="img/demo_game.png" alt="Demo Game Xếp Hình">
                     </div>
-                    <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="gameIntroTitle"></h2>
-                        <p class="lead text-muted" data-translate="gameIntroDesc"></p>
-                        <ul class="list-unstyled mb-4 fs-5">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature1"></span></li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature2"></span></li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><span data-translate="gameIntroFeature3"></span></li>
+                    <div class="game-text">
+                        <h3 data-translate="gameIntroTitle">Game Xếp Hình Tư Duy</h3>
+                        <p data-translate="gameIntroDesc">Thử thách trí tuệ của bạn với trò chơi xếp hình cổ điển. Chọn
+                            ảnh, điều chỉnh độ khó và bắt đầu ghép những mảnh ghép để tạo nên một bức tranh hoàn chỉnh.
+                        </p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature1">Tải lên ảnh của riêng bạn.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature2">Nhiều mức độ khó khác nhau.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature3">Giao diện thân thiện, dễ chơi.</span></li>
                         </ul>
-                        <a href="game.html" class="btn btn-primary btn-lg">
-                            <i class="fas fa-play me-2"></i><span data-translate="gameIntroButton"></span>
+                        <a href="game.html" class="btn btn-primary">
+                            <i class="fas fa-play"></i><span data-translate="gameIntroButton">Chơi Xếp Hình</span>
+                        </a>
+                    </div>
+                </div>
+                 <!-- Game 2: Caro -->
+                <div class="game-intro-grid reverse animate-on-scroll" style="margin-top: 6rem;">
+                    <div class="game-image">
+                        <img src="img/demo_caro.png" alt="Demo Game Cờ Caro">
+                    </div>
+                    <div class="game-text">
+                        <h3 data-translate="caroIntroTitle">Cờ Caro Chiến Thuật</h3>
+                        <p data-translate="caroIntroDesc">Trò chơi cờ caro kinh điển, nơi bạn cần vận dụng trí thông minh để chặn đối thủ và tạo thành một hàng 5 quân cờ trước.</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature1">Chơi với máy hoặc 2 người.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature2">Lối chơi đơn giản nhưng đầy tính chiến thuật.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature3">Rèn luyện tư duy logic và khả năng phán đoán.</span></li>
+                        </ul>
+                        <a href="caro.html" class="btn btn-primary">
+                            <i class="fas fa-chess-board"></i><span data-translate="caroPlayButton">Chơi Cờ Caro</span>
+                        </a>
+                    </div>
+                </div>
+                 <!-- Game 3: Tetris -->
+                <div class="game-intro-grid animate-on-scroll" style="margin-top: 6rem;">
+                    <div class="game-image">
+                        <img src="img/demo_tetris.png" alt="Demo Game Xếp Gạch Tetris">
+                    </div>
+                    <div class="game-text">
+                        <h3 data-translate="tetrisIntroTitle">Xếp Gạch Cổ Điển (Tetris)</h3>
+                        <p data-translate="tetrisIntroDesc">Trải nghiệm lại tựa game xếp gạch huyền thoại. Xoay và di chuyển các khối gạch rơi xuống để lấp đầy các hàng ngang và ghi điểm.</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature1">Lối chơi gây nghiện vượt thời gian.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature2">Tăng tốc độ theo thời gian để tăng thử thách.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature3">Luyện tập phản xạ nhanh và kỹ năng sắp xếp.</span></li>
+                        </ul>
+                        <a href="tetris.html" class="btn btn-primary">
+                            <i class="fas fa-cubes"></i><span data-translate="tetrisPlayButton">Chơi Xếp Gạch</span>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== PHẦN GIỚI THIỆU GAME CARO BẮT ĐẦU (MỚI) ===== -->
-        <section id="caro-intro-section" class="game-intro-section py-5">
+        <!-- Phần Công cụ ảnh -->
+        <section id="tools" class="content-section">
             <div class="container">
-                <div class="row align-items-center">
-                    <!-- Cột nội dung (bên trái) -->
-                    <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="caroIntroTitle"></h2>
-                        <p class="lead text-muted" data-translate="caroIntroDesc"></p>
-                        <ul class="list-unstyled mb-4 fs-5">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature1"></span>
-                            </li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature2"></span>
-                            </li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="caroFeature3"></span>
-                            </li>
-                        </ul>
-                        <a href="caro.html" class="btn btn-primary btn-lg">
-                            <i class="fas fa-chess-board me-2"></i>
-                            <span data-translate="caroPlayButton"></span>
-                        </a>
+                <div class="section-header animate-on-scroll">
+                    <span class="section-badge">POWERFUL & FREE</span>
+                    <h2 class="section-title" data-translate="toolsTitle">Bộ Công Cụ Xử Lý Ảnh</h2>
+                    <div class="title-underline"></div>
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0 auto;" data-translate="toolsSubtitle">
+                        Các tiện ích xử lý ảnh trực tuyến nhanh chóng, không cần cài đặt, giúp bạn hoàn thành công việc chỉ trong vài cú nhấp chuột.
+                    </p>
+                </div>
+                <div class="image-tools-grid">
+                    <div class="tool-card glass-card animate-on-scroll">
+                        <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông">
+                        <h4 data-translate="toolSquareCropTitle">Cắt Ảnh Vuông 1:1</h4>
+                        <p data-translate="toolSquareCropDesc">Tự động cắt ảnh của bạn thành tỷ lệ vuông hoàn hảo, lý tưởng cho ảnh đại diện, Instagram.</p>
+                        <a href="scale.html" class="btn btn-secondary"><i class="fas fa-vector-square"></i><span data-translate="toolSquareCropButton">Thử ngay</span></a>
                     </div>
-                    <!-- Cột hình ảnh (bên phải) -->
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <img src="img/demo_caro.png" alt="Demo Game Cờ Caro" class="img-fluid rounded">
+                    <div class="tool-card glass-card animate-on-scroll" style="transition-delay: 0.1s;">
+                        <img src="img/demo_split.png" alt="Demo Chia Ảnh Lưới">
+                        <h4 data-translate="toolGridSplitTitle">Chia Ảnh Thành Lưới</h4>
+                        <p data-translate="toolGridSplitDesc">Chia một bức ảnh thành nhiều ảnh nhỏ hơn theo dạng lưới (3x3, 4x4...), tạo hiệu ứng độc đáo.</p>
+                        <a href="split.html" class="btn btn-secondary"><i class="fas fa-th-large"></i><span data-translate="toolGridSplitButton">Thử ngay</span></a>
+                    </div>
+                    <div class="tool-card glass-card animate-on-scroll" style="transition-delay: 0.2s;">
+                        <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước">
+                        <h4 data-translate="toolResizeTitle">Thay Đổi Kích Thước</h4>
+                        <p data-translate="toolResizeDesc">Dễ dàng thay đổi chiều rộng và chiều cao của ảnh theo pixel hoặc tỷ lệ phần trăm tùy ý.</p>
+                        <a href="resize.html" class="btn btn-secondary"><i class="fas fa-expand-arrows-alt"></i><span data-translate="toolResizeButton">Thử ngay</span></a>
                     </div>
                 </div>
-            </div>
-        </section>
-    
-        <!-- ===== PHẦN GIỚI THIỆU GAME CARO KẾT THÚC ===== -->
-         <!-- ===== PHẦN GIỚI THIỆU GAME TETRIS BẮT ĐẦU (MỚI) ===== -->
-        <section id="tetris-intro-section" class="game-intro-section py-5 bg-light">
-            <div class="container">
-                <div class="row align-items-center">
-                    <!-- Cột hình ảnh (bên trái) -->
-                    <div class="col-lg-6 mb-4 mb-lg-0">
-                        <!-- Hãy chắc chắn rằng bạn có ảnh demo_tetris.png trong thư mục img/ -->
-                        <img src="img/demo_tetris.png" alt="Demo Game Xếp Gạch Tetris" class="img-fluid rounded">
-                    </div>
-                    <!-- Cột nội dung (bên phải) -->
-                    <div class="col-lg-6">
-                        <h2 class="display-5 fw-bold mb-3" data-translate="tetrisIntroTitle"></h2>
-                        <p class="lead text-muted" data-translate="tetrisIntroDesc"></p>
-                        <ul class="list-unstyled mb-4 fs-5">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature1"></span>
-                            </li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature2"></span>
-                            </li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>
-                                <span data-translate="tetrisFeature3"></span>
-                            </li>
-                        </ul>
-                        <a href="tetris.html" class="btn btn-primary btn-lg">
-                            <i class="fas fa-cubes me-2"></i>
-                            <span data-translate="tetrisPlayButton"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- ===== PHẦN GIỚI THIỆU GAME TETRIS KẾT THÚC ===== -->   
-
-
-        <!-- ===== PHẦN CÔNG CỤ ẢNH BẮT ĐẦU ===== -->
-        <section id="image-tools-section-vi" class="image-tools-section py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold" data-translate="toolsTitle"></h2>
-                    <p class="lead text-muted col-lg-8 mx-auto" data-translate="toolsSubtitle"></p>
-                </div>
-                <div class="row g-4 justify-content-center">
-                    <!-- Card Cắt Ảnh Vuông -->
-                    <div class="col-lg-4 col-md-6"> 
-                        <div class="feature-card h-100 d-flex flex-column">
-                            <div class="text-center mb-3">
-                                <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông"
-                                    class="img-fluid tool-demo-img rounded">
-                            </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolSquareCropTitle"></h3>
-                            <p class="text-muted small" data-translate="toolSquareCropDesc"></p>
-                            <div class="mt-auto text-center">
-                                <a href="scale.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-vector-square me-2"></i><span data-translate="toolSquareCropButton"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card Chia Ảnh Lưới -->
-                    <div class="col-lg-4 col-md-6"> 
-                        <div class="feature-card h-100 d-flex flex-column">
-                            <div class="text-center mb-3">
-                                <img src="img/demo_split.png" alt="Demo Chia Ảnh Lưới"
-                                    class="img-fluid tool-demo-img rounded">
-                            </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolGridSplitTitle"></h3>
-                            <p class="text-muted small" data-translate="toolGridSplitDesc"></p>
-                            <div class="mt-auto text-center">
-                                <a href="split.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-th-large me-2"></i><span data-translate="toolGridSplitButton"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Card Thay Đổi Kích Thước Ảnh -->
-                    <div class="col-lg-4 col-md-6"> 
-                        <div class="feature-card h-100 d-flex flex-column">
-                            <div class="text-center mb-3">
-                                <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước Ảnh"  class="img-fluid tool-demo-img rounded">
-                            </div>
-                            <h3 class="h4 fw-semibold text-center mb-3" data-translate="toolResizeTitle"></h3>
-                            <p class="text-muted small" data-translate="toolResizeDesc"></p>
-                            <div class="mt-auto text-center">
-                                <a href="resize.html" class="btn btn-outline-warning mt-3">
-                                    <i class="fas fa-expand-arrows-alt me-2"></i><span data-translate="toolResizeButton"></span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="about.html#image-tools-section" class="btn btn-secondary">
-                        <i class="fas fa-info-circle me-2"></i><span data-translate="toolsViewDetails"></span>
+                <div class="view-all-container animate-on-scroll">
+                    <a href="about.html#image-tools-section" class="btn btn-secondary" data-translate="toolsViewDetails">
+                        <i class="fas fa-info-circle"></i> Xem chi tiết các công cụ
                     </a>
                 </div>
             </div>
         </section>
-        <!-- ===== PHẦN CÔNG CỤ ẢNH KẾT THÚC ===== -->
 
-
-        <!-- ===== TẠI SAO CHỌN CHÚNG TÔI / ĐIỂM NỔI BẬT (Tùy chọn) ===== -->
-        <section class="highlights-section py-5 bg-light">
+        <!-- Phần Điểm nổi bật -->
+        <section id="highlights" class="content-section">
             <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-5 fw-bold" data-translate="whyUsTitle"></h2>
+                <div class="section-header animate-on-scroll">
+                     <h2 class="section-title" data-translate="whyUsTitle">Tại Sao Chọn Chúng Tôi?</h2>
+                     <div class="title-underline"></div>
                 </div>
-                <div class="row text-center g-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="p-4 bg-white shadow-sm rounded h-100">
-                            <i class="fas fa-user-friends fa-3x text-primary mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsEasyTitle"></h3>
-                            <p class="text-muted small" data-translate="whyUsEasyDesc"></p>
-                        </div>
+                <div class="highlights-grid">
+                    <div class="highlight-card glass-card animate-on-scroll">
+                        <i class="fas fa-user-friends"></i>
+                        <h4 data-translate="whyUsEasyTitle">Dễ Sử Dụng</h4>
+                        <p data-translate="whyUsEasyDesc">Giao diện trực quan và thân thiện, phù hợp với mọi đối tượng người dùng, không yêu cầu kỹ năng kỹ thuật.</p>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="p-4 bg-white shadow-sm rounded h-100">
-                            <i class="fas fa-bolt fa-3x text-success mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsFastTitle"></h3>
-                            <p class="text-muted small" data-translate="whyUsFastDesc"></p>
-                        </div>
+                    <div class="highlight-card glass-card animate-on-scroll" style="transition-delay: 0.1s;">
+                        <i class="fas fa-bolt"></i>
+                        <h4 data-translate="whyUsFastTitle">Nhanh Chóng & Hiệu Quả</h4>
+                        <p data-translate="whyUsFastDesc">Tất cả các công cụ đều được xử lý phía client, đảm bảo tốc độ nhanh và không cần tải tệp lên máy chủ.</p>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="p-4 bg-white shadow-sm rounded h-100">
-                            <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                            <h3 class="h5 fw-semibold" data-translate="whyUsFreeTitle"></h3>
-                            <p class="text-muted small" data-translate="whyUsFreeDesc"></p>
-                        </div>
+                    <div class="highlight-card glass-card animate-on-scroll" style="transition-delay: 0.2s;">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4 data-translate="whyUsFreeTitle">Miễn Phí & An Toàn</h4>
+                        <p data-translate="whyUsFreeDesc">Hoàn toàn miễn phí. Dữ liệu của bạn được an toàn vì chúng tôi không lưu trữ bất kỳ hình ảnh nào bạn sử dụng.</p>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- ===== TẠI SAO CHỌN CHÚNG TÔI KẾT THÚC ===== -->
+
     </main>
-
-
-    <!-- ===== FOOTER BẮT ĐẦU ===== -->
-    <footer class="site-footer bg-dark text-white py-4">
-        <div class="container-fluid">
-            <div class="footer-content-wrapper">
-                <div class="row">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50" data-translate="footerUnlimited"></p>
-                    </div>
-
-                    <div class="col-md-3 col-6 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerExplore"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerHome"></a></li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerJigsaw"></a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-6 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerTools"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerGridSplit"></a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerSquareCrop"></a></li>
-                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerResize"></a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <h5 class="fw-semibold" data-translate="footerInfo"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerAbout"></a></li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerContact"></a></li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerTerms"></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <hr class="my-3 border-secondary">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="small text-white-50 mb-0" data-translate="footerCopyright">
-                            © <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.
-                        </p>
-                        <p class="small text-white-50" data-translate="footerBuiltWith">
-                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
-                        </p>
-                    </div>
-                </div>
+    
+    <!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
             </div>
         </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+        </div>
     </footer>
-    <!-- ===== FOOTER KẾT THÚC ===== -->
 
-    <!-- Bootstrap 5 JS Bundle (Popper.js bao gồm) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    
+
+    <!-- Các file JS cho ngôn ngữ (giữ nguyên) -->
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
     <script src="js/i18n.js"></script>
 
+    <!-- Script mới cho giao diện -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Fireworks Effect ---
             const fireworksCanvas = document.getElementById('fireworks-canvas');
             if (fireworksCanvas) {
                 const fireworks = new Fireworks.default(fireworksCanvas, {
-                    rocketsPoint: {
-                        min: 50,
-                        max: 50
-                    },
-                    hue: {
-                        min: 0,
-                        max: 360
-                    },
-                    delay: {
-                        min: 30,
-                        max: 60
-                    },
+                    rocketsPoint: { min: 50, max: 50 },
+                    hue: { min: 0, max: 360 },
+                    delay: { min: 30, max: 60 },
                     opacity: 0.5,
                     speed: 2,
                     acceleration: 1.05,
@@ -363,46 +927,82 @@
                     explosion: 5,
                     intensity: 30,
                     flickering: 50,
-                    lineWidth: {
-                        explosion: {
-                            min: 1,
-                            max: 3
-                        },
-                        trace: {
-                            min: 0.1,
-                            max: 1
-                        }
-                    },
+                    lineWidth: { explosion: { min: 1, max: 3 }, trace: { min: 0.1, max: 1 } },
                 });
                 fireworks.start();
             }
 
-            // Cập nhật năm hiện tại ở footer
+            // --- Update Copyright Year ---
             const currentYearSpan = document.getElementById('currentYear');
             if (currentYearSpan) {
                 currentYearSpan.textContent = new Date().getFullYear();
             }
-        });
 
-        // JavaScript cho Navbar Toggler (nếu dùng navbar tùy chỉnh)
-        const togglerButton = document.getElementById('navbarToggler');
-        const navbarContent = document.getElementById('navbarNavContent');
-        if (togglerButton && navbarContent) {
-            togglerButton.addEventListener('click', function () {
-                navbarContent.classList.toggle('show');
-            });
-        }
-
-        // Cuộn mượt cho anchor link (nếu dùng)
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href.startsWith('#') && href.length > 1 && document.querySelector(href)) {
-                    e.preventDefault();
-                    document.querySelector(href).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+            // --- Header Visibility on Scroll ---
+            const header = document.querySelector('.main-header');
+            if(header) {
+                setTimeout(() => {
+                    header.classList.add('visible');
+                }, 100); // Delay for initial animation
+            }
+            
+            // --- Scroll Progress Bar ---
+            const progressBar = document.querySelector('.scroll-progress-bar');
+            window.addEventListener('scroll', () => {
+                const scrollTop = document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercentage = (scrollTop / scrollHeight) * 100;
+                if(progressBar) {
+                    progressBar.style.width = `${scrollPercentage}%`;
                 }
+            });
+
+            // --- Animate on Scroll ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(element => {
+                observer.observe(element);
+            });
+
+            // --- Theme Toggler (Light/Dark Mode) ---
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const currentTheme = localStorage.getItem('theme');
+
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    let theme = 'dark';
+                    if (document.body.classList.contains('light-mode')) {
+                        theme = 'light';
+                    }
+                    localStorage.setItem('theme', theme);
+                });
+            }
+
+            // --- Anchor link smooth scroll ---
+             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    const targetElement = document.querySelector(href);
+                    if (href.startsWith('#') && href.length > 1 && targetElement) {
+                        e.preventDefault();
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
             });
         });
     </script>
