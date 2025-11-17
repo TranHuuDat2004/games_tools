@@ -1,268 +1,327 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart Sidebar</title>
+    <title>Hướng dẫn</title>
     <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Global & Page Styles -->
     <style>
         :root {
-            --sidebar-width: 320px;
-            --transition-duration: 0.5s;
-            --sidebar-bg: #fff;
-            --header-color: #333;
-            --button-bg: #d0021b;
-            --button-color: #fff;
-            --checkout-bg: #d0021b;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --bg-dark: #121212;
+            --bg-card: #1c1c1f;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
+        }
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
+        }
+        body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Sora', sans-serif; }
+        a { color: var(--text-primary); text-decoration: none; }
+        a:hover { color: var(--gradient-purple); }
+
+        .main-header { position: fixed; top: 1.5rem; left: 50%; z-index: 1031; max-width: 1000px; width: calc(100% - 3rem); background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 9999px; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; opacity: 0; transform: translate(-50%, -100px); transition: opacity 0.5s, transform 0.5s; }
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: none; }
+        @media (min-width: 992px) { .main-nav { display: flex; gap: 0.5rem; } }
+        .main-nav a { padding: 0.5rem 0.75rem; color: var(--text-secondary); font-size: 0.875rem; }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
+        .lang-switcher button { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.8rem; }
+        .lang-switcher button:first-child { border-top-left-radius: 999px; border-bottom-left-radius: 999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 999px; border-bottom-right-radius: 999px; }
+        .lang-switcher button:hover, .lang-switcher button.active { background-color: var(--gradient-purple); color: var(--text-primary); border-color: var(--gradient-purple); }
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
         }
 
-        .cart-sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            top: 0;
-            right: 0;
-            background-color: var(--sidebar-bg);
-            overflow-x: hidden;
-            transition: var(--transition-duration);
-            padding-top: 20px;
-            box-shadow: -2px 0px 10px var(--shadow-color);
-            z-index: 1000;
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .cart-sidebar.open {
-            width: var(--sidebar-width);
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
-        .cart-header {
-            padding: 10px 20px;
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.8); }
+
+        .main-footer { background-color: #0c0c0c; color: var(--text-secondary); padding-top: 4rem; border-top: 1px solid var(--border-color); margin-top: 4rem; }
+        .footer-container { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; max-width: 1200px; margin: auto; }
+        .footer-column h4 { color: var(--text-primary); }
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column ul a { color: var(--text-secondary); }
+        .footer-copyright { text-align: center; padding: 1.5rem 0; border-top: 1px solid var(--border-color); }
+
+        .info-sidebar { height: 100%; width: 0; position: fixed; top: 0; right: 0; background-color: var(--bg-card); overflow-x: hidden; transition: 0.5s; padding-top: 20px; z-index: 1050; }
+        .info-sidebar.open { width: 320px; }
+        .sidebar-header { padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .sidebar-header h2 { font-size: 1.2rem; margin: 0; }
+        .close-btn { font-size: 1.5rem; cursor: pointer; }
+        .sidebar-content { padding: 15px 20px; }
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        .main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--text-primary);
         }
 
-        .cart-header h2 {
-            font-size: 18px;
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
             margin: 0;
-            font-weight: bold;
         }
 
-        .close-btn {
-            font-size: 24px;
-            cursor: pointer;
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
         }
 
-        .cart-content {
-            padding: 15px 20px;
-            max-height: calc(100vh - 150px);
-            overflow-y: auto;
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
         }
 
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
         }
 
-        .cart-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 10px;
-        }
-
-        .cart-item-info {
-            flex-grow: 1;
-        }
-
-        .cart-item-info p {
-            margin: 0;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .cart-item-info span {
-            display: block;
-            font-size: 14px;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        .cart-item-remove {
-            font-size: 16px;
-            cursor: pointer;
-            color: #d0021b;
-        }
-
-        .free-shipping-banner {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #d0021b;
-        }
-
-        .free-shipping-banner img {
-            width: 30px;
-            margin-left: 5px;
-        }
-
-        .cart-footer {
-            padding: 10px 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .cart-total {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .cart-actions {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .cart-actions button {
-            flex: 1;
-            margin: 0 5px;
-            padding: 10px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            color: var(--button-color);
-            background-color: var(--button-bg);
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .cart-actions button:hover {
-            background-color: #e14b6d;
-        }
-
-        /* Cart button styling (optional) */
-        #cartButton {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #a00;
-            color: white;
-            padding: 10px 20px;
-            cursor: pointer;
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 
 <body>
-    <!-- Giỏ hàng Button -->
-    <button id="cartButton">Giỏ hàng</button>
-    <!-- Sidebar -->
-    <div id="cartSidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <p>Cách chơi rất đơn giản:</p>
-            <span id="closeSidebar" class="close-btn">&times;</span>
-        </div>
-        <div class="cart-content">
-                <p>Chọn một bộ ảnh bạn yêu thích từ danh sách.</p>
-                <p>Các mảnh ghép của bức ảnh sẽ được xáo trộn và xoay ngẫu nhiên.</p>
-                <p>Click vào một mảnh ghép để xoay nó 90 độ theo chiều kim đồng hồ.</p>
-                <p>Kéo và thả các mảnh ghép vào đúng vị trí trên bảng chơi 3x3.</p>
-                <p>Khi tất cả các mảnh ghép được đặt đúng vị trí và đúng góc xoay, bạn sẽ chiến thắng!</p>
-        </div>
-    </div>
+    <header class="main-header">
+        <a href="index.html" class="logo"><img src="logo.png" alt="Logo"></a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" data-translate="navContact">Liên hệ</a>
+                <a href="split.html" data-translate="navImageTools">Công cụ ảnh</a>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+        </nav>
+    </header>
 
-<!-- ===== FOOTER START ===== -->
-    <footer class="site-footer bg-dark text-white py-4">
-        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
-            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
-                <div class="row">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50">Giải trí và sáng tạo không giới hạn. .</p>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold">Khám Phá</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light">Trang
-                                    Chủ</a>
-                            </li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light">Game Xếp
-                                    Hình</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold">Công cụ</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
-                                    Ảnh Lưới</a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light">Công Cụ Cắt
-                                    Ảnh Vuông</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4">
-                        <h5 class="fw-semibold">Thông Tin</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light">Giới
-                                    Thiệu</a>
-                            </li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light">Liên
-                                    Hệ</a>
-                            </li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light">Điều
-                                    Khoản</a></li>
-                            <!-- Thêm link Điều khoản nếu có -->
-                        </ul>
-                    </div>
-                </div>
-                <hr class="my-3 border-secondary">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="small text-white-50 mb-0">
-                            © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi
-                            quyền.
-                        </p>
-                        <p class="small text-white-50">
-                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
-                            <!-- Lưu ý: Bootstrap 5 không cần jQuery, nếu bạn dùng BS5 thì có thể bỏ jQuery -->
-                        </p>
-                    </div>
-                </div>
+    <main class="container text-center" style="padding-top: 8rem;">
+        <h1>Trang Hướng Dẫn</h1>
+        <p>Nhấn nút bên dưới để xem hướng dẫn chi tiết.</p>
+        <button id="open-guide-btn" class="btn btn-primary">Mở Hướng Dẫn</button>
+        
+        <div id="infoSidebar" class="info-sidebar">
+            <div class="sidebar-header">
+                <h2>Hướng dẫn cách chơi</h2>
+                <span id="closeSidebar" class="close-btn">&times;</span>
+            </div>
+            <div class="sidebar-content">
+                <p><strong>1. Chọn ảnh:</strong> Chọn một bộ ảnh bạn yêu thích từ danh sách.</p>
+                <p><strong>2. Xoay mảnh ghép:</strong> Các mảnh ghép sẽ bị xoay ngẫu nhiên. Click vào một mảnh ghép để xoay nó 90 độ.</p>
+                <p><strong>3. Kéo và thả:</strong> Kéo các mảnh ghép vào đúng vị trí trên bảng chơi 3x3.</p>
+                <p><strong>4. Chiến thắng:</strong> Khi tất cả các mảnh ghép được đặt đúng vị trí và đúng góc xoay, bạn sẽ chiến thắng!</p>
             </div>
         </div>
+    </main>
+
+<!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+        </div>
     </footer>
-    <!-- ===== FOOTER END ===== -->
+
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const cartButton = document.getElementById('cartButton');
-            const cartSidebar = document.getElementById('cartSidebar');
-            const closeSidebar = document.getElementById('closeSidebar');
+            const openBtn = document.getElementById('open-guide-btn');
+            const infoSidebar = document.getElementById('infoSidebar');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
 
-            function toggleSidebar() {
-                cartSidebar.classList.toggle('open');
-            }
-
-            function closeSidebarIfClickedOutside(event) {
-                if (!cartSidebar.contains(event.target) && !cartButton.contains(event.target)) {
-                    cartSidebar.classList.remove('open');
+            function toggleSidebar() { infoSidebar.classList.toggle('open'); }
+            function closeOnClickOutside(event) {
+                if (!infoSidebar.contains(event.target) && !openBtn.contains(event.target)) {
+                    infoSidebar.classList.remove('open');
                 }
             }
+            openBtn.addEventListener('click', toggleSidebar);
+            closeSidebarBtn.addEventListener('click', toggleSidebar);
+            window.addEventListener('click', closeOnClickOutside);
 
-            cartButton.addEventListener('click', toggleSidebar);
-            closeSidebar.addEventListener('click', toggleSidebar);
-            window.addEventListener('click', closeSidebarIfClickedOutside);
+            // Site-wide scripts
+            const header = document.querySelector('.main-header');
+            if(header) { setTimeout(() => header.classList.add('visible'), 100); }
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            if(themeToggleBtn) {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'light') { document.body.classList.add('light-mode'); }
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
+            }
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
         });
     </script>
-
 </body>
-
 </html>

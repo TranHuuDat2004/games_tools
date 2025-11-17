@@ -4,115 +4,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Liên hệ với chúng tôi để đặt câu hỏi, gửi góp ý hoặc báo cáo lỗi về Game Xếp Hình & Công Cụ Ảnh.">
-    <meta name="description" lang="en"
-        content="Contact us for questions, feedback, or bug reports regarding Jigsaw Puzzle Game & Image Tools.">
-    <title>Liên Hệ - Game Xếp Hình</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="description" content="Liên hệ với chúng tôi để đặt câu hỏi, gửi góp ý hoặc báo cáo lỗi về Game Xếp Hình & Công Cụ Ảnh.">
+    <title>Liên Hệ - Game & Ảnh Pro</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
-    <link rel="icon" href="favicon.png" type="image/png">
+        
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap 4 CSS (for modals/forms) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+    <!-- Global & Page Styles -->
     <style>
-        /* Custom styles for language switcher (copied from other pages) */
-        .lang-switcher-container {
-            position: fixed;
-            top: 80px;
-            /* Adjust based on your navbar height */
-            right: 20px;
-            z-index: 1031;
+        :root {
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
+        }
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
+        }
+        body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Sora', sans-serif; }
+        a { color: var(--text-primary); text-decoration: none; }
+        a:hover { color: var(--gradient-purple); }
+        .main-header {
+            position: fixed; top: 1.5rem; left: 50%; z-index: 1031; max-width: 1000px; width: calc(100% - 3rem); 
+            background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 9999px; padding: 0.75rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            opacity: 0; transform: translate(-50%, -100px); transition: opacity 0.5s, transform 0.5s;
+        }
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: none; }
+        @media (min-width: 992px) { .main-nav { display: flex; gap: 0.5rem; } }
+        .main-nav a { padding: 0.5rem 0.75rem; color: var(--text-secondary); font-size: 0.875rem; }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
+        .lang-switcher button { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.8rem; }
+        .lang-switcher button:first-child { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; }
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
         }
 
-        .lang-switcher .btn {
-            margin: 0 2px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            min-width: 60px;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .lang-switcher .btn.active {
-            background-color: #ffc107;
-            border-color: #ffc107;
-            color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
-        .lang-switcher .btn:not(.active) {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
 
-        .lang-switcher .btn:not(.active):hover {
-            background-color: #e9ecef;
-            border-color: #ced4da;
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.8); }
+.main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
         }
 
-        /* Hide content by default for JS control */
-        .lang-content {
-            display: none;
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
         }
 
-        .lang-content.active-lang {
-            display: block;
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
         }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
+        }
+
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Page specific styles */
+        .lang-content { display: none; }
+        .lang-content.active-lang { display: block; }
+        main h1 { color: var(--text-primary); }
+        body.light-mode main h1 { color: #212529; }
+        form label { color: var(--text-primary); }
+        body.light-mode form label { color: #212529; }
     </style>
 </head>
 
 <body>
-
-    <!-- Language Switcher -->
-    <div class="lang-switcher-container">
-        <div class="lang-switcher btn-group">
-            <button class="btn btn-outline-secondary" data-lang="vi">VI</button>
-            <button class="btn btn-outline-secondary" data-lang="en">EN</button>
-        </div>
-    </div>
-
-    <!-- ===== NAVBAR START (Custom CSS) ===== -->
-    <nav class="custom-navbar">
-        <div class="nav-container">
-            <a class="nav-brand" href="index.html">
-                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
-            </a>
-            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                <span class="nav-toggler-icon"></span>
-            </button>
-            <div class="nav-collapse" id="navbarNavContent">
-                <ul class="nav-menu">
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ"
-                            data-lang-en="Home">Trang Chủ</a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game"
-                            data-lang-en="Play Game">Chơi Game</a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu"
-                            data-lang-en="About">Giới Thiệu</a>
-                    </li>
-                    <li class="nav-menu-item active">
-                        <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ"
-                            data-lang-en="Contact">Liên Hệ <span class="screen-reader-only">(current)</span></a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh"
-                            data-lang-en="Image Tools">Cắt Ảnh</a>
-                    </li>
-                </ul>
+    <header class="main-header">
+        <a href="index.html" class="logo"><img src="logo.png" alt="Logo"></a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" class="is-active" data-translate="navContact">Liên hệ</a>
+                <a href="split.html" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
             </div>
-        </div>
-    </nav>
-    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+        </nav>
+    </header>
 
-    <!-- Vietnamese Content -->
-    <div class="lang-content" data-lang="vi">
-        <main class="main-content-area container">
+    <main class="container" style="padding-top: 8rem;">
+        <!-- Vietnamese Content -->
+        <div class="lang-content" data-lang="vi">
             <h1 class="text-center mb-4">Liên Hệ Với Chúng Tôi</h1>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -125,7 +247,6 @@
                             <li><strong>Email:</strong> <a href="mailto:lienhe@example.com">lienhe@example.com</a></li>
                             <li><strong>Facebook:</strong> <a href="https://fb.com/YourGamePage"
                                     target="_blank">fb.com/YourGamePage</a></li>
-                            <!-- Thêm các kênh khác nếu có (Twitter, Discord,...) -->
                         </ul>
                     </div>
                     <hr>
@@ -152,13 +273,11 @@
                     </form>
                 </div>
             </div>
-        </main>
-    </div>
-    <!-- End Vietnamese Content -->
+        </div>
+        <!-- End Vietnamese Content -->
 
-    <!-- English Content -->
-    <div class="lang-content" data-lang="en">
-        <main class="main-content-area container">
+        <!-- English Content -->
+        <div class="lang-content" data-lang="en">
             <h1 class="text-center mb-4">Contact Us</h1>
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
@@ -168,10 +287,9 @@
                         <h5>Contact Information:</h5>
                         <ul class="list-unstyled">
                             <li><strong>Email:</strong> <a href="mailto:contact@example.com">contact@example.com</a>
-                            </li> <!-- Consider a different email for English or use the same -->
+                            </li>
                             <li><strong>Facebook:</strong> <a href="https://fb.com/YourGamePage"
                                     target="_blank">fb.com/YourGamePage</a></li>
-                            <!-- Add other channels if available (Twitter, Discord,...) -->
                         </ul>
                     </div>
                     <hr>
@@ -199,65 +317,80 @@
                     </form>
                 </div>
             </div>
-        </main>
-    </div>
-    <!-- End English Content -->
+        </div>
+        <!-- End English Content -->
+    </main>
 
+<!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+        </div>
+    </footer>
 
-    <div id="footer-placeholder"></div>
-
-
-    <!-- Các script mới để tạo header và footer -->
-    <script src="header.js"></script>
-    <script src="footer.js"></script>
-    <script src="setLanguage.js"></script>
-
-    <!-- Bootstrap JS và dependencies -->
+    <!-- Bootstrap 4 JS and dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Page-specific language and site-wide scripts -->
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
-        // Đối tượng chứa các chuỗi dịch cho các phần tử không dễ dàng đặt data-attributes
+        // Page-specific language switcher (kept for content, new header uses i18n.js)
         const pageTranslations = {
             vi: {
-                pageTitle: "Liên Hệ - Game Xếp Hình",
+                pageTitle: "Liên Hệ - Game & Ảnh Pro",
                 metaDescription: "Liên hệ với chúng tôi để đặt câu hỏi, gửi góp ý hoặc báo cáo lỗi về Game Xếp Hình & Công Cụ Ảnh.",
                 contactFormAlert: "Cảm ơn bạn đã liên hệ! Chức năng này sẽ sớm được cập nhật."
             },
             en: {
-                pageTitle: "Contact - Jigsaw Puzzle Game",
+                pageTitle: "Contact - Game & Photo Pro",
                 metaDescription: "Contact us for questions, feedback, or bug reports regarding Jigsaw Puzzle Game & Image Tools.",
                 contactFormAlert: "Thank you for contacting us! This feature will be updated soon."
             }
         };
 
-        // JavaScript cho Navbar Toggler
-        const togglerButton = document.getElementById('navbarToggler');
-        const navbarContent = document.getElementById('navbarNavContent');
-        if (togglerButton && navbarContent) {
-            togglerButton.addEventListener('click', function () {
-                navbarContent.classList.toggle('show');
-            });
-        }
-
-        // JavaScript cho chuyển đổi ngôn ngữ
         document.addEventListener('DOMContentLoaded', function () {
-            const langSwitcherButtons = document.querySelectorAll('.lang-switcher .btn');
+            const langSwitcherButtons = document.querySelectorAll('.lang-switcher .lang-btn');
             const allLangContents = document.querySelectorAll('.lang-content');
-            const langSpecificElements = document.querySelectorAll('.lang-specific');
-            const pageTitleElement = document.querySelector('title');
-            const metaDescriptionTag = document.querySelector('meta[name="description"]');
-
-            function updateFooterYear() {
-                const currentYearViSpan = document.getElementById('currentYearVi');
-                const currentYearEnSpan = document.getElementById('currentYearEn');
-                const year = new Date().getFullYear();
-                if (currentYearViSpan) currentYearViSpan.textContent = year;
-                if (currentYearEnSpan) currentYearEnSpan.textContent = year;
-            }
-
-
-            function switchLanguage(selectedLang) {
+            
+            function switchContentLanguage(selectedLang) {
                 const currentTranslations = pageTranslations[selectedLang] || pageTranslations.vi;
 
                 allLangContents.forEach(content => {
@@ -270,95 +403,41 @@
                     activeContentBlock.style.display = 'block';
                     activeContentBlock.classList.add('active-lang');
                 }
-
-                langSwitcherButtons.forEach(button => {
-                    button.classList.toggle('active', button.dataset.lang === selectedLang);
-                });
-
-                langSpecificElements.forEach(element => {
-                    const viText = element.dataset.langVi;
-                    const enText = element.dataset.langEn;
-                    let textToSet = '';
-
-                    if (selectedLang === 'vi' && viText) textToSet = viText;
-                    else if (selectedLang === 'en' && enText) textToSet = enText;
-                    else if (viText) textToSet = viText;
-
-                    if (element.tagName === 'P' && (element.id === 'copyright-vi' || element.id === 'copyright-en' || element.innerHTML.includes("<span id='currentYear"))) {
-                        const yearSpanId = selectedLang === 'vi' ? 'currentYearVi' : 'currentYearEn';
-                        const year = new Date().getFullYear();
-                        if (selectedLang === 'vi') {
-                            element.innerHTML = `© <span id="${yearSpanId}">${year}</span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.`;
-                        } else {
-                            element.innerHTML = `© <span id="${yearSpanId}">${year}</span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.`;
-                        }
-                        if (element.dataset.langVi && element.dataset.langVi.includes("Xây dựng với")) {
-                            if (selectedLang === 'vi') {
-                                element.innerHTML = `<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>`;
-                            } else {
-                                element.innerHTML = `<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>`;
-                            }
-                        }
-                    }
-                    else if (element.innerHTML.includes("<small>")) { // For "Built with..."
-                        element.innerHTML = selectedLang === 'vi' ? element.dataset.langVi : element.dataset.langEn;
-                    }
-                    else if (element.tagName === 'A' && element.classList.contains('nav-menu-link') && element.href.includes('contact.html')) {
-                        const currentText = selectedLang === 'vi' ? ' (current)' : ' (current)';
-                        element.innerHTML = textToSet + `<span class="screen-reader-only">${currentText}</span>`;
-                    } else {
-                        element.textContent = textToSet;
-                    }
-
-                    if (element.tagName === 'A' && element.href && element.href.includes('contact.html') && element.closest('footer')) {
-                        element.classList.add('active');
-                    } else if (element.tagName === 'A' && element.closest('footer')) {
-                        element.classList.remove('active');
-                    }
-                });
-
-                if (pageTitleElement) pageTitleElement.textContent = currentTranslations.pageTitle;
-                if (metaDescriptionTag) metaDescriptionTag.setAttribute('content', currentTranslations.metaDescription);
+                
+                document.querySelector('title').textContent = currentTranslations.pageTitle;
+                document.querySelector('meta[name="description"]').setAttribute('content', currentTranslations.metaDescription);
                 document.documentElement.lang = selectedLang;
                 localStorage.setItem('preferredLanguage', selectedLang);
-                updateFooterYear();
+
+                // Update contact form alert message
+                const alertMessage = currentTranslations.contactFormAlert;
+                $('#contact-form-vi').off('submit').on('submit', function (e) { e.preventDefault(); alert(alertMessage); });
+                $('#contact-form-en').off('submit').on('submit', function (e) { e.preventDefault(); alert(alertMessage); });
             }
 
             const preferredLanguage = localStorage.getItem('preferredLanguage') || 'vi';
-            switchLanguage(preferredLanguage);
+            switchContentLanguage(preferredLanguage);
 
             langSwitcherButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    switchLanguage(this.dataset.lang);
+                    switchContentLanguage(this.dataset.lang);
                 });
             });
 
-            // Update contact form alert message based on language
-            function updateContactFormAlert(lang) {
-                const alertMessage = pageTranslations[lang].contactFormAlert || pageTranslations.vi.contactFormAlert;
-                // Cập nhật cho cả hai form nếu cần, hoặc chỉ form đang hiển thị
-                const formVi = document.getElementById('contact-form-vi');
-                const formEn = document.getElementById('contact-form-en');
-                if (formVi) {
-                    $(formVi).off('submit').on('submit', function (e) {
-                        e.preventDefault();
-                        alert(alertMessage);
-                    });
-                }
-                if (formEn) {
-                    $(formEn).off('submit').on('submit', function (e) {
-                        e.preventDefault();
-                        alert(alertMessage);
-                    });
-                }
+            // Site-wide theme/header script
+            const header = document.querySelector('.main-header');
+            if(header) { setTimeout(() => header.classList.add('visible'), 100); }
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            if(themeToggleBtn) {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'light') { document.body.classList.add('light-mode'); }
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
             }
-            updateContactFormAlert(preferredLanguage); // Initial setup
-            // Update on language change as well
-            langSwitcherButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    updateContactFormAlert(this.dataset.lang);
-                });
-            });
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
         });
     </script>
 </body>

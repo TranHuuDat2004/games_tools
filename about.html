@@ -4,212 +4,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giới Thiệu - Game Xếp Hình</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css"> <!-- Link đến file CSS chung -->
+    <title>Giới Thiệu - Game & Ảnh Pro</title>
     <link rel="icon" href="favicon.png" type="image/png">
-    <!-- Font Awesome cho biểu tượng trái tim ở footer -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<style>
-    /* Có thể thêm style riêng cho trang about nếu cần */
-    .feature-icon {
-        font-size: 3rem;
-        color: #ffc107;
-        /* Màu vàng đặc trưng */
-        margin-bottom: 15px;
-    }
 
-    .feature-card {
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 25px;
-        margin-bottom: 30px;
-        background-color: #fff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap 4 CSS (for existing elements that might still rely on it) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-    .feature-card h3 {
-        margin-bottom: 15px;
-        color: #343a40;
-    }
 
-        /* --- NEW Custom styles for language switcher --- */
-        .lang-switcher-container {
-            position: fixed;
-            top: 80px; /* Adjust based on your navbar height and preference */
-            right: 20px;
-            z-index: 1031; /* Above navbar content, potentially below modals if they have higher z-index */
+    <!-- Global & Page Styles -->
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
         }
-        .lang-switcher .btn {
-            margin: 0 2px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            min-width: 50px; /* Slightly adjusted for VI/EN */
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
         }
-        .lang-switcher .btn.active { /* This class will be toggled by JS */
-            background-color: #ffc107; /* Bootstrap warning color */
-            border-color: #ffc107;
-            color: #212529; /* Dark text for better contrast on yellow */
+        body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Sora', sans-serif; }
+        a { color: var(--text-primary); text-decoration: none; }
+        a:hover { color: var(--gradient-purple); }
+        .main-header {
+            position: fixed; top: 1.5rem; left: 50%; z-index: 1031; max-width: 1000px; width: calc(100% - 3rem); 
+            background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 9999px; padding: 0.75rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            opacity: 0; transform: translate(-50%, -100px); transition: opacity 0.5s, transform 0.5s;
+        }
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: none; }
+        @media (min-width: 992px) { .main-nav { display: flex; gap: 0.5rem; } }
+        .main-nav a { padding: 0.5rem 0.75rem; color: var(--text-secondary); font-size: 0.875rem; }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
+        .lang-switcher button { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.8rem; }
+        .lang-switcher button:first-child { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; }
+ /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.8); }
+.main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 1.5rem;
+            color: var(--text-primary);
         }
-        .lang-switcher .btn:not(.active) {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
+
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
         }
-        .lang-switcher .btn:not(.active):hover {
-            background-color: #e9ecef;
-            border-color: #ced4da;
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        /* .lang-content styles are not directly used by the primary translation mechanism here,
-           but kept if you plan to use them for block-level language switching elsewhere. */
-        .lang-content {
-            display: none;
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
         }
-        .lang-content.active-lang {
-            display: block;
+
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
         }
-</style>
+
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
+        }
+
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Page specific styles */
+        .feature-icon { font-size: 3rem; color: var(--gradient-purple); margin-bottom: 15px; }
+        .feature-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 30px; background-color: var(--bg-card); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .feature-card h3 { color: var(--text-primary); }
+        body.light-mode .feature-card { background-color: #fff; }
+        body.light-mode .feature-card h3 { color: #212129; }
+        .main-content-area h1 { color: var(--text-primary); }
+        body.light-mode .main-content-area h1 { color: #212129; }
+        .lang-content { display: none; }
+        .lang-content.active-lang { display: block; }
+    </style>
+</head>
 
 <body>
-    <!-- Language Switcher -->
-    <div class="lang-switcher-container">
-        <div class="lang-switcher btn-group">
-            <button class="btn btn-outline-secondary" data-lang="vi">VI</button>
-            <button class="btn btn-outline-secondary" data-lang="en">EN</button>
-        </div>
-    </div>
-        <!-- ===== NAVBAR START (Custom CSS) ===== -->
-        <nav class="custom-navbar">
-            <div class="nav-container">
-                <a class="nav-brand" href="index.html">
-                    <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
-                </a>
-    
-                <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                    <span class="nav-toggler-icon"></span>
-                </button>
-    
-                <div class="nav-collapse" id="navbarNavContent">
-                    <ul class="nav-menu">
-                        <li class="nav-menu-item ">
-                            <a class="nav-menu-link lang-specific" href="index.html" data-lang-vi="Trang Chủ" data-lang-en="Home">Trang Chủ <span class="screen-reader-only">(current)</span></a>
-                        </li>
-                        <li class="nav-menu-item ">
-                            <a class="nav-menu-link lang-specific" href="game.html" data-lang-vi="Chơi Game" data-lang-en="Play Game">Chơi Game</a>
-                        </li>
-                        <li class="nav-menu-item active">
-                            <a class="nav-menu-link lang-specific" href="about.html" data-lang-vi="Giới Thiệu" data-lang-en="About">Giới Thiệu</a>
-                        </li>
-                        <li class="nav-menu-item">
-                            <a class="nav-menu-link lang-specific" href="contact.html" data-lang-vi="Liên Hệ" data-lang-en="Contact">Liên Hệ</a>
-                        </li>
-                        <li class="nav-menu-item">
-                            <a class="nav-menu-link lang-specific" href="split.html" data-lang-vi="Cắt Ảnh" data-lang-en="Image Tools">Cắt Ảnh</a>
-                        </li>
-                    </ul>
-                </div>
+    <header class="main-header">
+        <a href="index.html" class="logo"><img src="logo.png" alt="Logo"></a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" class="is-active" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" data-translate="navContact">Liên hệ</a>
+                <a href="split.html" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
             </div>
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
         </nav>
-        <!-- ===== NAVBAR END (Custom CSS) ===== -->
+    </header>
 
-
-        <!-- ===== MAIN CONTENT START ===== -->
-    <main class="main-content-area container">
-
+    <main class="container" style="padding-top: 8rem;">
         <!-- VIETNAMESE CONTENT -->
         <div class="lang-content" data-lang="vi">
             <div class="text-center mb-5">
                 <h1 class="display-4">Giới Thiệu Các Công Cụ Xử Lý Ảnh</h1>
-                <p class="lead">Khám phá các tính năng mạnh mẽ để tùy chỉnh, chia nhỏ và thay đổi kích thước hình ảnh của bạn một cách dễ dàng!
-                </p>
+                <p class="lead">Khám phá các tính năng mạnh mẽ để tùy chỉnh, chia nhỏ và thay đổi kích thước hình ảnh của bạn một cách dễ dàng!</p>
             </div>
-
             <div class="row">
-                <!-- Tính năng Cắt Ảnh Vuông -->
                 <div class="col-md-6 col-lg-4 mb-4"> 
                     <div class="feature-card h-100"> 
                         <div class="text-center">
                             <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông" width="300px">
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Cắt Ảnh Thành Hình Vuông (1:1)</h3>
-                        <p>Bạn có một bức ảnh chữ nhật nhưng cần một phiên bản hình vuông hoàn hảo? Công cụ này cho phép
-                            bạn:</p>
-                        <ul>
-                            <li>Tải lên bất kỳ ảnh nào (JPG, PNG, GIF, WEBP).</li>
-                            <li>Xem trước ảnh gốc và điều chỉnh một vùng chọn hình vuông trực quan.</li>
-                            <li><strong>Kéo thả</strong> để di chuyển vùng chọn đến vị trí mong muốn trên ảnh.</li>
-                            <li><strong>Điều chỉnh kích thước</strong> vùng chọn bằng cách kéo các điểm ở góc, đảm bảo tỉ
-                                lệ
-                                1:1 luôn được duy trì.</li>
-                            <li>Sau khi chọn được vùng ưng ý, nhấn "Cắt Ảnh Vuông" để tạo ra bức ảnh mới.</li>
-                            <li>Xem trước kết quả và tải về ảnh vuông đã cắt.</li>
-                        </ul>
+                        <h3 class="text-center mt-3">Cắt Ảnh Thành Hình Vuông (1:1)</h3>
+                        <p>Bạn có một bức ảnh chữ nhật nhưng cần một phiên bản hình vuông hoàn hảo? Công cụ này cho phép bạn:</p>
+                        <ul><li>Tải lên bất kỳ ảnh nào (JPG, PNG, GIF, WEBP).</li><li>Xem trước ảnh gốc và điều chỉnh một vùng chọn hình vuông trực quan.</li><li><strong>Kéo thả</strong> để di chuyển vùng chọn đến vị trí mong muốn trên ảnh.</li><li><strong>Điều chỉnh kích thước</strong> vùng chọn bằng cách kéo các điểm ở góc, đảm bảo tỉ lệ 1:1 luôn được duy trì.</li><li>Sau khi chọn được vùng ưng ý, nhấn "Cắt Ảnh Vuông" để tạo ra bức ảnh mới.</li><li>Xem trước kết quả và tải về ảnh vuông đã cắt.</li></ul>
                         <p>Hoàn hảo cho việc tạo avatar, ảnh thumbnail, hoặc bất kỳ mục đích nào cần ảnh tỉ lệ 1:1.</p>
                         <div class="text-center mt-auto">
-                            <a href="scale.html" class="btn btn-warning btn-lg mt-3 text-center">Thử Cắt Ảnh Vuông</a>
+                            <a href="scale.html" class="btn btn-warning btn-lg mt-3">Thử Cắt Ảnh Vuông</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tính năng Cắt Ảnh Lưới -->
                 <div class="col-md-6 col-lg-4 mb-4"> 
                     <div class="feature-card h-100"> 
                         <div class="text-center">
                             <img src="img/demo_split.png" alt="Demo Cắt Ảnh Lưới" width="300px">
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Cắt Ảnh Thành Lưới (Ví dụ: 3x3)</h3>
+                        <h3 class="text-center mt-3">Cắt Ảnh Thành Lưới (Ví dụ: 3x3)</h3>
                         <p>Chia một bức ảnh lớn thành nhiều mảnh nhỏ theo dạng lưới. Tính năng này rất hữu ích khi:</p>
-                        <ul>
-                            <li>Tải lên ảnh gốc bạn muốn chia nhỏ.</li>
-                            <li>Nhập số lượng <strong>hàng</strong> và <strong>cột</strong> bạn muốn chia (ví dụ: 3
-                                hàng, 3
-                                cột để tạo 9 mảnh).</li>
-                            <li>Công cụ sẽ tự động tính toán và cắt ảnh gốc thành các mảnh đều nhau.</li>
-                            <li>Xem trước các mảnh đã cắt và tải về từng mảnh</li>
-                        </ul>
-                        <p>Tuyệt vời để tạo các mảnh ghép cho game xếp hình, tạo hiệu ứng ảnh lưới trên mạng xã hội, hoặc
-                            chia nhỏ ảnh lớn để dễ dàng chia sẻ.</p>
-                        <p class="font-italic">Lưu ý: Để có kết quả tốt nhất cho game xếp hình 3x3, nên sử dụng ảnh gốc
-                            hình
-                            vuông khi dùng tính năng này.</p>
+                        <ul><li>Tải lên ảnh gốc bạn muốn chia nhỏ.</li><li>Nhập số lượng <strong>hàng</strong> và <strong>cột</strong> bạn muốn chia (ví dụ: 3 hàng, 3 cột để tạo 9 mảnh).</li><li>Công cụ sẽ tự động tính toán và cắt ảnh gốc thành các mảnh đều nhau.</li><li>Xem trước các mảnh đã cắt và tải về từng mảnh</li></ul>
+                        <p>Tuyệt vời để tạo các mảnh ghép cho game xếp hình, tạo hiệu ứng ảnh lưới trên mạng xã hội, hoặc chia nhỏ ảnh lớn để dễ dàng chia sẻ.</p>
+                        <p class="font-italic">Lưu ý: Để có kết quả tốt nhất cho game xếp hình 3x3, nên sử dụng ảnh gốc hình vuông khi dùng tính năng này.</p>
                         <div class="text-center mt-auto"> 
                             <a href="split.html" class="btn btn-warning btn-lg mt-3">Thử Cắt Ảnh Lưới</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tính năng Thay Đổi Kích Thước Ảnh -->
                 <div class="col-md-12 col-lg-4 mb-4"> 
-                    <div class="feature-card h-100"> 
+                     <div class="feature-card h-100">
                         <div class="text-center">
                             <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước Ảnh" width="300px">
-                            <!-- Nhớ thêm ảnh demo_resize.png vào thư mục img/ -->
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Thay Đổi Kích Thước Ảnh</h3>
+                        <h3 class="text-center mt-3">Thay Đổi Kích Thước Ảnh</h3>
                         <p>Công cụ này giúp bạn dễ dàng điều chỉnh kích thước chiều rộng và chiều cao của hình ảnh:</p>
-                        <ul>
-                            <li>Tải ảnh bạn muốn thay đổi kích thước.</li>
-                            <li>Nhập vào <strong>chiều rộng</strong> hoặc <strong>chiều cao</strong> mới mong muốn (đơn vị pixel).</li>
-                            <li>Tùy chọn <strong>"Giữ tỷ lệ"</strong>:
-                                <ul>
-                                    <li>Nếu được chọn, khi bạn nhập một chiều, chiều còn lại sẽ tự động được tính toán để duy trì tỷ lệ khung hình gốc của ảnh, tránh làm méo ảnh.</li>
-                                    <li>Nếu không chọn, bạn có thể tự do nhập cả chiều rộng và chiều cao, cho phép thay đổi tỷ lệ khung hình.</li>
-                                </ul>
-                            </li>
-                            <li>Nhấn "Thay Đổi Kích Thước" để xem trước kết quả.</li>
-                            <li>Tải về ảnh đã được điều chỉnh kích thước.</li>
-                        </ul>
+                        <ul><li>Tải ảnh bạn muốn thay đổi kích thước.</li><li>Nhập vào <strong>chiều rộng</strong> hoặc <strong>chiều cao</strong> mới mong muốn (đơn vị pixel).</li><li>Tùy chọn <strong>"Giữ tỷ lệ"</strong>:<ul><li>Nếu được chọn, khi bạn nhập một chiều, chiều còn lại sẽ tự động được tính toán để duy trì tỷ lệ khung hình gốc của ảnh, tránh làm méo ảnh.</li><li>Nếu không chọn, bạn có thể tự do nhập cả chiều rộng và chiều cao, cho phép thay đổi tỷ lệ khung hình.</li></ul></li><li>Nhấn "Thay Đổi Kích Thước" để xem trước kết quả.</li><li>Tải về ảnh đã được điều chỉnh kích thước.</li></ul>
                         <p>Rất hữu ích khi bạn cần ảnh với kích thước cụ thể cho website, email, hoặc các mục đích khác.</p>
                         <div class="text-center mt-auto"> 
                             <a href="resize.html" class="btn btn-warning btn-lg mt-3">Thử Resize Ảnh</a>
@@ -218,38 +288,23 @@
                 </div>
             </div>
 
-
-            <!-- Giới Thiệu Về Game Xếp Hình -->
-            <div class="text-center my-5"> <!-- Thêm my-5 cho khoảng cách -->
+            <div class="text-center my-5">
                 <h1 class="display-4">Giới Thiệu Về Game Xếp Hình</h1>
-                <p class="lead">Chào mừng bạn đến với thế giới của những mảnh ghép!
-                </p>
+                <p class="lead">Chào mừng bạn đến với thế giới của những mảnh ghép!</p>
             </div>
-
             <div class="row"> 
                 <div class="col-md-10 mx-auto mb-4"> 
                     <div class="feature-card">
                         <div class="text-center">
                             <img src="img/demo_game.png" alt="Demo Game Xếp Hình" width="300px">
                         </div>
-                        <div class="text-center" style="padding-top: 20px;"></div>
-                        <p>Game Xếp Hình này được tạo ra với mục đích mang lại những phút giây giải trí nhẹ nhàng, đồng thời
-                            giúp người chơi rèn luyện khả năng tư duy logic, sự kiên nhẫn và óc quan sát.</p>
+                        <div class="text-center mt-3"></div>
+                        <p>Game Xếp Hình này được tạo ra với mục đích mang lại những phút giây giải trí nhẹ nhàng, đồng thời giúp người chơi rèn luyện khả năng tư duy logic, sự kiên nhẫn và óc quan sát.</p>
                         <p>Cách chơi rất đơn giản:</p>
-                        <ul>
-                            <li>Chọn một bộ ảnh bạn yêu thích từ danh sách.</li>
-                            <li>Các mảnh ghép của bức ảnh sẽ được xáo trộn và xoay ngẫu nhiên.</li>
-                            <li>Click vào một mảnh ghép để xoay nó 90 độ theo chiều kim đồng hồ.</li>
-                            <li>Kéo và thả các mảnh ghép vào đúng vị trí trên bảng chơi 3x3.</li>
-                            <li>Khi tất cả các mảnh ghép được đặt đúng vị trí và đúng góc xoay, bạn sẽ chiến thắng!</li>
-                        </ul>
+                        <ul><li>Chọn một bộ ảnh bạn yêu thích từ danh sách.</li><li>Các mảnh ghép của bức ảnh sẽ được xáo trộn và xoay ngẫu nhiên.</li><li>Click vào một mảnh ghép để xoay nó 90 độ theo chiều kim đồng hồ.</li><li>Kéo và thả các mảnh ghép vào đúng vị trí trên bảng chơi 3x3.</li><li>Khi tất cả các mảnh ghép được đặt đúng vị trí và đúng góc xoay, bạn sẽ chiến thắng!</li></ul>
                         <hr>
-                        <p>Trò chơi được phát triển bởi <strong>Trần Hữu Đạt</strong> sử dụng các công nghệ
-                            web
-                            hiện đại như HTML, CSS, JavaScript, cùng với sự hỗ trợ của thư viện Bootstrap và jQuery.</p>
-                        <p>Chúng tôi hy vọng bạn sẽ có những trải nghiệm thú vị với trò chơi này. Mọi ý kiến đóng góp xin
-                            vui
-                            lòng gửi về trang Liên Hệ.</p>
+                        <p>Trò chơi được phát triển bởi <strong>Trần Hữu Đạt</strong> sử dụng các công nghệ web hiện đại như HTML, CSS, JavaScript, cùng với sự hỗ trợ của thư viện Bootstrap và jQuery.</p>
+                        <p>Chúng tôi hy vọng bạn sẽ có những trải nghiệm thú vị với trò chơi này. Mọi ý kiến đóng góp xin vui lòng gửi về trang Liên Hệ.</p>
                         <div class="text-center mt-4">
                             <a href="game.html" class="btn btn-warning">Thử Chơi Ngay</a>
                         </div>
@@ -263,86 +318,48 @@
         <div class="lang-content" data-lang="en">
             <div class="text-center mb-5">
                 <h1 class="display-4">About The Image Processing Tools</h1>
-                <p class="lead">Discover powerful features to easily customize, split, and resize your images!
-                </p>
+                <p class="lead">Discover powerful features to easily customize, split, and resize your images!</p>
             </div>
-
             <div class="row">
-                <!-- Feature: Crop Square Image -->
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="feature-card h-100">
                         <div class="text-center">
                             <img src="img/demo_scale.png" alt="Square Crop Demo" width="300px">
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Crop Images to a Square (1:1)</h3>
-                        <p>Do you have a rectangular photo but need a perfect square version? This tool allows you to:
-                        </p>
-                        <ul>
-                            <li>Upload any image (JPG, PNG, GIF, WEBP).</li>
-                            <li>Preview the original image and intuitively adjust a square selection area.</li>
-                            <li><strong>Drag and drop</strong> to move the selection area to your desired position on
-                                the image.</li>
-                            <li><strong>Adjust the size</strong> of the selection area by dragging the corner points,
-                                ensuring the 1:1 ratio is always maintained.</li>
-                            <li>Once you've selected the desired area, click "Crop Square Image" to create the new
-                                image.</li>
-                            <li>Preview the result and download the cropped square image.</li>
-                        </ul>
+                        <h3 class="text-center mt-3">Crop Images to a Square (1:1)</h3>
+                        <p>Do you have a rectangular photo but need a perfect square version? This tool allows you to:</p>
+                        <ul><li>Upload any image (JPG, PNG, GIF, WEBP).</li><li>Preview the original image and intuitively adjust a square selection area.</li><li><strong>Drag and drop</strong> to move the selection area to your desired position on the image.</li><li><strong>Adjust the size</strong> of the selection area by dragging the corner points, ensuring the 1:1 ratio is always maintained.</li><li>Once you've selected the desired area, click "Crop Square Image" to create the new image.</li><li>Preview the result and download the cropped square image.</li></ul>
                         <p>Perfect for creating avatars, thumbnails, or any purpose requiring a 1:1 aspect ratio.</p>
                         <div class="text-center mt-auto">
-                            <a href="scale_en.html" class="btn btn-warning btn-lg mt-3 text-center">Try Square Crop</a>
+                            <a href="scale_en.html" class="btn btn-warning btn-lg mt-3">Try Square Crop</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Feature: Split Image into Grid -->
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="feature-card h-100">
                         <div class="text-center">
                             <img src="img/demo_split.png" alt="Grid Split Demo" width="300px">
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Split Images into a Grid (e.g., 3x3)</h3>
-                        <p>Split a large image into multiple smaller pieces in a grid format. This feature is very useful
-                            when:</p>
-                        <ul>
-                            <li>Upload the original image you want to split.</li>
-                            <li>Enter the number of <strong>rows</strong> and <strong>columns</strong> you want to
-                                split (e.g., 3 rows, 3 columns to create 9 pieces).</li>
-                            <li>The tool will automatically calculate and cut the original image into equally sized
-                                pieces.</li>
-                            <li>Preview the cut pieces and download each piece.</li>
-                        </ul>
-                        <p>Great for creating puzzle pieces for a jigsaw game, creating grid photo effects on social
-                            media, or splitting large images for easy sharing.</p>
-                        <p class="font-italic">Note: For the best results with a 3x3 jigsaw puzzle game, it's recommended
-                            to use a square original image when using this feature.</p>
+                        <h3 class="text-center mt-3">Split Images into a Grid (e.g., 3x3)</h3>
+                        <p>Split a large image into multiple smaller pieces in a grid format. This feature is very useful when:</p>
+                        <ul><li>Upload the original image you want to split.</li><li>Enter the number of <strong>rows</strong> and <strong>columns</strong> you want to split (e.g., 3 rows, 3 columns to create 9 pieces).</li><li>The tool will automatically calculate and cut the original image into equally sized pieces.</li><li>Preview the cut pieces and download each piece.</li></ul>
+                        <p>Great for creating puzzle pieces for a jigsaw game, creating grid photo effects on social media, or splitting large images for easy sharing.</p>
+                        <p class="font-italic">Note: For the best results with a 3x3 jigsaw puzzle game, it's recommended to use a square original image when using this feature.</p>
                         <div class="text-center mt-auto">
                             <a href="split_en.html" class="btn btn-warning btn-lg mt-3">Try Grid Split</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Feature: Image Resizer -->
                 <div class="col-md-12 col-lg-4 mb-4">
                      <div class="feature-card h-100">
                         <div class="text-center">
                             <img src="img/demo_resize.png" alt="Image Resizer Demo" width="300px">
-                            <!-- Remember to add demo_resize.png to your img/ folder -->
                         </div>
-                        <h3 class="text-center" style="padding-top: 20px;">Resize Image Dimensions</h3>
+                        <h3 class="text-center mt-3">Resize Image Dimensions</h3>
                         <p>This tool helps you easily adjust the width and height of your images:</p>
-                        <ul>
-                            <li>Upload the image you want to resize.</li>
-                            <li>Enter the new desired <strong>width</strong> or <strong>height</strong> (in pixels).</li>
-                            <li><strong>"Lock aspect ratio"</strong> option:
-                                <ul>
-                                    <li>If checked, when you enter one dimension, the other will be automatically calculated to maintain the original aspect ratio, preventing distortion.</li>
-                                    <li>If unchecked, you can freely enter both width and height, allowing aspect ratio changes.</li>
-                                </ul>
-                            </li>
-                            <li>Click "Resize Image" to preview the result.</li>
-                            <li>Download the resized image.</li>
-                        </ul>
+                        <ul><li>Upload the image you want to resize.</li><li>Enter the new desired <strong>width</strong> or <strong>height</strong> (in pixels).</li><li>Tùy chọn <strong>"Giữ tỷ lệ"</strong>:<ul><li>If checked, when you enter one dimension, the other will be automatically calculated to maintain the original aspect ratio, preventing distortion.</li><li>If unchecked, you can freely enter both width and height, allowing aspect ratio changes.</li></ul></li><li>Click "Resize Image" to preview the result.</li><li>Download the resized image.</li></ul>
                         <p>Very useful when you need images of specific dimensions for websites, emails, or other purposes.</p>
                         <div class="text-center mt-auto">
                             <a href="resize_en.html" class="btn btn-warning btn-lg mt-3">Try Image Resizer</a>
@@ -351,12 +368,9 @@
                 </div>
             </div>
 
-
-            <!-- About the Jigsaw Puzzle Game -->
             <div class="text-center my-5">
                 <h1 class="display-4">About the Jigsaw Puzzle Game</h1>
-                <p class="lead">Welcome to the world of puzzle pieces!
-                </p>
+                <p class="lead">Welcome to the world of puzzle pieces!</p>
             </div>
             <div class="row">
                 <div class="col-md-10 mx-auto mb-4">
@@ -364,23 +378,13 @@
                         <div class="text-center">
                             <img src="img/demo_game.png" alt="Game Demo" width="300px">
                         </div>
-                        <div class="text-center" style="padding-top: 20px;"></div>
-                        <p>This Jigsaw Puzzle Game was created with the aim of providing relaxing entertainment, while also
-                            helping players develop logical thinking, patience, and observation skills.</p>
+                        <div class="text-center mt-3"></div>
+                        <p>This Jigsaw Puzzle Game was created with the aim of providing relaxing entertainment, while also helping players develop logical thinking, patience, and observation skills.</p>
                         <p>How to play is very simple:</p>
-                        <ul>
-                            <li>Choose a set of images you love from the list.</li>
-                            <li>The puzzle pieces of the image will be shuffled and rotated randomly.</li>
-                            <li>Click on a piece to rotate it 90 degrees clockwise.</li>
-                            <li>Drag and drop the puzzle pieces into their correct positions on the 3x3 game board.</li>
-                            <li>When all the pieces are placed in the correct positions and rotated to the right angles, you
-                                win!</li>
-                        </ul>
+                        <ul><li>Choose a set of images you love from the list.</li><li>The puzzle pieces of the image will be shuffled and rotated randomly.</li><li>Click on a piece to rotate it 90 degrees clockwise.</li><li>Drag and drop the puzzle pieces into their correct positions on the 3x3 game board.</li><li>When all the pieces are placed in the correct positions and rotated to the right angles, you win!</li></ul>
                         <hr>
-                        <p>The game was developed by <strong>Trần Hữu Đạt</strong> using modern web technologies such as
-                            HTML, CSS, JavaScript, with the support of Bootstrap and jQuery libraries.</p>
-                        <p>We hope you have an enjoyable experience with this game. Any feedback is welcome via the Contact
-                            page.</p>
+                        <p>The game was developed by <strong>Trần Hữu Đạt</strong> using modern web technologies such as HTML, CSS, JavaScript, with the support of Bootstrap and jQuery libraries.</p>
+                        <p>We hope you have an enjoyable experience with this game. Any feedback is welcome via the Contact page.</p>
                         <div class="text-center mt-4">
                             <a href="game.html" class="btn btn-warning">Try Playing Now</a>
                         </div>
@@ -389,171 +393,118 @@
             </div>
         </div>
         <!-- END ENGLISH CONTENT -->
-
     </main>
-    <!-- ===== MAIN CONTENT END ===== -->
 
-
-
-    <!-- ===== FOOTER START ===== -->
-    <footer class="site-footer bg-dark text-white py-4">
-        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
-            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
-                <div class="row">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50 lang-specific" data-lang-vi="Giải trí và sáng tạo không giới hạn."
-                            data-lang-en="Unlimited entertainment and creativity."></p>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold lang-specific" data-lang-vi="Khám Phá" data-lang-en="Explore"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Trang Chủ" data-lang-en="Home">
-                                </a>
-                            </li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Game Xếp Hình" data-lang-en="Jigsaw Game">
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold lang-specific" data-lang-vi="Công cụ" data-lang-en="Tools"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Công Cụ Cắt Ảnh Lưới" data-lang-en="Grid Image Splitter"></a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Công Cụ Cắt Ảnh Vuông" data-lang-en="Square Image Cropper"></a></li>
-                            <li><a href="resize.html" class="text-white-50 text-decoration-none hover-light"  data-lang-vi="Thay Đổi
-                                    Kích Thước" data-lang-en="Image Resizer"></a></li>                            
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4">
-                        <h5 class="fw-semibold lang-specific" data-lang-vi="Thông Tin" data-lang-en="Information"></h5>
-                        <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light lang-specific active"
-                                    data-lang-vi="Giới Thiệu" data-lang-en="About">
-                                </a>
-                            </li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Liên Hệ" data-lang-en="Contact">
-                                </a>
-                            </li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light lang-specific"
-                                    data-lang-vi="Điều Khoản" data-lang-en="Terms"></a></li>
-                            <!-- Thêm link Điều khoản nếu có -->
-                        </ul>
-                    </div>
-                </div>
-                <hr class="my-3 border-secondary">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="small text-white-50 mb-0 lang-specific"
-                            data-lang-vi="© <span id='currentYear'></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền."
-                            data-lang-en="© <span id='currentYear'></span> Game & Photos Pro. Developed by Trần Hữu Đạt. All rights reserved.">
-                        </p>
-                        <p class="small text-white-50 lang-specific"
-                            data-lang-vi="<small>Xây dựng với <i class='fas fa-heart text-danger'></i> và Bootstrap, jQuery.</small>"
-                            data-lang-en="<small>Built with <i class='fas fa-heart text-danger'></i> and Bootstrap, jQuery.</small>">
-                        </p>
-                    </div>
-                </div>
+<!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
             </div>
         </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+        </div>
     </footer>
-    <!-- ===== FOOTER END ===== -->
 
-    <!-- Bootstrap JS và dependencies -->
+    <!-- Bootstrap 4 JS and dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <!-- Page-specific language and site-wide scripts -->
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
-        // JavaScript cho Navbar Toggler (nếu dùng custom navbar)
-        const togglerButton = document.getElementById('navbarToggler');
-        const navbarContent = document.getElementById('navbarNavContent');
-        if (togglerButton && navbarContent) {
-            togglerButton.addEventListener('click', function () {
-                navbarContent.classList.toggle('show');
-            });
-        }
+        const pageTranslations = {
+            vi: {
+                pageTitle: "Giới Thiệu - Game & Ảnh Pro",
+                metaDescription: "Giới thiệu về Game & Ảnh Pro: Trò chơi xếp hình và công cụ xử lý ảnh miễn phí, dễ sử dụng. Khám phá các tính năng cắt, chia, thay đổi kích thước ảnh và thử thách trí tuệ với game xếp hình.",
+            },
+            en: {
+                pageTitle: "About - Game & Photo Pro",
+                metaDescription: "About Game & Photo Pro: Free and easy-to-use jigsaw puzzle game and image processing tools. Explore features like cropping, splitting, resizing images, and challenge your mind with puzzles.",
+            }
+        };
 
-        // JavaScript cho chuyển đổi ngôn ngữ
         document.addEventListener('DOMContentLoaded', function () {
-            const langButtons = document.querySelectorAll('.lang-switcher .btn');
-            const langContents = document.querySelectorAll('.lang-content');
-            const langSpecificElements = document.querySelectorAll('.lang-specific');
-            let currentYearSpan = document.getElementById('currentYear');
+            const langSwitcherButtons = document.querySelectorAll('.lang-switcher .lang-btn');
+            const allLangContents = document.querySelectorAll('.lang-content');
+            
+            function switchContentLanguage(selectedLang) {
+                const currentTranslations = pageTranslations[selectedLang] || pageTranslations.vi;
 
-            // Function to update footer year
-            function updateFooterYear() {
-                if (currentYearSpan) {
-                    currentYearSpan.textContent = new Date().getFullYear();
-                }
-            }
-            updateFooterYear(); // Call on load
-
-            function switchLanguage(lang) {
-                // Hide all language content sections
-                langContents.forEach(content => {
+                allLangContents.forEach(content => {
                     content.style.display = 'none';
+                    content.classList.remove('active-lang');
                 });
 
-                // Show the selected language content section
-                const selectedContent = document.querySelector(`.lang-content[data-lang="${lang}"]`);
-                if (selectedContent) {
-                    selectedContent.style.display = 'block';
+                const activeContentBlock = document.querySelector(`.lang-content[data-lang="${selectedLang}"]`);
+                if (activeContentBlock) {
+                    activeContentBlock.style.display = 'block';
+                    activeContentBlock.classList.add('active-lang');
                 }
-
-                // Update active class for buttons
-                langButtons.forEach(button => {
-                    if (button.dataset.lang === lang) {
-                        button.classList.add('active');
-                    } else {
-                        button.classList.remove('active');
-                    }
-                });
-
-                // Update language-specific elements in footer
-                langSpecificElements.forEach(element => {
-                    const viText = element.dataset.langVi;
-                    const enText = element.dataset.langEn;
-
-                    if (element.tagName === 'A') { // For anchor tags in the footer
-                        if (lang === 'vi' && viText) {
-                            element.textContent = viText;
-                        } else if (lang === 'en' && enText) {
-                            element.textContent = enText;
-                        }
-                    } else { // For other elements like p, h5
-                        if (lang === 'vi' && viText) {
-                            element.innerHTML = viText; // Use innerHTML for elements that contain HTML (like <i> tag)
-                        } else if (lang === 'en' && enText) {
-                            element.innerHTML = enText;
-                        }
-                    }
-                });
-
-
-                // Save preferred language to localStorage
-                localStorage.setItem('preferredLanguage', lang);
-
-                // Update HTML lang attribute
-                document.documentElement.lang = lang;
+                
+                document.querySelector('title').textContent = currentTranslations.pageTitle;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.setAttribute('content', currentTranslations.metaDescription);
+                document.documentElement.lang = selectedLang;
+                localStorage.setItem('preferredLanguage', selectedLang);
             }
 
-            // Load preferred language from localStorage on page load
-            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'vi'; // Default to Vietnamese
-            switchLanguage(preferredLanguage);
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'vi';
+            switchContentLanguage(preferredLanguage);
 
-            // Add event listeners to language buttons
-            langButtons.forEach(button => {
+            langSwitcherButtons.forEach(button => {
                 button.addEventListener('click', function () {
-                    const lang = this.dataset.lang;
-                    switchLanguage(lang);
+                    switchContentLanguage(this.dataset.lang);
                 });
             });
+
+            // Site-wide theme/header script
+            const header = document.querySelector('.main-header');
+            if(header) { setTimeout(() => header.classList.add('visible'), 100); }
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            if(themeToggleBtn) {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'light') { document.body.classList.add('light-mode'); }
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
+            }
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
         });
     </script>
 </body>

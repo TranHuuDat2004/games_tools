@@ -5,59 +5,737 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Font Awesome (cho biểu tượng) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/scale.css"> <!-- Link đến file CSS riêng của scale -->
-    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Global Styles from index.html -->
+    <style>
+        /* Dán toàn bộ nội dung file CSS của bạn vào đây */
+        /* ====================================================== */
+        /* --- BIẾN MÀU VÀ THIẾT LẬP CHUNG --- */
+        /* ====================================================== */
+        :root {
+            /* Bảng màu mới */
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
+            --gradient-green: #4ade80;
+            --gradient-yellow: #facc15;
+            --resume-button-bg: var(--gradient-green);
+        }
+
+        /* === BỔ SUNG: BIẾN MÀU CHO LIGHT MODE === */
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
+            --resume-button-bg: #18181b;
+            /* Nút resume nền đen chữ trắng */
+        }
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+                        padding-top: 40px;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            /* Font mới */
+            font-family: 'Sora', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--gradient-purple);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Helper class cho hiệu ứng kính mờ */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* ====================================================== */
+        /* --- THANH TIẾN TRÌNH & HEADER --- */
+        /* ====================================================== */
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s linear;
+        }
+
+        .main-header {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            z-index: 999;
+            max-width: 1000px; /* Để header tự co giãn theo nội dung */
+            width: calc(100% - 3rem); /* Adjust for padding on small screens */
+
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            transform: translate(-50%, -100px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, width 0.3s ease-in-out;
+        }
+        
+        .main-header.visible {
+            opacity: 1;
+            transform: translateX(-50%);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            background: linear-gradient(to right, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo img {
+            max-height: 28px;
+        }
+
+
+        .header-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .main-nav a {
+            position: relative;
+            z-index: 1;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.is-active {
+            color: var(--text-primary);
+        }
+        
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+
+        .lang-switcher button {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .lang-switcher button:first-child {
+            border-top-left-radius: 999px;
+            border-bottom-left-radius: 999px;
+            border-right: none;
+        }
+        .lang-switcher button:last-child {
+            border-top-right-radius: 999px;
+            border-bottom-right-radius: 999px;
+        }
+
+        .lang-switcher button:hover,
+        .lang-switcher button.active {
+            background-color: var(--gradient-purple);
+            color: var(--text-primary);
+            border-color: var(--gradient-purple);
+        }
+
+
+        /* ====================================================== */
+        /* --- HERO SECTION --- */
+        /* ====================================================== */
+        /* This section is not directly used but styles might be inherited if elements match */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-top: 8rem;
+            text-align: center;
+        }
+
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            opacity: 0.8;
+        }
+        #fireworks-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(18, 18, 18, 0.2) 0%, rgba(18, 18, 18, 0.8) 70%);
+            z-index: -1;
+        }
+        
+        .hero-text-content h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text-content p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2.5rem auto;
+        }
+
+        .hero-buttons {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .scroll-down-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+        }
+
+        .scroll-down-indicator::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            animation: scroll-down-anim 2s infinite;
+        }
+
+        @keyframes scroll-down-anim {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            40% { opacity: 1; }
+            80% { transform: translate(-50%, 16px); opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* ====================================================== */
+        /* --- CÁC SECTION NỘI DUNG CHUNG --- */
+        /* ====================================================== */
+        .content-section {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .title-underline {
+            width: 6rem;
+            height: 4px;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            border-radius: 9999px;
+            margin: 0.75rem auto 0 auto;
+        }
+
+        /* Section Specific Styles */
+        .game-intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .game-intro-grid.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+        .game-intro-grid.reverse .game-image {
+            order: 2;
+        }
+        .game-intro-grid.reverse .game-text {
+            order: 1;
+        }
+
+        .game-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        }
+
+        .game-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .game-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .feature-list i {
+            color: var(--gradient-green);
+        }
+
+        .image-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .tool-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+        .tool-card img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .tool-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .tool-card .btn {
+            margin-top: auto;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .highlight-card {
+            text-align: center;
+            padding: 2rem;
+        }
+        .highlight-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .highlight-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .view-all-container {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        .main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
+        }
+
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE --- */
+        
+        /* === UPDATE HERE === */
+        @media (max-width: 1300px) {
+
+            .main-header {
+                /* Căn logo sang trái, các nút điều khiển sang phải */
+                justify-content: space-between;
+                max-width: 1200px;
+                
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .game-intro-grid, .game-intro-grid.reverse {
+                grid-template-columns: 1fr;
+            }
+             .game-intro-grid .game-image,
+             .game-intro-grid.reverse .game-image {
+                order: -1; /* Luôn đưa ảnh lên đầu trên mobile */
+                margin-bottom: 2rem;
+            }
+            .image-tools-grid { grid-template-columns: 1fr 1fr; }
+            .highlights-grid { grid-template-columns: 1fr; }
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .footer-about {
+                grid-column: 1 / -1;
+            }
+        }
+        @media (max-width: 768px) {
+            .image-tools-grid { grid-template-columns: 1fr; }
+            .footer-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-about p {
+                justify-content: center;
+            }
+                    .footer-logo {
+                        justify-content: center;
+                    }
+            
+                    /* Custom class for themed body content */
+                    .bg-body-theme {
+                        background-color: var(--bg-dark);
+                        color: var(--text-primary);
+                    }        }
+
+    </style>
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/scale.css">
 </head>
 
 <body>
-        <!-- Language Switcher -->
-    <div class="lang-switcher-container">
-        <div class="lang-switcher btn-group">
-            <button class="btn btn-outline-secondary lang-btn" data-lang="vi">VI</button>
-            <button class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
-        </div>
-    </div>
+    <!-- Thanh tiến trình cuộn -->
+    <div class="scroll-progress-bar"></div>
 
-    <!-- ===== NAVBAR START (Custom CSS) ===== -->
-    <nav class="custom-navbar">
-        <div class="nav-container">
-            <a class="nav-brand" href="index.html">
-                <img style="max-height: 40px; display: inline-block; vertical-align: middle;" src="logo.png" alt="Logo">
-            </a>
-
-            <button class="nav-toggler" id="navbarToggler" aria-label="Toggle navigation">
-                <span class="nav-toggler-icon"></span>
-            </button>
-
-            <div class="nav-collapse" id="navbarNavContent">
-                <ul class="nav-menu">
-                    <li class="nav-menu-item ">
-                        <a class="nav-menu-link" href="index.html" data-translate="navHome">Trang Chủ <span
-                                class="screen-reader-only">(current)</span></a>
-                    </li>
-                    <li class="nav-menu-item ">
-                        <a class="nav-menu-link" href="game.html" data-translate="navPlayGame">Chơi Game</a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="about.html" data-translate="navAbout">Giới Thiệu</a>
-                    </li>
-                    <li class="nav-menu-item">
-                        <a class="nav-menu-link" href="contact.html" data-translate="navContact">Liên Hệ</a>
-                    </li>
-                    <li class="nav-menu-item active">
-                        <a class="nav-menu-link" href="split.html" data-translate="navImageTools">Cắt Ảnh</a>
-                    </li>
-                </ul>
+    <!-- Header mới -->
+    <header class="main-header">
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="Logo">
+        </a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" data-translate="navContact">Liên hệ</a>
+                <a href="scale.html" class="is-active" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
             </div>
-        </div>
-    </nav>
-    <!-- ===== NAVBAR END (Custom CSS) ===== -->
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
+        </nav>
+    </header>
 
-
-    <div class="container">
-        <!-- Tab lựa chọn công cụ (Tùy chọn, có thể bỏ nếu trang này chỉ làm resize) -->
+    <main class="container my-5 bg-body-theme">
+        <!-- Tab lựa chọn công cụ -->
         <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="crop-square-tab" href="scale.html" role="tab" data-translate="toolSquareCropTitle">Cắt Ảnh Vuông</a>
@@ -66,9 +744,13 @@
                 <a class="nav-link" id="split-grid-tab" href="split.html" role="tab" data-translate="toolGridSplitTitle">Cắt Ảnh Lưới</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
+                <a class="nav-link" id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pdf-to-png-tab" href="pdf-to-png.html" role="tab">PDF to PNG</a>
             </li>
         </ul>
+
         <h1 class="text-center" data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông (1:1)</h1>
         <div class="alert alert-info" data-translate="scaleAlert">
             Chọn ảnh từ máy tính, chọn khu vực để cắt ảnh, sau đó nhấn "Cắt Ảnh".
@@ -101,7 +783,7 @@
         </div>
 
         <!-- Nút thực hiện cắt -->
-        <div class="text-center mt-3">
+        <div class="text-center my-4">
             <button id="crop-button" class="btn btn-warning" disabled data-translate="scaleCropButton">Cắt Ảnh</button>
         </div>
 
@@ -116,82 +798,63 @@
             <a id="download-link" class="btn btn-success" href="#" download="anh_vuong.png" data-translate="scaleDownloadButton">Tải Ảnh Vuông</a>
         </div>
 
-    </div>
-
-    <div style="padding-bottom: 80px;"></div>
-    <!-- ===== MAIN CONTENT END ===== -->
-     
-<!-- ===== FOOTER START ===== -->
-    <footer class="site-footer bg-dark text-white py-4">
-        <div class="container-fluid"> <!-- SỬ DỤNG CONTAINER-FLUID Ở ĐÂY -->
-            <div class="footer-content-wrapper"> <!-- THÊM DIV WRAPPER NÀY -->
-                <div class="row">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <img src="logo.png" alt="Logo" class="mb-2" style="max-height: 50px;">
-                        <p class="small text-white-50" data-translate="footerUnlimited">Giải trí và sáng tạo không giới hạn. .</p>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerExplore">Khám Phá</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="index.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerHome">Trang
-                                    Chủ</a>
-                            </li>
-                            <li><a href="game.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerJigsaw">Game Xếp
-                                    Hình</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4 mb-3 mb-md-0">
-                        <h5 class="fw-semibold" data-translate="footerTools">Công cụ</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="split.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerGridSplit">Công Cụ Cắt
-                                    Ảnh Lưới</a></li>
-                            <li><a href="scale.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerSquareCrop">Công Cụ Cắt
-                                    Ảnh Vuông</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-3 col-4">
-                        <h5 class="fw-semibold" data-translate="footerInfo">Thông Tin</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="about.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerAbout">Giới
-                                    Thiệu</a>
-                            </li>
-                            <li><a href="contact.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerContact">Liên
-                                    Hệ</a>
-                            </li>
-                            <li><a href="terms.html" class="text-white-50 text-decoration-none hover-light" data-translate="footerTerms">Điều
-                                    Khoản</a></li>
-                            <!-- Thêm link Điều khoản nếu có -->
-                        </ul>
-                    </div>
-                </div>
-                <hr class="my-3 border-secondary">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="small text-white-50 mb-0" data-translate="footerCopyright">
-                            © <span id="currentYear"></span> Game & Ảnh Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi
-                            quyền.
-                        </p>
-                        <p class="small text-white-50" data-translate="footerBuiltWith">
-                            <small>Xây dựng với <i class="fas fa-heart text-danger"></i> và Bootstrap, jQuery.</small>
-                        </p>
-                    </div>
-                </div>
+    </main>
+    
+    <!-- ===== FOOTER START ===== -->
+<!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
             </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
         </div>
     </footer>
     <!-- ===== FOOTER END ===== -->
-     
+
     <!-- jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
+    
+    <!-- Language scripts -->
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
     <script src="js/i18n.js"></script>
 
-    <!-- Custom JavaScript -->
+    <!-- Page-specific JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const imageInput = document.getElementById('image-upload');
@@ -461,6 +1124,83 @@
                 let fileName = this.value.split('\\').pop();
                 this.nextElementSibling.classList.add("selected");
                 this.nextElementSibling.innerHTML = fileName || 'Chọn file...';
+            });
+        });
+    </script>
+    <!-- Common site-wide scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Update Copyright Year ---
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            // --- Header Visibility on Scroll ---
+            const header = document.querySelector('.main-header');
+            if(header) {
+                setTimeout(() => {
+                    header.classList.add('visible');
+                }, 100); // Delay for initial animation
+            }
+            
+            // --- Scroll Progress Bar ---
+            const progressBar = document.querySelector('.scroll-progress-bar');
+            window.addEventListener('scroll', () => {
+                const scrollTop = document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercentage = (scrollTop / scrollHeight) * 100;
+                if(progressBar) {
+                    progressBar.style.width = `${scrollPercentage}%`;
+                }
+            });
+
+            // --- Animate on Scroll ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(element => {
+                observer.observe(element);
+            });
+
+            // --- Theme Toggler (Light/Dark Mode) ---
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const currentTheme = localStorage.getItem('theme');
+
+            if (currentTheme === 'light') {
+                document.body.classList.add('light-mode');
+            }
+
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    let theme = 'dark';
+                    if (document.body.classList.contains('light-mode')) {
+                        theme = 'light';
+                    }
+                    localStorage.setItem('theme', theme);
+                });
+            }
+
+            // --- Anchor link smooth scroll ---
+             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    const targetElement = document.querySelector(href);
+                    if (href.startsWith('#') && href.length > 1 && targetElement) {
+                        e.preventDefault();
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
             });
         });
     </script>

@@ -4,90 +4,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Cập nhật Title và Description -->
     <title data-translate="pageTitle">Chơi Game - Thử Thách Trí Tuệ</title>
-    <meta name="description" data-translate-attr="content:pageDescription"
+    <meta name="description" data-translate="pageDescription"
         content="Chọn trò chơi bạn yêu thích! Thử sức với Cờ Caro chiến thuật hoặc thư giãn với Game Xếp Hình đầy màu sắc.">
 
-    <!-- Giữ lại toàn bộ các link CSS và icon -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap 4 CSS (for existing elements that might still rely on it) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+    <!-- Global & Page Styles -->
     <style>
-        .feature-card {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 30px;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        :root {
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.6);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
         }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
         }
-
-        .feature-card h3 {
-            margin-bottom: 15px;
-            color: #343a40;
+        body { background-color: var(--bg-dark); color: var(--text-primary); font-family: 'Sora', sans-serif; }
+        a { color: var(--text-primary); text-decoration: none; }
+        a:hover { color: var(--gradient-purple); }
+        .main-header {
+            position: fixed; top: 1.5rem; left: 50%; z-index: 1031; max-width: 1000px; width: calc(100% - 3rem); 
+            background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 9999px; padding: 0.75rem 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            opacity: 0; transform: translate(-50%, -100px); transition: opacity 0.5s, transform 0.5s;
         }
-
-        /* --- PHẦN SỬA ĐỔI VÀ THÊM MỚI --- */
-
-        /* 1. Tạo một div bọc ngoài ảnh để dễ dàng căn giữa và set chiều cao */
-        .game-image-wrapper {
-            height: 220px;
-            /* <<<< ĐẶT CHIỀU CAO CỐ ĐỊNH CHO KHUNG ẢNH */
-            display: flex;
-            /* Sử dụng flexbox để căn giữa */
-            justify-content: center;
-            /* Căn giữa theo chiều ngang */
-            align-items: center;
-            /* Căn giữa theo chiều dọc */
-            margin-bottom: 20px;
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: none; }
+        @media (min-width: 992px) { .main-nav { display: flex; gap: 0.5rem; } }
+        .main-nav a { padding: 0.5rem 0.75rem; color: var(--text-secondary); font-size: 0.875rem; }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
+        .lang-switcher button { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.8rem; }
+        .lang-switcher button:first-child { border-top-left-radius: 9999px; border-bottom-left-radius: 9999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; }
+        /* ====================================================== */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* ====================================================== */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
             overflow: hidden;
-            /* Ẩn phần thừa của ảnh nếu nó không vừa */
+            flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            margin-left: 1rem;
         }
 
-        .feature-card .game-image {
-            /* Bỏ các thuộc tính căn giữa và kích thước cũ */
-            /* display: block; */
-            /* margin-left: auto; */
-            /* margin-right: auto; */
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-            /* Ảnh sẽ tự lấp đầy khung chứa nó */
-            max-width: 100%;
-            max-height: 100%;
+        body.light-mode .theme-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
 
-            /* Dùng object-fit để ảnh không bị méo */
-            object-fit: contain;
-            /* <<<< CHỌN `contain` SẼ TỐT HƠN `cover` */
-            /* `contain`: hiển thị toàn bộ ảnh bên trong khung */
-            /* `cover`: lấp đầy khung và có thể bị cắt xén */
+        .theme-toggle-btn .fa-sun,
+        .theme-toggle-btn .fa-moon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-moon {
+            transform: translate(-50%, 150%); opacity: 0;
+        }
+        body.light-mode .theme-toggle-btn .fa-sun {
+            transform: translate(-50%, -50%); opacity: 1;
+        }
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.8);
+        }
+        body.light-mode .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .section-badge {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* --- ANIMATION --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
 
-            border-radius: 5px;
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.8); }
+        .main-footer { background-color: #0c0c0c; color: var(--text-secondary); padding-top: 4rem; border-top: 1px solid var(--border-color); margin-top: 4rem; }
+        .footer-container { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; max-width: 1200px; margin: auto; }
+        .footer-column h4 { color: var(--text-primary); }
+        .footer-column ul { list-style: none; padding: 0; }
+        .footer-column ul a { color: var(--text-secondary); }
+        .footer-copyright { text-align: center; padding: 1.5rem 0; border-top: 1px solid var(--border-color); }
+
+        /* Page specific styles */
+        .feature-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 30px; background-color: var(--bg-card); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+        .feature-card h3 { color: var(--text-primary); }
+        body.light-mode .feature-card { background-color: #fff; }
+        body.light-mode .feature-card h3 { color: #212529; }
+        .game-image-wrapper { height: 220px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; overflow: hidden; }
+        .feature-card .game-image { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 5px; }
+        .main-content-area h1 { color: var(--text-primary); }
+        body.light-mode .main-content-area h1 { color: #212529; }
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        .main-footer {
+            background-color: #0c0c0c;
+            color: var(--text-secondary);
+            padding-top: 4rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .footer-logo img {
+            max-height: 40px;
+        }
+        .footer-logo span {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .footer-about p {
+            max-width: 300px;
+            line-height: 1.7;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column ul a {
+            color: var(--text-secondary);
+            transition: color 0.3s, padding-left 0.3s;
+        }
+
+        .footer-column ul a:hover {
+            color: var(--text-primary);
+            padding-left: 5px;
+        }
+
+        .footer-copyright {
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border-color);
         }
     </style>
 </head>
 
 <body>
-    <!-- Sử dụng Component Header -->
-    <div id="header-placeholder"></div>
-    <!-- ===== MAIN CONTENT START ===== -->
-    <main class="main-content-area container py-5">
+    <header class="main-header">
+        <a href="index.html" class="logo"><img src="logo.png" alt="Logo"></a>
+        <nav class="header-navigation">
+            <div class="main-nav">
+                <a href="index.html" data-translate="navHome">Trang chủ</a>
+                <a href="game.html" class="is-active" data-translate="navPlayGame">Chơi Game</a>
+                <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
+                <a href="contact.html" data-translate="navContact">Liên hệ</a>
+                <a href="split.html" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
+            </div>
+            <div class="lang-switcher">
+                <button class="lang-btn" data-lang="vi">VI</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme"><i class="fas fa-moon"></i><i class="fas fa-sun"></i></button>
+        </nav>
+    </header>
 
+    <main class="container py-5" style="padding-top: 8rem;">
         <div class="text-center mb-5">
             <h1 class="display-4" data-translate="mainTitle">Chọn Trò Chơi Của Bạn</h1>
-            <p class="lead text-muted" data-translate="mainSubtitle">Thử thách bản thân với các trò chơi trí tuệ kinh
-                điển của chúng tôi!</p>
+            <p class="lead text-muted" data-translate="mainSubtitle">Thử thách bản thân với các trò chơi trí tuệ kinh điển của chúng tôi!</p>
         </div>
 
         <div class="row justify-content-center">
-            <!-- Card cho Game Cờ Caro (Đổi col-lg-5 -> col-lg-4) -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
                     <div class="game-image-wrapper">
@@ -107,7 +270,6 @@
                 </div>
             </div>
 
-            <!-- Card cho Game Xếp Hình (Đổi col-lg-5 -> col-lg-4) -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
                     <div class="game-image-wrapper">
@@ -127,13 +289,10 @@
                 </div>
             </div>
 
-            <!-- ===== CARD MỚI CHO GAME TETRIS (Thêm vào đây) ===== -->
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="feature-card h-100 d-flex flex-column">
                     <div class="game-image-wrapper">
-                        <!-- Bạn cần tạo ảnh demo cho Tetris và đặt vào thư mục img -->
-                        <img src="img/demo_tetris.png" alt="Game Xếp Gạch Tetris" class="game-image"
-                            data-translate-attr="alt:tetrisCardAlt">
+                        <img src="img/demo_tetris.png" alt="Game Xếp Gạch Tetris" class="game-image">
                     </div>
                     <h3 class="text-center" data-translate="tetrisCardTitle">Xếp Gạch (Tetris)</h3>
                     <p data-translate="tetrisCardDesc">
@@ -141,7 +300,6 @@
                         các hàng và ghi điểm cao nhất có thể!
                     </p>
                     <div class="text-center mt-auto">
-                        <!-- Đổi link href và icon -->
                         <a href="tetris.html" class="btn btn-warning btn-lg">
                             <i class="fas fa-cubes mr-2"></i>
                             <span data-translate="playButton">Chơi Ngay</span>
@@ -149,22 +307,71 @@
                     </div>
                 </div>
             </div>
-            <!-- ======================================================== -->
-
         </div>
-
     </main>
 
-    <!-- ===== MAIN CONTENT END ===== -->
+<!-- Footer mới -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-column footer-about">
+                 <a href="index.html" class="footer-logo">
+                    <img src="logo.png" alt="Logo">
+                    <span>Game & Image Pro</span>
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerExplore">Khám Phá</h4>
+                <ul>
+                    <li><a href="index.html" data-translate="footerHome">Trang chủ</a></li>
+                    <li><a href="game.html" data-translate="footerJigsaw">Game Xếp Hình</a></li>
+                    <li><a href="caro.html" data-translate="caroPlayButton">Game Cờ Caro</a></li>
+                    <li><a href="tetris.html" data-translate="tetrisPlayButton">Game Xếp Gạch</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 data-translate="footerTools">Công Cụ</h4>
+                <ul>
+                    <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
+                    <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
+                    <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                </ul>
+            </div>
+             <div class="footer-column">
+                <h4 data-translate="footerInfo">Thông Tin</h4>
+                <ul>
+                    <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
+                    <li><a href="contact.html" data-translate="footerContact">Liên hệ</a></li>
+                    <li><a href="terms.html" data-translate="footerTerms">Điều khoản</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+        </div>
+    </footer>
 
-    <footer-placeholder></footer-placeholder>
-
-    <!-- ===== SCRIPTS ===== -->
-    <script src="js/header.js"></script>
-    <script src="js/footer.js"></script>
-    <script src="js/lang-game-page.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/translations.js"></script>
     <script src="js/i18n.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('.main-header');
+            if(header) { setTimeout(() => header.classList.add('visible'), 100); }
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            if(themeToggleBtn) {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'light') { document.body.classList.add('light-mode'); }
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
+            }
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
+        });
+    </script>
 </body>
-
 </html>

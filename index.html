@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-        
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,7 +125,8 @@
             left: 50%;
             z-index: 999;
 
-            width: 1000px; /* Để header tự co giãn theo nội dung */
+            width: 1000px;
+            /* Để header tự co giãn theo nội dung */
 
             background: rgba(24, 24, 27, 0.8);
             backdrop-filter: blur(10px);
@@ -140,7 +141,7 @@
             transform: translate(-50%, -100px);
             transition: opacity 0.5s ease-out, transform 0.5s ease-out, width 0.3s ease-in-out;
         }
-        
+
         .main-header.visible {
             opacity: 1;
             transform: translateX(-50%);
@@ -157,6 +158,7 @@
             align-items: center;
             gap: 0.5rem;
         }
+
         .logo img {
             max-height: 28px;
         }
@@ -188,7 +190,7 @@
         .main-nav a.is-active {
             color: var(--text-primary);
         }
-        
+
         .lang-switcher {
             display: flex;
             align-items: center;
@@ -205,11 +207,13 @@
             font-size: 0.8rem;
             transition: all 0.3s;
         }
+
         .lang-switcher button:first-child {
             border-top-left-radius: 999px;
             border-bottom-left-radius: 999px;
             border-right: none;
         }
+
         .lang-switcher button:last-child {
             border-top-right-radius: 999px;
             border-bottom-right-radius: 999px;
@@ -244,6 +248,7 @@
             z-index: -2;
             opacity: 0.8;
         }
+
         #fireworks-canvas {
             position: absolute;
             inset: 0;
@@ -257,7 +262,7 @@
             background: radial-gradient(circle, rgba(18, 18, 18, 0.2) 0%, rgba(18, 18, 18, 0.8) 70%);
             z-index: -1;
         }
-        
+
         .hero-text-content h1 {
             font-size: clamp(3rem, 7vw, 5.5rem);
             font-weight: 800;
@@ -313,7 +318,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
-        
+
         .scroll-down-indicator {
             position: absolute;
             bottom: 2rem;
@@ -339,10 +344,23 @@
         }
 
         @keyframes scroll-down-anim {
-            0% { transform: translate(-50%, 0); opacity: 0; }
-            40% { opacity: 1; }
-            80% { transform: translate(-50%, 16px); opacity: 0; }
-            100% { opacity: 0; }
+            0% {
+                transform: translate(-50%, 0);
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(-50%, 16px);
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
         }
 
         /* ====================================================== */
@@ -392,9 +410,11 @@
         .game-intro-grid.reverse {
             grid-template-columns: 1fr 1fr;
         }
+
         .game-intro-grid.reverse .game-image {
             order: 2;
         }
+
         .game-intro-grid.reverse .game-text {
             order: 1;
         }
@@ -402,13 +422,14 @@
         .game-image img {
             width: 100%;
             border-radius: 1rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
         }
 
         .game-text h3 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
         }
+
         .game-text p {
             color: var(--text-secondary);
             margin-bottom: 1.5rem;
@@ -419,12 +440,14 @@
             padding: 0;
             margin-bottom: 2rem;
         }
+
         .feature-list li {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             margin-bottom: 0.75rem;
         }
+
         .feature-list i {
             color: var(--gradient-green);
         }
@@ -439,22 +462,26 @@
             text-align: center;
             padding: 2rem 1.5rem;
         }
+
         .tool-card img {
             width: 100%;
             max-width: 250px;
             border-radius: 0.75rem;
             margin-bottom: 1.5rem;
         }
+
         .tool-card h4 {
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
         }
+
         .tool-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
             flex-grow: 1;
         }
+
         .tool-card .btn {
             margin-top: auto;
         }
@@ -464,10 +491,12 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
         }
+
         .highlight-card {
             text-align: center;
             padding: 2rem;
         }
+
         .highlight-card i {
             font-size: 2.5rem;
             margin-bottom: 1.5rem;
@@ -475,14 +504,17 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .highlight-card h4 {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
         }
+
         .highlight-card p {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
+
         .view-all-container {
             text-align: center;
             margin-top: 4rem;
@@ -519,9 +551,11 @@
             gap: 0.75rem;
             margin-bottom: 1rem;
         }
+
         .footer-logo img {
             max-height: 40px;
         }
+
         .footer-logo span {
             font-weight: bold;
             font-size: 1.5rem;
@@ -594,29 +628,40 @@
             left: 50%;
             transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
         }
+
         .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, -50%); opacity: 1;
+            transform: translate(-50%, -50%);
+            opacity: 1;
         }
+
         .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -150%); opacity: 0;
+            transform: translate(-50%, -150%);
+            opacity: 0;
         }
+
         body.light-mode .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, 150%); opacity: 0;
+            transform: translate(-50%, 150%);
+            opacity: 0;
         }
+
         body.light-mode .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -50%); opacity: 1;
+            transform: translate(-50%, -50%);
+            opacity: 1;
         }
+
         body.light-mode .main-header {
             background: rgba(255, 255, 255, 0.8);
         }
+
         body.light-mode .btn-secondary {
             background: rgba(0, 0, 0, 0.05);
         }
+
         body.light-mode .section-badge {
             background: rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
-        
+
         /* --- ANIMATION --- */
         .animate-on-scroll {
             opacity: 0;
@@ -630,7 +675,7 @@
         }
 
         /* --- RESPONSIVE --- */
-        
+
         /* === UPDATE HERE === */
         @media (max-width: 1300px) {
 
@@ -638,42 +683,59 @@
                 /* Căn logo sang trái, các nút điều khiển sang phải */
                 justify-content: space-between;
                 max-width: 1200px;
-                
+
             }
         }
-        
+
         @media (max-width: 992px) {
-            .game-intro-grid, .game-intro-grid.reverse {
+
+            .game-intro-grid,
+            .game-intro-grid.reverse {
                 grid-template-columns: 1fr;
             }
-             .game-intro-grid .game-image,
-             .game-intro-grid.reverse .game-image {
-                order: -1; /* Luôn đưa ảnh lên đầu trên mobile */
+
+            .game-intro-grid .game-image,
+            .game-intro-grid.reverse .game-image {
+                order: -1;
+                /* Luôn đưa ảnh lên đầu trên mobile */
                 margin-bottom: 2rem;
             }
-            .image-tools-grid { grid-template-columns: 1fr 1fr; }
-            .highlights-grid { grid-template-columns: 1fr; }
+
+            .image-tools-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+
             .footer-container {
                 grid-template-columns: 1fr 1fr;
             }
+
             .footer-about {
                 grid-column: 1 / -1;
             }
         }
+
         @media (max-width: 768px) {
-            .image-tools-grid { grid-template-columns: 1fr; }
+            .image-tools-grid {
+                grid-template-columns: 1fr;
+            }
+
             .footer-container {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
+
             .footer-about p {
                 margin: 0 auto;
             }
+
             .footer-logo {
                 justify-content: center;
             }
         }
-
     </style>
 
 </head>
@@ -694,6 +756,8 @@
                 <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
                 <a href="contact.html" data-translate="navContact">Liên hệ</a>
                 <a href="scale.html" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
+
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn" data-lang="vi">VI</button>
@@ -743,45 +807,56 @@
                             ảnh, điều chỉnh độ khó và bắt đầu ghép những mảnh ghép để tạo nên một bức tranh hoàn chỉnh.
                         </p>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature1">Tải lên ảnh của riêng bạn.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature2">Nhiều mức độ khó khác nhau.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature3">Giao diện thân thiện, dễ chơi.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature1">Tải lên ảnh
+                                    của riêng bạn.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature2">Nhiều mức độ
+                                    khó khác nhau.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="gameIntroFeature3">Giao diện
+                                    thân thiện, dễ chơi.</span></li>
                         </ul>
                         <a href="game.html" class="btn btn-primary">
                             <i class="fas fa-play"></i><span data-translate="gameIntroButton">Chơi Xếp Hình</span>
                         </a>
                     </div>
                 </div>
-                 <!-- Game 2: Caro -->
+                <!-- Game 2: Caro -->
                 <div class="game-intro-grid reverse animate-on-scroll" style="margin-top: 6rem;">
                     <div class="game-image">
                         <img src="img/demo_caro.png" alt="Demo Game Cờ Caro">
                     </div>
                     <div class="game-text">
                         <h3 data-translate="caroIntroTitle">Cờ Caro Chiến Thuật</h3>
-                        <p data-translate="caroIntroDesc">Trò chơi cờ caro kinh điển, nơi bạn cần vận dụng trí thông minh để chặn đối thủ và tạo thành một hàng 5 quân cờ trước.</p>
+                        <p data-translate="caroIntroDesc">Trò chơi cờ caro kinh điển, nơi bạn cần vận dụng trí thông
+                            minh để chặn đối thủ và tạo thành một hàng 5 quân cờ trước.</p>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature1">Chơi với máy hoặc 2 người.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature2">Lối chơi đơn giản nhưng đầy tính chiến thuật.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature3">Rèn luyện tư duy logic và khả năng phán đoán.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature1">Chơi với máy hoặc
+                                    2 người.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature2">Lối chơi đơn giản
+                                    nhưng đầy tính chiến thuật.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="caroFeature3">Rèn luyện tư duy
+                                    logic và khả năng phán đoán.</span></li>
                         </ul>
                         <a href="caro.html" class="btn btn-primary">
                             <i class="fas fa-chess-board"></i><span data-translate="caroPlayButton">Chơi Cờ Caro</span>
                         </a>
                     </div>
                 </div>
-                 <!-- Game 3: Tetris -->
+                <!-- Game 3: Tetris -->
                 <div class="game-intro-grid animate-on-scroll" style="margin-top: 6rem;">
                     <div class="game-image">
                         <img src="img/demo_tetris.png" alt="Demo Game Xếp Gạch Tetris">
                     </div>
                     <div class="game-text">
                         <h3 data-translate="tetrisIntroTitle">Xếp Gạch Cổ Điển (Tetris)</h3>
-                        <p data-translate="tetrisIntroDesc">Trải nghiệm lại tựa game xếp gạch huyền thoại. Xoay và di chuyển các khối gạch rơi xuống để lấp đầy các hàng ngang và ghi điểm.</p>
+                        <p data-translate="tetrisIntroDesc">Trải nghiệm lại tựa game xếp gạch huyền thoại. Xoay và di
+                            chuyển các khối gạch rơi xuống để lấp đầy các hàng ngang và ghi điểm.</p>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature1">Lối chơi gây nghiện vượt thời gian.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature2">Tăng tốc độ theo thời gian để tăng thử thách.</span></li>
-                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature3">Luyện tập phản xạ nhanh và kỹ năng sắp xếp.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature1">Lối chơi gây
+                                    nghiện vượt thời gian.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature2">Tăng tốc độ
+                                    theo thời gian để tăng thử thách.</span></li>
+                            <li><i class="fas fa-check-circle"></i><span data-translate="tetrisFeature3">Luyện tập phản
+                                    xạ nhanh và kỹ năng sắp xếp.</span></li>
                         </ul>
                         <a href="tetris.html" class="btn btn-primary">
                             <i class="fas fa-cubes"></i><span data-translate="tetrisPlayButton">Chơi Xếp Gạch</span>
@@ -798,32 +873,41 @@
                     <span class="section-badge">POWERFUL & FREE</span>
                     <h2 class="section-title" data-translate="toolsTitle">Bộ Công Cụ Xử Lý Ảnh</h2>
                     <div class="title-underline"></div>
-                    <p style="color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0 auto;" data-translate="toolsSubtitle">
-                        Các tiện ích xử lý ảnh trực tuyến nhanh chóng, không cần cài đặt, giúp bạn hoàn thành công việc chỉ trong vài cú nhấp chuột.
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 1rem auto 0 auto;"
+                        data-translate="toolsSubtitle">
+                        Các tiện ích xử lý ảnh trực tuyến nhanh chóng, không cần cài đặt, giúp bạn hoàn thành công việc
+                        chỉ trong vài cú nhấp chuột.
                     </p>
                 </div>
                 <div class="image-tools-grid">
                     <div class="tool-card glass-card animate-on-scroll">
                         <img src="img/demo_scale.png" alt="Demo Cắt Ảnh Vuông">
                         <h4 data-translate="toolSquareCropTitle">Cắt Ảnh Vuông 1:1</h4>
-                        <p data-translate="toolSquareCropDesc">Tự động cắt ảnh của bạn thành tỷ lệ vuông hoàn hảo, lý tưởng cho ảnh đại diện, Instagram.</p>
-                        <a href="scale.html" class="btn btn-secondary"><i class="fas fa-vector-square"></i><span data-translate="toolSquareCropButton">Thử ngay</span></a>
+                        <p data-translate="toolSquareCropDesc">Tự động cắt ảnh của bạn thành tỷ lệ vuông hoàn hảo, lý
+                            tưởng cho ảnh đại diện, Instagram.</p>
+                        <a href="scale.html" class="btn btn-secondary"><i class="fas fa-vector-square"></i><span
+                                data-translate="toolSquareCropButton">Thử ngay</span></a>
                     </div>
                     <div class="tool-card glass-card animate-on-scroll" style="transition-delay: 0.1s;">
                         <img src="img/demo_split.png" alt="Demo Chia Ảnh Lưới">
                         <h4 data-translate="toolGridSplitTitle">Chia Ảnh Thành Lưới</h4>
-                        <p data-translate="toolGridSplitDesc">Chia một bức ảnh thành nhiều ảnh nhỏ hơn theo dạng lưới (3x3, 4x4...), tạo hiệu ứng độc đáo.</p>
-                        <a href="split.html" class="btn btn-secondary"><i class="fas fa-th-large"></i><span data-translate="toolGridSplitButton">Thử ngay</span></a>
+                        <p data-translate="toolGridSplitDesc">Chia một bức ảnh thành nhiều ảnh nhỏ hơn theo dạng lưới
+                            (3x3, 4x4...), tạo hiệu ứng độc đáo.</p>
+                        <a href="split.html" class="btn btn-secondary"><i class="fas fa-th-large"></i><span
+                                data-translate="toolGridSplitButton">Thử ngay</span></a>
                     </div>
                     <div class="tool-card glass-card animate-on-scroll" style="transition-delay: 0.2s;">
                         <img src="img/demo_resize.png" alt="Demo Thay Đổi Kích Thước">
                         <h4 data-translate="toolResizeTitle">Thay Đổi Kích Thước</h4>
-                        <p data-translate="toolResizeDesc">Dễ dàng thay đổi chiều rộng và chiều cao của ảnh theo pixel hoặc tỷ lệ phần trăm tùy ý.</p>
-                        <a href="resize.html" class="btn btn-secondary"><i class="fas fa-expand-arrows-alt"></i><span data-translate="toolResizeButton">Thử ngay</span></a>
+                        <p data-translate="toolResizeDesc">Dễ dàng thay đổi chiều rộng và chiều cao của ảnh theo pixel
+                            hoặc tỷ lệ phần trăm tùy ý.</p>
+                        <a href="resize.html" class="btn btn-secondary"><i class="fas fa-expand-arrows-alt"></i><span
+                                data-translate="toolResizeButton">Thử ngay</span></a>
                     </div>
                 </div>
                 <div class="view-all-container animate-on-scroll">
-                    <a href="about.html#image-tools-section" class="btn btn-secondary" data-translate="toolsViewDetails">
+                    <a href="about.html#image-tools-section" class="btn btn-secondary"
+                        data-translate="toolsViewDetails">
                         <i class="fas fa-info-circle"></i> Xem chi tiết các công cụ
                     </a>
                 </div>
@@ -834,40 +918,44 @@
         <section id="highlights" class="content-section">
             <div class="container">
                 <div class="section-header animate-on-scroll">
-                     <h2 class="section-title" data-translate="whyUsTitle">Tại Sao Chọn Chúng Tôi?</h2>
-                     <div class="title-underline"></div>
+                    <h2 class="section-title" data-translate="whyUsTitle">Tại Sao Chọn Chúng Tôi?</h2>
+                    <div class="title-underline"></div>
                 </div>
                 <div class="highlights-grid">
                     <div class="highlight-card glass-card animate-on-scroll">
                         <i class="fas fa-user-friends"></i>
                         <h4 data-translate="whyUsEasyTitle">Dễ Sử Dụng</h4>
-                        <p data-translate="whyUsEasyDesc">Giao diện trực quan và thân thiện, phù hợp với mọi đối tượng người dùng, không yêu cầu kỹ năng kỹ thuật.</p>
+                        <p data-translate="whyUsEasyDesc">Giao diện trực quan và thân thiện, phù hợp với mọi đối tượng
+                            người dùng, không yêu cầu kỹ năng kỹ thuật.</p>
                     </div>
                     <div class="highlight-card glass-card animate-on-scroll" style="transition-delay: 0.1s;">
                         <i class="fas fa-bolt"></i>
                         <h4 data-translate="whyUsFastTitle">Nhanh Chóng & Hiệu Quả</h4>
-                        <p data-translate="whyUsFastDesc">Tất cả các công cụ đều được xử lý phía client, đảm bảo tốc độ nhanh và không cần tải tệp lên máy chủ.</p>
+                        <p data-translate="whyUsFastDesc">Tất cả các công cụ đều được xử lý phía client, đảm bảo tốc độ
+                            nhanh và không cần tải tệp lên máy chủ.</p>
                     </div>
                     <div class="highlight-card glass-card animate-on-scroll" style="transition-delay: 0.2s;">
                         <i class="fas fa-shield-alt"></i>
                         <h4 data-translate="whyUsFreeTitle">Miễn Phí & An Toàn</h4>
-                        <p data-translate="whyUsFreeDesc">Hoàn toàn miễn phí. Dữ liệu của bạn được an toàn vì chúng tôi không lưu trữ bất kỳ hình ảnh nào bạn sử dụng.</p>
+                        <p data-translate="whyUsFreeDesc">Hoàn toàn miễn phí. Dữ liệu của bạn được an toàn vì chúng tôi
+                            không lưu trữ bất kỳ hình ảnh nào bạn sử dụng.</p>
                     </div>
                 </div>
             </div>
         </section>
 
     </main>
-    
+
     <!-- Footer mới -->
     <footer class="main-footer">
         <div class="container footer-container">
             <div class="footer-column footer-about">
-                 <a href="index.html" class="footer-logo">
+                <a href="index.html" class="footer-logo">
                     <img src="logo.png" alt="Logo">
                     <span>Game & Image Pro</span>
-                 </a>
-                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
+                </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn
+                    phí, không giới hạn.</p>
             </div>
             <div class="footer-column">
                 <h4 data-translate="footerExplore">Khám Phá</h4>
@@ -886,7 +974,7 @@
                     <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
                 </ul>
             </div>
-             <div class="footer-column">
+            <div class="footer-column">
                 <h4 data-translate="footerInfo">Thông Tin</h4>
                 <ul>
                     <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
@@ -896,8 +984,10 @@
             </div>
         </div>
         <div class="footer-copyright">
-            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
-             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần
+                Hữu Đạt. Bảo lưu mọi quyền.</p>
+            <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart"
+                    style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
         </div>
     </footer>
 
@@ -940,19 +1030,19 @@
 
             // --- Header Visibility on Scroll ---
             const header = document.querySelector('.main-header');
-            if(header) {
+            if (header) {
                 setTimeout(() => {
                     header.classList.add('visible');
                 }, 100); // Delay for initial animation
             }
-            
+
             // --- Scroll Progress Bar ---
             const progressBar = document.querySelector('.scroll-progress-bar');
             window.addEventListener('scroll', () => {
                 const scrollTop = document.documentElement.scrollTop;
                 const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 const scrollPercentage = (scrollTop / scrollHeight) * 100;
-                if(progressBar) {
+                if (progressBar) {
                     progressBar.style.width = `${scrollPercentage}%`;
                 }
             });
@@ -980,7 +1070,7 @@
                 document.body.classList.add('light-mode');
             }
 
-            if(themeToggleBtn) {
+            if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     document.body.classList.toggle('light-mode');
                     let theme = 'dark';
@@ -992,7 +1082,7 @@
             }
 
             // --- Anchor link smooth scroll ---
-             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     const href = this.getAttribute('href');
                     const targetElement = document.querySelector(href);
