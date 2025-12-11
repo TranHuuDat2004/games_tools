@@ -10,20 +10,21 @@
 
     <!-- Font Awesome (cho biểu tượng) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Đổi sang Be Vietnam Pro -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
+    <!-- Thư viện Intro.js (Tour Tutorial) CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
 
     <!-- Thư viện Fireworks-JS -->
     <script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.10.7/dist/index.umd.js"></script>
 
     <style>
-        /* Dán toàn bộ nội dung file CSS của bạn vào đây */
         /* ====================================================== */
         /* --- BIẾN MÀU VÀ THIẾT LẬP CHUNG --- */
         /* ====================================================== */
@@ -49,7 +50,6 @@
             --text-primary: #212121;
             --text-secondary: #5f5f5f;
             --resume-button-bg: #18181b;
-            /* Nút resume nền đen chữ trắng */
         }
 
 
@@ -66,8 +66,8 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-primary);
-            /* Font mới */
-            font-family: 'Sora', sans-serif;
+            /* Font mới: Be Vietnam Pro */
+            font-family: 'Be Vietnam Pro', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -203,7 +203,7 @@
             color: var(--text-secondary);
             padding: 0.4rem 0.8rem;
             cursor: pointer;
-            font-family: 'Sora', sans-serif;
+            font-family: 'Be Vietnam Pro', sans-serif;
             font-size: 0.8rem;
             transition: all 0.3s;
         }
@@ -595,7 +595,7 @@
         }
 
         /* ====================================================== */
-        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME & TOUR --- */
         /* ====================================================== */
         .theme-toggle-btn {
             background: none;
@@ -610,15 +610,47 @@
             overflow: hidden;
             flex-shrink: 0;
             transition: background-color 0.3s, border-color 0.3s;
-            margin-left: 1rem;
+            margin-left: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tour-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
         }
 
         .theme-toggle-btn:hover {
             background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
         }
 
         body.light-mode .theme-toggle-btn:hover {
             background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .tour-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--gradient-purple);
+            color: var(--gradient-purple);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
         }
 
         .theme-toggle-btn .fa-sun,
@@ -661,6 +693,17 @@
             background: rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
+        
+        /* IntroJS Customization (Optional) */
+        .introjs-tooltip {
+            font-family: 'Be Vietnam Pro', sans-serif !important;
+            /* Fix lỗi text màu trắng trên nền trắng trong Dark Mode */
+            color: #212121 !important; 
+        }
+
+        .introjs-tooltip-title {
+            color: #121212 !important;
+        }
 
         /* --- ANIMATION --- */
         .animate-on-scroll {
@@ -676,7 +719,6 @@
 
         /* --- RESPONSIVE --- */
 
-        /* === UPDATE HERE === */
         @media (max-width: 1300px) {
 
             .main-header {
@@ -746,24 +788,25 @@
 
     <!-- Header mới -->
     <header class="main-header">
-        <a href="index.html" class="logo">
+        <a href="index.html" class="logo" data-intro="Đây là logo, nhấn vào để quay về trang chủ." data-step="1">
             <img src="logo.png" alt="Logo">
         </a>
         <nav class="header-navigation">
-            <div class="main-nav">
+            <div class="main-nav" data-intro="Menu điều hướng giúp bạn truy cập nhanh các phần của website." data-step="2">
                 <a href="index.html" class="is-active" data-translate="navHome">Trang chủ</a>
                 <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
                 <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
                 <a href="contact.html" data-translate="navContact">Liên hệ</a>
                 <a href="scale.html" data-translate="navImageTools">Công cụ ảnh</a>
                 <a href="pdf-to-png.html">PDF to PNG</a>
-
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn" data-lang="vi">VI</button>
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
-            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+            
+            <!-- Nút Theme -->
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme" data-intro="Chuyển đổi giữa chế độ Sáng và Tối tại đây." data-step="6">
                 <i class="fas fa-moon"></i>
                 <i class="fas fa-sun"></i>
             </button>
@@ -773,7 +816,7 @@
 
     <main>
         <!-- Hero Section mới -->
-        <section class="hero-section">
+        <section class="hero-section" data-intro="Chào mừng bạn đến với Game & Image Pro! Nơi cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí." data-step="3">
             <div id="fireworks-canvas"></div>
             <div class="container hero-text-content">
                 <h1 data-translate="heroTitle">
@@ -794,7 +837,7 @@
         </section>
 
         <!-- Phần Game -->
-        <section id="games" class="content-section">
+        <section id="games" class="content-section" data-intro="Khu vực các trò chơi giải trí như Xếp hình, Caro, Tetris." data-step="4">
             <div class="container">
                 <!-- Game 1: Jigsaw -->
                 <div class="game-intro-grid animate-on-scroll">
@@ -867,7 +910,7 @@
         </section>
 
         <!-- Phần Công cụ ảnh -->
-        <section id="tools" class="content-section">
+        <section id="tools" class="content-section" data-intro="Khu vực các công cụ xử lý ảnh miễn phí như Cắt ảnh, Chia lưới, Đổi kích thước." data-step="5">
             <div class="container">
                 <div class="section-header animate-on-scroll">
                     <span class="section-badge">POWERFUL & FREE</span>
@@ -946,6 +989,11 @@
 
     </main>
 
+    <!-- Nút Tour Tutorial -->
+    <button class="tour-btn" id="start-tour-btn" aria-label="Start Website Tour" title="Hướng dẫn sử dụng">
+        <i class="fas fa-question-circle"></i>
+    </button>
+    
     <!-- Footer mới -->
     <footer class="main-footer">
         <div class="container footer-container">
@@ -996,6 +1044,9 @@
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
     <script src="js/i18n.js"></script>
+    
+    <!-- Thư viện Intro.js JS -->
+    <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
 
     <!-- Script mới cho giao diện -->
     <script>
@@ -1078,6 +1129,20 @@
                         theme = 'light';
                     }
                     localStorage.setItem('theme', theme);
+                });
+            }
+            
+            // --- Tour Tutorial (Intro.js) ---
+            const startTourBtn = document.getElementById('start-tour-btn');
+            if (startTourBtn) {
+                startTourBtn.addEventListener('click', () => {
+                    introJs().setOptions({
+                        nextLabel: 'Tiếp >',
+                        prevLabel: '< Trước',
+                        doneLabel: 'Hoàn tất',
+                        showStepNumbers: false,
+                        showBullets: false
+                    }).start();
                 });
             }
 
