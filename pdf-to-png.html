@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to PNG Converter</title>
+    <title>Chuyển đổi PDF sang PNG</title>
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <!-- Essential JS Libraries -->
+    <!-- Essential JS Libraries for PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
@@ -15,7 +15,9 @@
     </script>
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,334 +25,122 @@
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        xintegrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- Global Styles -->
+    <!-- Global Styles (Hợp nhất từ resize.html và style riêng của PDF) -->
     <style>
+        /* ====================================================== */
+        /* --- BIẾN MÀU VÀ THIẾT LẬP CHUNG --- */
+        /* ====================================================== */
         :root {
+            /* Dark Mode (Mặc định) */
             --bg-dark: #121212;
             --bg-card: rgba(28, 28, 31, 0.6);
+            --bg-footer: #0c0c0c;
             --border-color: rgba(255, 255, 255, 0.1);
             --text-primary: #f4f4f5;
             --text-secondary: #a1a1aa;
+            
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+
             --gradient-purple: #c084fc;
             --gradient-pink: #f472b6;
+            --gradient-green: #4ade80;
+            --resume-button-bg: var(--gradient-green);
         }
 
+        /* Light Mode */
         body.light-mode {
             --bg-dark: #f5f5f5;
-            --bg-card: rgba(255, 255, 255, 0.8);
+            --bg-card: #ffffff;
+            --bg-footer: #e5e5e5;
             --border-color: rgba(0, 0, 0, 0.1);
             --text-primary: #212121;
             --text-secondary: #5f5f5f;
+            
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+
+            --resume-button-bg: #18181b;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
+            padding-top: 80px;
+            background-color: var(--bg-dark) !important; /* Thêm !important để ghi đè */
+            color: var(--text-primary) !important;
             font-family: 'Sora', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        a {
-            color: var(--text-primary);
-            text-decoration: none;
+        a { color: var(--text-primary); text-decoration: none; transition: color 0.3s ease; }
+        a:hover { color: var(--gradient-purple); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        a:hover {
-            color: var(--gradient-purple);
-        }
-
-        .main-header {
-            position: fixed;
-            top: 1.5rem;
-            left: 50%;
-            z-index: 1031;
-            max-width: 1000px;
-            width: calc(100% - 3rem);
-            background: rgba(24, 24, 27, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* Class kính mờ */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 9999px;
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            opacity: 0;
-            transform: translate(-50%, -100px);
-            transition: opacity 0.5s, transform 0.5s;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .main-header.visible {
-            opacity: 1;
-            transform: translateX(-50%);
-        }
-
-        .logo {
-            font-weight: bold;
-            font-size: 1.25rem;
-            background: linear-gradient(to right, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo img {
-            max-height: 28px;
-        }
-
-        .header-navigation {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .main-nav {
-            display: none;
-        }
-
-        /* Hidden on mobile by default */
-        @media (min-width: 992px) {
-            .main-nav {
-                display: flex;
-                gap: 0.5rem;
-            }
-        }
-
-        .main-nav a {
-            padding: 0.5rem 0.75rem;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .main-nav a:hover,
-        .main-nav a.is-active {
-            color: var(--text-primary);
-        }
-
-        .lang-switcher button {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.4rem 0.8rem;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .lang-switcher button:first-child {
-            border-top-left-radius: 999px;
-            border-bottom-left-radius: 999px;
-            border-right: none;
-        }
-
-        .lang-switcher button:last-child {
-            border-top-right-radius: 999px;
-            border-bottom-right-radius: 999px;
-        }
-
-        .lang-switcher button:hover,
-        .lang-switcher button.active {
-            background-color: var(--gradient-purple);
-            color: var(--text-primary);
-            border-color: var(--gradient-purple);
+        /* Class background cho theme */
+        .bg-body-theme {
+            background-color: var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         /* ====================================================== */
-        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
+        /* --- PDF TOOL SPECIFIC STYLES --- */
         /* ====================================================== */
-        .theme-toggle-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-            transition: background-color 0.3s, border-color 0.3s;
-            margin-left: 1rem;
-        }
-
-        .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.light-mode .theme-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .theme-toggle-btn .fa-sun,
-        .theme-toggle-btn .fa-moon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-        }
-
-        .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, -50%);
-            opacity: 1;
-        }
-
-        .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -150%);
-            opacity: 0;
-        }
-
-        body.light-mode .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, 150%);
-            opacity: 0;
-        }
-
-        body.light-mode .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -50%);
-            opacity: 1;
-        }
-
-        body.light-mode .main-header {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        body.light-mode .btn-secondary {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        body.light-mode .section-badge {
-            background: rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        /* --- ANIMATION --- */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        body.light-mode .main-header {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        .main-footer {
-            background-color: #0c0c0c;
-            color: var(--text-secondary);
-            padding-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 4rem;
-        }
-
-        /* ====================================================== */
-        /* --- FOOTER --- */
-        /* ====================================================== */
-        .main-footer {
-            background-color: #0c0c0c;
-            color: var(--text-secondary);
-            padding-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 4rem;
-        }
-
-        .footer-container {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 3rem;
-            padding-bottom: 3rem;
-        }
-
-        .footer-column h4 {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-logo img {
-            max-height: 40px;
-        }
-
-        .footer-logo span {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .footer-about p {
-            max-width: 300px;
-            line-height: 1.7;
-        }
-
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-column ul a {
-            color: var(--text-secondary);
-            transition: color 0.3s, padding-left 0.3s;
-        }
-
-        .footer-column ul a:hover {
-            color: var(--text-primary);
-            padding-left: 5px;
-        }
-
-        .footer-copyright {
-            padding: 1.5rem 0;
-            text-align: center;
-            font-size: 0.875rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* Page-specific styles */
-        h1,
-        h5 {
-            color: var(--text-primary);
-        }
-
-        body.light-mode h1,
-        body.light-mode h5 {
-            color: #212121;
-        }
+        h1, h5 { color: var(--text-primary); }
 
         #drop-zone {
             background: var(--bg-card);
             border: 3px dashed var(--border-color);
+            transition: border-color 0.3s, background-color 0.3s;
         }
 
         #drop-zone.drag-over {
             border-color: var(--gradient-purple);
+            background-color: rgba(192, 132, 252, 0.1);
         }
 
-        #drop-zone p,
-        #fileName {
+        #drop-zone p, #fileName {
             color: var(--text-secondary);
         }
 
         .page-container {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .page-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         #output {
@@ -358,56 +148,213 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
         }
+
+        /* ====================================================== */
+        /* --- BOOTSTRAP OVERRIDES --- */
+        /* ====================================================== */
+        .nav-tabs { border-bottom-color: var(--border-color); }
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+            background-color: rgba(255,255,255,0.05);
+        }
+        body.light-mode .nav-tabs .nav-link:hover { background-color: rgba(0,0,0,0.05); }
+        .nav-tabs .nav-link.active {
+            background-color: var(--bg-dark) !important;
+            border-color: var(--border-color) var(--border-color) var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn-secondary {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: var(--text-secondary);
+        }
+        body.light-mode .btn-secondary {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        /* ====================================================== */
+        /* --- HEADER & NAV --- */
+        /* ====================================================== */
+        .scroll-progress-bar {
+            position: fixed; top: 0; left: 0; height: 4px;
+            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
+            width: 0%; z-index: 1000; transition: width 0.1s linear;
+        }
+        .main-header {
+            position: fixed; top: 1.5rem; left: 50%; z-index: 999;
+            max-width: 1000px; width: calc(100% - 3rem);
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 2rem;
+            opacity: 0; transform: translate(-50%, -100px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, background-color 0.3s;
+        }
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.85); }
+        .logo {
+            font-weight: bold; font-size: 1.25rem; color: var(--text-primary);
+            background: linear-gradient(to right, #a855f7, #ec4899);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: flex; gap: 0.5rem; }
+        .main-nav a {
+            padding: 0.5rem 0.75rem; color: var(--text-secondary); text-decoration: none;
+            font-size: 0.875rem; transition: color 0.3s;
+        }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
+        
+        .lang-switcher { display: flex; align-items: center; margin-left: 1rem; }
+        .lang-switcher button {
+            background: none; border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 0.4rem 0.8rem; cursor: pointer; font-family: 'Sora', sans-serif; font-size: 0.8rem; transition: all 0.3s;
+        }
+        .lang-switcher button:first-child { border-top-left-radius: 999px; border-bottom-left-radius: 999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 999px; border-bottom-right-radius: 999px; }
+        .lang-switcher button:hover, .lang-switcher button.active {
+            background-color: var(--gradient-purple); color: var(--text-primary); border-color: var(--gradient-purple);
+        }
+
+        .theme-toggle-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-secondary);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+            position: relative; overflow: hidden; flex-shrink: 0; transition: background-color 0.3s; margin-left: 1rem;
+        }
+        .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+        body.light-mode .theme-toggle-btn:hover { background-color: rgba(0, 0, 0, 0.1); }
+        .theme-toggle-btn .fa-sun, .theme-toggle-btn .fa-moon {
+            position: absolute; top: 50%; left: 50%; transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon { transform: translate(-50%, -50%); opacity: 1; }
+        .theme-toggle-btn .fa-sun { transform: translate(-50%, -150%); opacity: 0; }
+        body.light-mode .theme-toggle-btn .fa-moon { transform: translate(-50%, 150%); opacity: 0; }
+        body.light-mode .theme-toggle-btn .fa-sun { transform: translate(-50%, -50%); opacity: 1; }
+
+        /* ====================================================== */
+        /* --- FOOTER --- */
+        /* ====================================================== */
+        .main-footer {
+            background-color: var(--bg-footer); color: var(--text-secondary);
+            padding-top: 4rem; border-top: 1px solid var(--border-color); margin-top: 4rem; transition: background-color 0.3s;
+        }
+        .footer-container { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-column h4 { color: var(--text-primary); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .footer-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .footer-logo img { max-height: 40px; }
+        .footer-logo span { font-weight: bold; font-size: 1.5rem; color: var(--text-primary); }
+        .footer-about p { max-width: 300px; line-height: 1.7; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li { margin-bottom: 0.75rem; }
+        .footer-column ul a { color: var(--text-secondary); transition: color 0.3s, padding-left 0.3s; }
+        .footer-column ul a:hover { color: var(--text-primary); padding-left: 5px; }
+        .footer-copyright { padding: 1.5rem 0; text-align: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
+
+        /* Responsive */
+        @media (max-width: 1300px) { .main-header { justify-content: space-between; max-width: 1200px; } }
+        @media (max-width: 992px) {
+            .footer-container { grid-template-columns: 1fr 1fr; }
+            .footer-about { grid-column: 1 / -1; }
+        }
+        @media (max-width: 768px) {
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-about p { margin: 0 auto 1.5rem auto; }
+            .footer-logo { justify-content: center; }
+            .main-header { flex-direction: column; gap: 1rem; padding: 1rem; width: 90%; }
+            .header-navigation { flex-wrap: wrap; justify-content: center; }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Thanh tiến trình cuộn -->
+    <div class="scroll-progress-bar"></div>
+
+    <!-- Header -->
     <header class="main-header">
-        <a href="index.html" class="logo"><img src="logo.png" alt="Logo"></a>
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="Logo">
+            
+        </a>
         <nav class="header-navigation">
             <div class="main-nav">
                 <a href="index.html" data-translate="navHome">Trang chủ</a>
                 <a href="game.html" data-translate="navPlayGame">Chơi Game</a>
                 <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
                 <a href="contact.html" data-translate="navContact">Liên hệ</a>
-                <a href="split.html"  data-translate="navImageTools">Công cụ ảnh</a>
-                <a href="pdf-to-png.html" class="is-active">PDF to PNG</a>
+                <a href="scale.html" class="is-active" data-translate="navImageTools">Công cụ ảnh</a>
+                <a href="pdf-to-png.html">PDF to PNG</a>
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn" data-lang="vi">VI</button>
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
-            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme"><i class="fas fa-moon"></i><i
-                    class="fas fa-sun"></i></button>
+            <button class="theme-toggle-btn" aria-label="Toggle light/dark theme">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+            </button>
         </nav>
     </header>
 
-    <main class="container" style="padding-top: 8rem;">
+    <main class="container my-5 bg-body-theme">
+        <!-- Tab lựa chọn công cụ -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="crop-square-tab" href="scale.html" role="tab" data-translate="toolSquareCropTitle">Cắt Ảnh Vuông</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="split-grid-tab" href="split.html" role="tab" data-translate="toolGridSplitTitle">Cắt Ảnh Lưới</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="pdf-to-png-tab" href="pdf-to-png.html" role="tab">PDF to PNG</a>
+            </li>
+        </ul>
+
         <h1 class="text-center mb-4">PDF to PNG Converter</h1>
+        
         <div id="drop-zone" class="p-4 p-md-5 text-center rounded mb-4">
             <p class="fs-5">Kéo và thả file PDF vào đây, hoặc</p>
             <label for="pdfFileInput" class="btn btn-secondary">Chọn File từ máy tính</label>
             <input type="file" id="pdfFileInput" accept=".pdf" class="d-none">
             <div id="fileName" class="mt-3 fst-italic">Chưa có file nào được chọn</div>
+            
             <div class="action-buttons mt-4">
-                <button id="convertBtn" class="btn btn-primary" disabled>Chuyển đổi</button>
+                <button id="convertBtn" class="btn btn-warning" disabled>Chuyển đổi</button>
                 <button id="downloadAllBtn" class="btn btn-success" style="display: none;">Tải tất cả (.zip)</button>
             </div>
         </div>
+
         <div id="loadingMessage" class="text-center fw-bold my-4" style="display: none;"></div>
         <div id="output" class="mt-5"></div>
     </main>
 
-    <!-- Footer mới -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="container footer-container">
             <div class="footer-column footer-about">
-                <a href="index.html" class="footer-logo">
+                 <a href="index.html" class="footer-logo">
                     <img src="logo.png" alt="Logo">
-                    <span>Game & Image Pro</span>
-                </a>
-                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn
-                    phí, không giới hạn.</p>
+                    
+                 </a>
+                <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
             </div>
             <div class="footer-column">
                 <h4 data-translate="footerExplore">Khám Phá</h4>
@@ -426,7 +373,7 @@
                     <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
                 </ul>
             </div>
-            <div class="footer-column">
+             <div class="footer-column">
                 <h4 data-translate="footerInfo">Thông Tin</h4>
                 <ul>
                     <li><a href="about.html" data-translate="footerAbout">Về chúng tôi</a></li>
@@ -436,23 +383,192 @@
             </div>
         </div>
         <div class="footer-copyright">
-            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần
-                Hữu Đạt. Bảo lưu mọi quyền.</p>
-            <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart"
-                    style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
+            <p data-translate="footerCopyright">© <span id="currentYear"></span> Game & Image Pro. Phát triển bởi Trần Hữu Đạt. Bảo lưu mọi quyền.</p>
+             <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="js/translations.js"></script>
+    <script src="js/setLanguage.js"></script>
     <script src="js/i18n.js"></script>
+
+    <!-- Page Logic -->
     <script>
-        // Page-specific Logic
         document.addEventListener('DOMContentLoaded', () => {
-            const pdfFileInput = document.getElementById("pdfFileInput"), convertBtn = document.getElementById("convertBtn"), downloadAllBtn = document.getElementById("downloadAllBtn"), outputDiv = document.getElementById("output"), loadingMessage = document.getElementById("loadingMessage"), fileNameSpan = document.getElementById("fileName"), dropZone = document.getElementById("drop-zone"); dropZone.addEventListener("dragover", e => { e.preventDefault(), dropZone.classList.add("drag-over") }), dropZone.addEventListener("dragleave", e => { e.preventDefault(), dropZone.classList.remove("drag-over") }), dropZone.addEventListener("drop", e => { e.preventDefault(), dropZone.classList.remove("drag-over"); const t = e.dataTransfer.files; t.length > 0 && ("application/pdf" !== t[0].type ? alert("Vui lòng chỉ kéo thả file PDF.") : (pdfFileInput.files = t, pdfFileInput.dispatchEvent(new Event("change")))) }), dropZone.addEventListener("click", e => { ("drop-zone" === e.target.id || "P" === e.target.tagName) && pdfFileInput.click() }), pdfFileInput.addEventListener("change", e => { const t = e.target.files[0]; t ? (convertBtn.disabled = !1, fileNameSpan.textContent = t.name, outputDiv.innerHTML = "", downloadAllBtn.style.display = "none") : (convertBtn.disabled = !0, fileNameSpan.textContent = "Chưa có file nào được chọn") }), convertBtn.addEventListener("click", async () => { const e = pdfFileInput.files[0]; if (!e) return void alert("Vui lòng chọn một file PDF."); outputDiv.innerHTML = "", downloadAllBtn.style.display = "none", loadingMessage.textContent = "Đang chuyển đổi, vui lòng chờ...", loadingMessage.style.display = "block", convertBtn.disabled = !0, dropZone.style.pointerEvents = "none"; const t = new FileReader; t.onload = async () => { const n = t.result; try { const t = await pdfjsLib.getDocument({ data: n }).promise, o = t.numPages; for (let n = 1; n <= o; n++) { const a = await t.getPage(n), i = a.getViewport({ scale: 2 }), l = document.createElement("canvas"), d = l.getContext("2d"); l.height = i.height, l.width = i.width; const s = { canvasContext: d, viewport: i }; await a.render(s).promise; const c = l.toDataURL("image/png"), r = document.createElement("img"); r.src = c, r.alt = `Page ${n}`, r.className = "img-fluid mb-2"; const p = document.createElement("a"); p.href = c, p.download = `${e.name.replace(".pdf", "")}_page_${n}.png`, p.textContent = `Tải trang ${n}`, p.className = "btn btn-info btn-sm"; const m = document.createElement("div"); m.className = "page-container p-3", m.appendChild(r), m.appendChild(p), outputDiv.appendChild(m) } loadingMessage.style.display = "none", t.numPages > 0 && (downloadAllBtn.style.display = "inline-block"), alert("Chuyển đổi hoàn tất!") } catch (t) { console.error("Lỗi khi chuyển đổi PDF:", t), alert("Không thể chuyển đổi file PDF. Vui lòng kiểm tra console để biết chi tiết."), loadingMessage.style.display = "none" } finally { convertBtn.disabled = !1, dropZone.style.pointerEvents = "auto" } }, t.readAsArrayBuffer(e) }), downloadAllBtn.addEventListener("click", async () => { const e = pdfFileInput.files[0]; if (!e) return; loadingMessage.textContent = "Đang nén file ZIP, vui lòng chờ...", loadingMessage.style.display = "block", downloadAllBtn.disabled = !0; try { const e = new JSZip; outputDiv.querySelectorAll(".page-container").forEach((t, n) => { const o = t.querySelector("img").src.split(",")[1], a = `${pdfFileInput.files[0].name.replace(".pdf", "")}_page_${n + 1}.png`; e.file(a, o, { base64: !0 }) }); const t = await e.generateAsync({ type: "blob" }), n = document.createElement("a"); n.href = URL.createObjectURL(t), n.download = `${pdfFileInput.files[0].name.replace(".pdf", "")}.zip`, document.body.appendChild(n), n.click(), document.body.removeChild(n), URL.revokeObjectURL(n.href) } catch (e) { console.error("Lỗi khi tạo file ZIP:", e), alert("Đã xảy ra lỗi khi nén file. Vui lòng thử lại.") } finally { loadingMessage.style.display = "none", downloadAllBtn.disabled = !1 } });
-            // Site-wide theme/header script
-            const header = document.querySelector(".main-header"); header && setTimeout(() => header.classList.add("visible"), 100); const themeToggleBtn = document.querySelector(".theme-toggle-btn"), currentTheme = localStorage.getItem("theme"); "light" === currentTheme && document.body.classList.add("light-mode"), themeToggleBtn && themeToggleBtn.addEventListener("click", () => { document.body.classList.toggle("light-mode"), localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark") }); const currentYearSpan = document.getElementById("currentYear"); currentYearSpan && (currentYearSpan.textContent = (new Date).getFullYear());
+            const pdfFileInput = document.getElementById("pdfFileInput");
+            const convertBtn = document.getElementById("convertBtn");
+            const downloadAllBtn = document.getElementById("downloadAllBtn");
+            const outputDiv = document.getElementById("output");
+            const loadingMessage = document.getElementById("loadingMessage");
+            const fileNameSpan = document.getElementById("fileName");
+            const dropZone = document.getElementById("drop-zone");
+
+            // Drop zone events
+            dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+            dropZone.addEventListener("dragleave", e => { e.preventDefault(); dropZone.classList.remove("drag-over"); });
+            dropZone.addEventListener("drop", e => {
+                e.preventDefault();
+                dropZone.classList.remove("drag-over");
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    if (files[0].type !== "application/pdf") {
+                        alert("Vui lòng chỉ kéo thả file PDF.");
+                    } else {
+                        pdfFileInput.files = files;
+                        pdfFileInput.dispatchEvent(new Event("change"));
+                    }
+                }
+            });
+            dropZone.addEventListener("click", e => {
+                if (e.target.id === "drop-zone" || e.target.tagName === "P") {
+                    pdfFileInput.click();
+                }
+            });
+
+            // File input change
+            pdfFileInput.addEventListener("change", e => {
+                const file = e.target.files[0];
+                if (file) {
+                    convertBtn.disabled = false;
+                    fileNameSpan.textContent = file.name;
+                    outputDiv.innerHTML = "";
+                    downloadAllBtn.style.display = "none";
+                } else {
+                    convertBtn.disabled = true;
+                    fileNameSpan.textContent = "Chưa có file nào được chọn";
+                }
+            });
+
+            // Convert button click
+            convertBtn.addEventListener("click", async () => {
+                const file = pdfFileInput.files[0];
+                if (!file) return alert("Vui lòng chọn một file PDF.");
+                
+                outputDiv.innerHTML = "";
+                downloadAllBtn.style.display = "none";
+                loadingMessage.textContent = "Đang chuyển đổi, vui lòng chờ...";
+                loadingMessage.style.display = "block";
+                convertBtn.disabled = true;
+                dropZone.style.pointerEvents = "none";
+
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    const data = reader.result;
+                    try {
+                        const pdf = await pdfjsLib.getDocument({ data }).promise;
+                        const totalPages = pdf.numPages;
+
+                        for (let i = 1; i <= totalPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const viewport = page.getViewport({ scale: 2 });
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+
+                            await page.render({ canvasContext: context, viewport }).promise;
+
+                            const imgUrl = canvas.toDataURL("image/png");
+                            
+                            // Create Display Element
+                            const container = document.createElement("div");
+                            container.className = "page-container p-3";
+                            
+                            const img = document.createElement("img");
+                            img.src = imgUrl;
+                            img.alt = `Page ${i}`;
+                            img.className = "img-fluid mb-2 rounded";
+                            
+                            const downloadBtn = document.createElement("a");
+                            downloadBtn.href = imgUrl;
+                            downloadBtn.download = `${file.name.replace(".pdf", "")}_page_${i}.png`;
+                            downloadBtn.textContent = `Tải trang ${i}`;
+                            downloadBtn.className = "btn btn-info btn-sm";
+
+                            container.appendChild(img);
+                            container.appendChild(downloadBtn);
+                            outputDiv.appendChild(container);
+                        }
+
+                        loadingMessage.style.display = "none";
+                        if (totalPages > 0) {
+                            downloadAllBtn.style.display = "inline-block";
+                        }
+                    } catch (err) {
+                        console.error("Lỗi khi chuyển đổi PDF:", err);
+                        alert("Không thể chuyển đổi file PDF. Vui lòng kiểm tra console để biết chi tiết.");
+                        loadingMessage.style.display = "none";
+                    } finally {
+                        convertBtn.disabled = false;
+                        dropZone.style.pointerEvents = "auto";
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+
+            // Download All button click
+            downloadAllBtn.addEventListener("click", async () => {
+                const file = pdfFileInput.files[0];
+                if (!file) return;
+                
+                loadingMessage.textContent = "Đang nén file ZIP, vui lòng chờ...";
+                loadingMessage.style.display = "block";
+                downloadAllBtn.disabled = true;
+
+                try {
+                    const zip = new JSZip();
+                    outputDiv.querySelectorAll(".page-container").forEach((container, index) => {
+                        const img = container.querySelector("img");
+                        const imgData = img.src.split(",")[1];
+                        const fileName = `${file.name.replace(".pdf", "")}_page_${index + 1}.png`;
+                        zip.file(fileName, imgData, { base64: true });
+                    });
+
+                    const content = await zip.generateAsync({ type: "blob" });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(content);
+                    link.download = `${file.name.replace(".pdf", "")}.zip`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } catch (err) {
+                    console.error("Lỗi khi tạo file ZIP:", err);
+                    alert("Đã xảy ra lỗi khi nén file. Vui lòng thử lại.");
+                } finally {
+                    loadingMessage.style.display = "none";
+                    downloadAllBtn.disabled = false;
+                }
+            });
+        });
+
+        // Common Scripts (Header, Theme, etc.)
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
+
+            const header = document.querySelector('.main-header');
+            if(header) setTimeout(() => header.classList.add('visible'), 100);
+            
+            const progressBar = document.querySelector('.scroll-progress-bar');
+            window.addEventListener('scroll', () => {
+                const scrollTop = document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if(progressBar) progressBar.style.width = `${(scrollTop / scrollHeight) * 100}%`;
+            });
+
+            const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'light') document.body.classList.add('light-mode');
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+                });
+            }
         });
     </script>
 </body>
-
 </html>

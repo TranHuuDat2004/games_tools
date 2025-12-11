@@ -7,9 +7,9 @@
     <title data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông</title>
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <!-- Font Awesome (cho biểu tượng) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
         
     <!-- Google Fonts -->
@@ -19,69 +19,63 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        xintegrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- Global Styles from index.html -->
+    <!-- Global Styles (Đã hợp nhất CSS tại đây) -->
     <style>
-        /* Dán toàn bộ nội dung file CSS của bạn vào đây */
         /* ====================================================== */
         /* --- BIẾN MÀU VÀ THIẾT LẬP CHUNG --- */
         /* ====================================================== */
         :root {
-            /* Bảng màu mới */
+            /* Dark Mode (Mặc định) */
             --bg-dark: #121212;
             --bg-card: rgba(28, 28, 31, 0.6);
+            --bg-footer: #0c0c0c;
+            --bg-crop-container: #1e1e20; /* Màu nền khu vực cắt ảnh */
             --border-color: rgba(255, 255, 255, 0.1);
             --text-primary: #f4f4f5;
             --text-secondary: #a1a1aa;
+            
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+
             --gradient-purple: #c084fc;
             --gradient-pink: #f472b6;
             --gradient-green: #4ade80;
-            --gradient-yellow: #facc15;
             --resume-button-bg: var(--gradient-green);
         }
 
-        /* === BỔ SUNG: BIẾN MÀU CHO LIGHT MODE === */
+        /* Light Mode */
         body.light-mode {
             --bg-dark: #f5f5f5;
-            --bg-card: rgba(255, 255, 255, 0.8);
+            --bg-card: #ffffff;
+            --bg-footer: #e5e5e5;
+            --bg-crop-container: #eeeeee; /* Màu nền khu vực cắt ảnh sáng hơn */
             --border-color: rgba(0, 0, 0, 0.1);
             --text-primary: #212121;
             --text-secondary: #5f5f5f;
+            
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+
             --resume-button-bg: #18181b;
-            /* Nút resume nền đen chữ trắng */
         }
 
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-                        padding-top: 40px;
+            padding-top: 80px;
             background-color: var(--bg-dark);
             color: var(--text-primary);
-            /* Font mới */
             font-family: 'Sora', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        a {
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: var(--gradient-purple);
-        }
+        a { color: var(--text-primary); text-decoration: none; transition: color 0.3s ease; }
+        a:hover { color: var(--gradient-purple); }
 
         .container {
             max-width: 1200px;
@@ -89,7 +83,7 @@
             padding: 0 2rem;
         }
 
-        /* Helper class cho hiệu ứng kính mờ */
+        /* Class kính mờ */
         .glass-card {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
@@ -97,622 +91,249 @@
             border: 1px solid var(--border-color);
             border-radius: 1rem;
             padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .glass-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
 
+        /* Class background cho theme */
+        .bg-body-theme {
+            background-color: var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
         /* ====================================================== */
-        /* --- THANH TIẾN TRÌNH & HEADER --- */
+        /* --- CROP TOOL STYLES (CHUYỂN TỪ FILE CSS CŨ VÀO ĐÂY) --- */
+        /* ====================================================== */
+        
+        /* Khu vực chứa ảnh gốc và khung cắt */
+        #image-crop-container {
+            position: relative;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px auto;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-crop-container); /* Dùng biến theme */
+            min-height: 400px; /* Tăng chiều cao mặc định */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #original-image {
+            display: block;
+            max-width: 100%;
+            max-height: 80vh; /* Giới hạn chiều cao để không quá lớn */
+            transition: opacity 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Khung cắt hình vuông */
+        #crop-box {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 255, 0.9);
+            /* Box shadow cực lớn để làm tối vùng xung quanh */
+            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6); 
+            cursor: move;
+            display: none;
+            z-index: 10;
+        }
+
+        /* Các điểm điều khiển (Resize handles) */
+        .crop-handle {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background-color: #fff;
+            border: 1px solid #333;
+            border-radius: 50%;
+            z-index: 11;
+            transition: transform 0.1s;
+        }
+        .crop-handle:hover {
+            transform: scale(1.2);
+            background-color: var(--gradient-purple);
+            border-color: #fff;
+        }
+
+        /* Vị trí các điểm điều khiển */
+        .handle-nw { top: -7px; left: -7px; cursor: nwse-resize; }
+        .handle-ne { top: -7px; right: -7px; cursor: nesw-resize; }
+        .handle-sw { bottom: -7px; left: -7px; cursor: nesw-resize; }
+        .handle-se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+        /* Khu vực kết quả */
+        #crop-result {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        #cropped-image-preview {
+            max-width: 300px;
+            height: auto;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* ====================================================== */
+        /* --- BOOTSTRAP OVERRIDES --- */
+        /* ====================================================== */
+        .nav-tabs { border-bottom-color: var(--border-color); }
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+            background-color: rgba(255,255,255,0.05);
+        }
+        body.light-mode .nav-tabs .nav-link:hover { background-color: rgba(0,0,0,0.05); }
+        .nav-tabs .nav-link.active {
+            background-color: var(--bg-dark) !important;
+            border-color: var(--border-color) var(--border-color) var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            font-weight: 600;
+        }
+
+        /* Custom File Input */
+        .custom-file { position: relative; display: inline-block; width: 100%; height: calc(1.5em + 0.75rem + 2px); margin-bottom: 0; }
+        .custom-file-input { position: relative; z-index: 2; width: 100%; height: calc(1.5em + 0.75rem + 2px); margin: 0; opacity: 0; cursor: pointer; }
+        .custom-file-label {
+            position: absolute; top: 0; right: 0; left: 0; z-index: 1;
+            height: calc(1.5em + 0.75rem + 2px); padding: 0.375rem 0.75rem;
+            font-weight: 400; line-height: 1.5;
+            color: var(--text-primary);
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 0.25rem;
+        }
+        .custom-file-label::after {
+            position: absolute; top: 0; right: 0; bottom: 0; z-index: 3;
+            display: block; height: calc(1.5em + 0.75rem); padding: 0.375rem 0.75rem;
+            line-height: 1.5; color: var(--text-primary);
+            content: attr(data-browse);
+            background-color: rgba(255,255,255,0.1);
+            border-left: inherit; border-radius: 0 0.25rem 0.25rem 0;
+        }
+        body.light-mode .custom-file-label::after { background-color: #e9ecef; color: #495057; }
+
+        /* ====================================================== */
+        /* --- HEADER & NAV --- */
         /* ====================================================== */
         .scroll-progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
+            position: fixed; top: 0; left: 0; height: 4px;
             background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
-            width: 0%;
-            z-index: 1000;
-            transition: width 0.1s linear;
+            width: 0%; z-index: 1000; transition: width 0.1s linear;
         }
-
         .main-header {
-            position: fixed;
-            top: 1.5rem;
-            left: 50%;
-            z-index: 999;
-            max-width: 1000px; /* Để header tự co giãn theo nội dung */
-            width: calc(100% - 3rem); /* Adjust for padding on small screens */
-
+            position: fixed; top: 1.5rem; left: 50%; z-index: 999;
+            max-width: 1000px; width: calc(100% - 3rem);
             background: rgba(24, 24, 27, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            border-radius: 9999px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: 9999px;
             padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            opacity: 0;
-            transform: translate(-50%, -100px);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out, width 0.3s ease-in-out;
+            display: flex; align-items: center; justify-content: center; gap: 2rem;
+            opacity: 0; transform: translate(-50%, -100px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, background-color 0.3s;
         }
-        
-        .main-header.visible {
-            opacity: 1;
-            transform: translateX(-50%);
-        }
-
+        .main-header.visible { opacity: 1; transform: translateX(-50%); }
+        body.light-mode .main-header { background: rgba(255, 255, 255, 0.85); }
         .logo {
-            font-weight: bold;
-            font-size: 1.25rem;
-            color: var(--text-primary);
+            font-weight: bold; font-size: 1.25rem; color: var(--text-primary);
             background: linear-gradient(to right, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem;
         }
-        .logo img {
-            max-height: 28px;
-        }
-
-
-        .header-navigation {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .main-nav {
-            display: flex;
-            gap: 0.5rem;
-            position: relative;
-        }
-
+        .logo img { max-height: 28px; }
+        .header-navigation { display: flex; align-items: center; gap: 1rem; }
+        .main-nav { display: flex; gap: 0.5rem; }
         .main-nav a {
-            position: relative;
-            z-index: 1;
-            padding: 0.5rem 0.75rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            transition: color 0.3s;
+            padding: 0.5rem 0.75rem; color: var(--text-secondary); text-decoration: none;
+            font-size: 0.875rem; transition: color 0.3s;
         }
-
-        .main-nav a:hover,
-        .main-nav a.is-active {
-            color: var(--text-primary);
-        }
+        .main-nav a:hover, .main-nav a.is-active { color: var(--text-primary); }
         
-        .lang-switcher {
-            display: flex;
-            align-items: center;
-            margin-left: 1rem;
-        }
-
+        .lang-switcher { display: flex; align-items: center; margin-left: 1rem; }
         .lang-switcher button {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 0.4rem 0.8rem;
-            cursor: pointer;
-            font-family: 'Sora', sans-serif;
-            font-size: 0.8rem;
-            transition: all 0.3s;
+            background: none; border: 1px solid var(--border-color); color: var(--text-secondary);
+            padding: 0.4rem 0.8rem; cursor: pointer; font-family: 'Sora', sans-serif; font-size: 0.8rem; transition: all 0.3s;
         }
-        .lang-switcher button:first-child {
-            border-top-left-radius: 999px;
-            border-bottom-left-radius: 999px;
-            border-right: none;
-        }
-        .lang-switcher button:last-child {
-            border-top-right-radius: 999px;
-            border-bottom-right-radius: 999px;
+        .lang-switcher button:first-child { border-top-left-radius: 999px; border-bottom-left-radius: 999px; border-right: none; }
+        .lang-switcher button:last-child { border-top-right-radius: 999px; border-bottom-right-radius: 999px; }
+        .lang-switcher button:hover, .lang-switcher button.active {
+            background-color: var(--gradient-purple); color: var(--text-primary); border-color: var(--gradient-purple);
         }
 
-        .lang-switcher button:hover,
-        .lang-switcher button.active {
-            background-color: var(--gradient-purple);
-            color: var(--text-primary);
-            border-color: var(--gradient-purple);
+        .theme-toggle-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-secondary);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+            position: relative; overflow: hidden; flex-shrink: 0; transition: background-color 0.3s; margin-left: 1rem;
         }
+        .theme-toggle-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+        body.light-mode .theme-toggle-btn:hover { background-color: rgba(0, 0, 0, 0.1); }
+        .theme-toggle-btn .fa-sun, .theme-toggle-btn .fa-moon {
+            position: absolute; top: 50%; left: 50%; transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .theme-toggle-btn .fa-moon { transform: translate(-50%, -50%); opacity: 1; }
+        .theme-toggle-btn .fa-sun { transform: translate(-50%, -150%); opacity: 0; }
+        body.light-mode .theme-toggle-btn .fa-moon { transform: translate(-50%, 150%); opacity: 0; }
+        body.light-mode .theme-toggle-btn .fa-sun { transform: translate(-50%, -50%); opacity: 1; }
 
-
-        /* ====================================================== */
-        /* --- HERO SECTION --- */
-        /* ====================================================== */
-        /* This section is not directly used but styles might be inherited if elements match */
-        .hero-section {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding-top: 8rem;
-            text-align: center;
-        }
-
-        .hero-background {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            z-index: -2;
-            opacity: 0.8;
-        }
-        #fireworks-canvas {
-            position: absolute;
-            inset: 0;
-            z-index: -2;
-        }
-
-        .hero-background::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, rgba(18, 18, 18, 0.2) 0%, rgba(18, 18, 18, 0.8) 70%);
-            z-index: -1;
-        }
-        
-        .hero-text-content h1 {
-            font-size: clamp(3rem, 7vw, 5.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-
-        .gradient-text {
-            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-text-content p {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            max-width: 800px;
-            margin: 0 auto 2.5rem auto;
-        }
-
-        .hero-buttons {
-            margin-top: 2rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-primary {
-            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
-            color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-        
-        .scroll-down-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 40px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 9999px;
-        }
-
-        .scroll-down-indicator::before {
-            content: '';
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.6);
-            animation: scroll-down-anim 2s infinite;
-        }
-
-        @keyframes scroll-down-anim {
-            0% { transform: translate(-50%, 0); opacity: 0; }
-            40% { opacity: 1; }
-            80% { transform: translate(-50%, 16px); opacity: 0; }
-            100% { opacity: 0; }
-        }
-
-        /* ====================================================== */
-        /* --- CÁC SECTION NỘI DUNG CHUNG --- */
-        /* ====================================================== */
-        .content-section {
-            padding: 6rem 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            color: var(--text-secondary);
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        .title-underline {
-            width: 6rem;
-            height: 4px;
-            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
-            border-radius: 9999px;
-            margin: 0.75rem auto 0 auto;
-        }
-
-        /* Section Specific Styles */
-        .game-intro-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .game-intro-grid.reverse {
-            grid-template-columns: 1fr 1fr;
-        }
-        .game-intro-grid.reverse .game-image {
-            order: 2;
-        }
-        .game-intro-grid.reverse .game-text {
-            order: 1;
-        }
-
-        .game-image img {
-            width: 100%;
-            border-radius: 1rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        }
-
-        .game-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-        }
-        .game-text p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 2rem;
-        }
-        .feature-list li {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-        .feature-list i {
-            color: var(--gradient-green);
-        }
-
-        .image-tools-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-
-        .tool-card {
-            text-align: center;
-            padding: 2rem 1.5rem;
-        }
-        .tool-card img {
-            width: 100%;
-            max-width: 250px;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        .tool-card h4 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .tool-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-        .tool-card .btn {
-            margin-top: auto;
-        }
-
-        .highlights-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-        }
-        .highlight-card {
-            text-align: center;
-            padding: 2rem;
-        }
-        .highlight-card i {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(to right, var(--gradient-purple), var(--gradient-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .highlight-card h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        .highlight-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        .view-all-container {
-            text-align: center;
-            margin-top: 4rem;
-        }
-
-        /* ====================================================== */
-        /* --- FOOTER --- */
-        /* ====================================================== */
         /* ====================================================== */
         /* --- FOOTER --- */
         /* ====================================================== */
         .main-footer {
-            background-color: #0c0c0c;
-            color: var(--text-secondary);
-            padding-top: 4rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 4rem;
+            background-color: var(--bg-footer); color: var(--text-secondary);
+            padding-top: 4rem; border-top: 1px solid var(--border-color); margin-top: 4rem; transition: background-color 0.3s;
         }
+        .footer-container { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+        .footer-column h4 { color: var(--text-primary); font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; }
+        .footer-logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .footer-logo img { max-height: 40px; }
+        .footer-logo span { font-weight: bold; font-size: 1.5rem; color: var(--text-primary); }
+        .footer-about p { max-width: 300px; line-height: 1.7; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li { margin-bottom: 0.75rem; }
+        .footer-column ul a { color: var(--text-secondary); transition: color 0.3s, padding-left 0.3s; }
+        .footer-column ul a:hover { color: var(--text-primary); padding-left: 5px; }
+        .footer-copyright { padding: 1.5rem 0; text-align: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
 
-        .footer-container {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
-            gap: 3rem;
-            padding-bottom: 3rem;
-        }
-
-        .footer-column h4 {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .footer-logo img {
-            max-height: 40px;
-        }
-        .footer-logo span {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .footer-about p {
-            max-width: 300px;
-            line-height: 1.7;
-        }
-
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-column ul a {
-            color: var(--text-secondary);
-            transition: color 0.3s, padding-left 0.3s;
-        }
-
-        .footer-column ul a:hover {
-            color: var(--text-primary);
-            padding-left: 5px;
-        }
-
-        .footer-copyright {
-            padding: 1.5rem 0;
-            text-align: center;
-            font-size: 0.875rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        /* ====================================================== */
-        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
-        /* ====================================================== */
-        /* ====================================================== */
-        /* --- BỔ SUNG: LIGHT/DARK MODE & NÚT CHUYỂN THEME --- */
-        /* ====================================================== */
-        .theme-toggle-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-            transition: background-color 0.3s, border-color 0.3s;
-            margin-left: 1rem;
-        }
-
-        .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.light-mode .theme-toggle-btn:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .theme-toggle-btn .fa-sun,
-        .theme-toggle-btn .fa-moon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-        }
-        .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, -50%); opacity: 1;
-        }
-        .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -150%); opacity: 0;
-        }
-        body.light-mode .theme-toggle-btn .fa-moon {
-            transform: translate(-50%, 150%); opacity: 0;
-        }
-        body.light-mode .theme-toggle-btn .fa-sun {
-            transform: translate(-50%, -50%); opacity: 1;
-        }
-        body.light-mode .main-header {
-            background: rgba(255, 255, 255, 0.8);
-        }
-        body.light-mode .btn-secondary {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        body.light-mode .section-badge {
-            background: rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
-        
-        /* --- ANIMATION --- */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* --- ANIMATION --- */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- RESPONSIVE --- */
-        
-        /* === UPDATE HERE === */
-        @media (max-width: 1300px) {
-
-            .main-header {
-                /* Căn logo sang trái, các nút điều khiển sang phải */
-                justify-content: space-between;
-                max-width: 1200px;
-                
-            }
-        }
-        
+        /* Responsive */
+        @media (max-width: 1300px) { .main-header { justify-content: space-between; max-width: 1200px; } }
         @media (max-width: 992px) {
-            .game-intro-grid, .game-intro-grid.reverse {
-                grid-template-columns: 1fr;
-            }
-             .game-intro-grid .game-image,
-             .game-intro-grid.reverse .game-image {
-                order: -1; /* Luôn đưa ảnh lên đầu trên mobile */
-                margin-bottom: 2rem;
-            }
-            .image-tools-grid { grid-template-columns: 1fr 1fr; }
-            .highlights-grid { grid-template-columns: 1fr; }
-            .footer-container {
-                grid-template-columns: 1fr 1fr;
-            }
-            .footer-about {
-                grid-column: 1 / -1;
-            }
+            .footer-container { grid-template-columns: 1fr 1fr; }
+            .footer-about { grid-column: 1 / -1; }
         }
         @media (max-width: 768px) {
-            .image-tools-grid { grid-template-columns: 1fr; }
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .footer-about p {
-                justify-content: center;
-            }
-                    .footer-logo {
-                        justify-content: center;
-                    }
-            
-                    /* Custom class for themed body content */
-                    .bg-body-theme {
-                        background-color: var(--bg-dark);
-                        color: var(--text-primary);
-                    }        }
-
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-about p { margin: 0 auto 1.5rem auto; }
+            .footer-logo { justify-content: center; }
+            .main-header { flex-direction: column; gap: 1rem; padding: 1rem; width: 90%; }
+            .header-navigation { flex-wrap: wrap; justify-content: center; }
+        }
     </style>
-    <!-- Page-specific CSS -->
-    <link rel="stylesheet" href="css/scale.css">
 </head>
 
 <body>
     <!-- Thanh tiến trình cuộn -->
     <div class="scroll-progress-bar"></div>
 
-    <!-- Header mới -->
+    <!-- Header -->
     <header class="main-header">
         <a href="index.html" class="logo">
             <img src="logo.png" alt="Logo">
+
         </a>
         <nav class="header-navigation">
             <div class="main-nav">
@@ -735,33 +356,25 @@
     </header>
 
     <main class="container my-5 bg-body-theme">
-        <!-- Tab lựa chọn công cụ -->
         <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="crop-square-tab" href="scale.html" role="tab" data-translate="toolSquareCropTitle">Cắt Ảnh Vuông</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="split-grid-tab" href="split.html" role="tab" data-translate="toolGridSplitTitle">Cắt Ảnh Lưới</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pdf-to-png-tab" href="pdf-to-png.html" role="tab">PDF to PNG</a>
-            </li>
+            <li class="nav-item"><a class="nav-link active" id="crop-square-tab" href="scale.html" role="tab" data-translate="toolSquareCropTitle">Cắt Ảnh Vuông</a></li>
+            <li class="nav-item"><a class="nav-link" id="split-grid-tab" href="split.html" role="tab" data-translate="toolGridSplitTitle">Cắt Ảnh Lưới</a></li>
+            <li class="nav-item"><a class="nav-link" id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a></li>
+            <li class="nav-item"><a class="nav-link" id="pdf-to-png-tab" href="pdf-to-png.html" role="tab">PDF to PNG</a></li>
         </ul>
 
         <h1 class="text-center" data-translate="scalePageTitle">Cắt Ảnh Thành Hình Vuông (1:1)</h1>
+        
         <div class="alert alert-info" data-translate="scaleAlert">
-            Chọn ảnh từ máy tính, chọn khu vực để cắt ảnh, sau đó nhấn "Cắt Ảnh".
+            <i class="fas fa-info-circle me-2"></i>Chọn ảnh từ máy tính, chọn khu vực để cắt ảnh, sau đó nhấn "Cắt Ảnh".
         </div>
+
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <div class="form-group">
-                    <label for="image-upload" data-translate="scaleSelectImage">Chọn Ảnh Gốc:</label>
+                    <label for="image-upload" class="mb-2" data-translate="scaleSelectImage">Chọn Ảnh Gốc:</label>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="image-upload"
-                            accept="image/png, image/jpeg, image/gif, image/webp">
+                        <input type="file" class="custom-file-input" id="image-upload" accept="image/png, image/jpeg, image/gif, image/webp">
                         <label class="custom-file-label" for="image-upload" data-browse="Duyệt" data-translate="resizeChooseFile">Chọn file...</label>
                     </div>
                 </div>
@@ -769,45 +382,43 @@
         </div>
 
         <div id="image-crop-container">
-
-            <img id="original-image" src="" alt="">
-
-
+            <img id="original-image" src="" alt="" style="display: none;">
             <div id="crop-box">
                 <div class="crop-handle handle-nw"></div>
                 <div class="crop-handle handle-ne"></div>
                 <div class="crop-handle handle-sw"></div>
                 <div class="crop-handle handle-se"></div>
-                <!-- Thêm các handle giữa cạnh nếu cần -->
             </div>
         </div>
 
         <!-- Nút thực hiện cắt -->
         <div class="text-center my-4">
-            <button id="crop-button" class="btn btn-warning" disabled data-translate="scaleCropButton">Cắt Ảnh</button>
+            <button id="crop-button" class="btn btn-warning px-4 py-2" disabled data-translate="scaleCropButton">
+                <i class="fas fa-crop-alt me-2"></i>Cắt Ảnh
+            </button>
         </div>
 
         <!-- Thông báo lỗi -->
-        <div id="error-message" class="text-center"></div>
+        <div id="error-message" class="text-danger text-center fw-bold"></div>
 
         <!-- Khu vực hiển thị kết quả -->
-        <div id="crop-result" style="display: none;">
-            <h5 data-translate="scaleCroppedImage">Ảnh Vuông Đã Cắt:</h5>
-            <img id="cropped-image-preview" src="#" alt="Ảnh đã cắt">
+        <div id="crop-result" class="glass-card" style="display: none;">
+            <h5 data-translate="scaleCroppedImage" class="mb-3">Ảnh Vuông Đã Cắt:</h5>
+            <img id="cropped-image-preview" src="#" alt="Ảnh đã cắt" class="img-fluid">
             <br>
-            <a id="download-link" class="btn btn-success" href="#" download="anh_vuong.png" data-translate="scaleDownloadButton">Tải Ảnh Vuông</a>
+            <a id="download-link" class="btn btn-success mt-3" href="#" download="anh_vuong.png" data-translate="scaleDownloadButton">
+                <i class="fas fa-download me-2"></i>Tải Ảnh Vuông
+            </a>
         </div>
-
     </main>
     
-    <!-- ===== FOOTER START ===== -->
-<!-- Footer mới -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="container footer-container">
             <div class="footer-column footer-about">
                  <a href="index.html" class="footer-logo">
                     <img src="logo.png" alt="Logo">
-                    <span>Game & Image Pro</span>
+        
                  </a>
                 <p data-translate="footerUnlimited">Nền tảng cung cấp các trò chơi giải trí và công cụ xử lý ảnh miễn phí, không giới hạn.</p>
             </div>
@@ -842,19 +453,14 @@
              <p style="font-size: 0.8rem;" data-translate="footerBuiltWith">Xây dựng với <i class="fas fa-heart" style="color: #e25555;"></i> và tình yêu dành cho mã nguồn mở.</p>
         </div>
     </footer>
-    <!-- ===== FOOTER END ===== -->
 
-    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    
-    <!-- Language scripts -->
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="js/translations.js"></script>
     <script src="js/setLanguage.js"></script>
     <script src="js/i18n.js"></script>
 
-    <!-- Page-specific JavaScript -->
+    <!-- Page Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const imageInput = document.getElementById('image-upload');
@@ -863,7 +469,6 @@
             const fileLabel = document.querySelector('.custom-file-label');
             const imageContainer = document.getElementById('image-crop-container');
             const cropBox = document.getElementById('crop-box');
-            const cropHandles = cropBox.querySelectorAll('.crop-handle');
             const cropResultDiv = document.getElementById('crop-result');
             const croppedImagePreview = document.getElementById('cropped-image-preview');
             const downloadLink = document.getElementById('download-link');
@@ -897,8 +502,7 @@
                 reader.onload = function (event) {
                     img.onload = () => {
                         originalImage.src = event.target.result;
-                        originalImage.style.display = 'block';
-                        originalImage.classList.add('loaded');
+                        originalImage.style.display = 'inline-block';
                         initializeCropBox();
                         if (cropButton) cropButton.disabled = false;
                     };
@@ -908,21 +512,15 @@
                     };
                     img.src = event.target.result;
                 }
-                reader.onerror = function (error) {
-                    console.error("FileReader error:", error);
-                    showError('Đã xảy ra lỗi khi đọc file ảnh.');
-                    resetState();
-                }
                 reader.readAsDataURL(file);
             });
 
             function initializeCropBox() {
-                if (!cropBox || !img || img.naturalWidth === 0 || !originalImage || !imageContainer) {
-                    console.warn("initializeCropBox: Các phần tử cần thiết chưa sẵn sàng.");
-                    return;
-                }
-                if (cropResultDiv) cropResultDiv.style.display = 'none';
+                if (!cropBox || !img || img.naturalWidth === 0 || !originalImage || !imageContainer) return;
+                
+                cropResultDiv.style.display = 'none';
                 cropBox.style.display = 'block';
+                
                 const displayWidth = originalImage.clientWidth;
                 const displayHeight = originalImage.clientHeight;
 
@@ -931,26 +529,24 @@
                     return;
                 }
                 let initialSize = Math.min(displayWidth, displayHeight) * 0.8;
-                initialSize = Math.max(20, initialSize);
-                const cropBoxTopRelativeToImage = (displayHeight - initialSize) / 2;
-                const cropBoxLeftRelativeToImage = (displayWidth - initialSize) / 2;
-                const offsetX = originalImage.offsetLeft;
-                const offsetY = originalImage.offsetTop;
-                const finalTop = offsetY + cropBoxTopRelativeToImage;
-                const finalLeft = offsetX + cropBoxLeftRelativeToImage;
+                initialSize = Math.max(50, initialSize);
+                
+                const offsetLeft = originalImage.offsetLeft;
+                const offsetTop = originalImage.offsetTop;
+
+                const cropBoxTop = offsetTop + (displayHeight - initialSize) / 2;
+                const cropBoxLeft = offsetLeft + (displayWidth - initialSize) / 2;
 
                 Object.assign(cropBox.style, {
                     width: `${initialSize}px`,
                     height: `${initialSize}px`,
-                    top: `${finalTop}px`,
-                    left: `${finalLeft}px`
+                    top: `${cropBoxTop}px`,
+                    left: `${cropBoxLeft}px`
                 });
             }
 
             function getCoords(e) {
-                if (e.touches && e.touches.length > 0) {
-                    return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-                }
+                if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
                 return { x: e.clientX, y: e.clientY };
             }
 
@@ -969,13 +565,10 @@
                     isResizing = true;
                     isDragging = false;
                     currentHandle = targetElement;
-                    cropBox.style.cursor = getComputedStyle(targetElement).cursor;
-                } else if (targetElement === cropBox) {
+                } else {
                     isDragging = true;
                     isResizing = false;
                     cropBox.style.cursor = 'grabbing';
-                } else {
-                    return;
                 }
                 e.preventDefault();
                 document.addEventListener('mousemove', handleInteractionMove);
@@ -990,18 +583,19 @@
                 const coords = getCoords(e);
                 const deltaX = coords.x - startX;
                 const deltaY = coords.y - startY;
+                
                 const displayWidth = originalImage.clientWidth;
                 const displayHeight = originalImage.clientHeight;
-                const offsetX = originalImage.offsetLeft;
-                const offsetY = originalImage.offsetTop;
+                const offsetLeft = originalImage.offsetLeft;
+                const offsetTop = originalImage.offsetTop;
 
                 if (isDragging) {
                     let newLeft = initialX + deltaX;
                     let newTop = initialY + deltaY;
-                    const maxLeft = offsetX + displayWidth - cropBox.offsetWidth;
-                    const maxTop = offsetY + displayHeight - cropBox.offsetHeight;
-                    newLeft = Math.max(offsetX, Math.min(newLeft, maxLeft));
-                    newTop = Math.max(offsetY, Math.min(newTop, maxTop));
+                    const maxLeft = offsetLeft + displayWidth - cropBox.offsetWidth;
+                    const maxTop = offsetTop + displayHeight - cropBox.offsetHeight;
+                    newLeft = Math.max(offsetLeft, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(offsetTop, Math.min(newTop, maxTop));
                     cropBox.style.left = `${newLeft}px`;
                     cropBox.style.top = `${newTop}px`;
                 } else if (isResizing) {
@@ -1010,38 +604,78 @@
                     let newLeft = initialX;
                     let newTop = initialY;
 
+                    const maxRight = offsetLeft + displayWidth;
+                    const maxBottom = offsetTop + displayHeight;
+
                     if (currentHandle.classList.contains('handle-se')) {
-                        newWidth = initialWidth + deltaX;
-                        newHeight = initialHeight + deltaY;
-                        newWidth = newHeight = Math.max(newWidth, newHeight);
-                    } else if (currentHandle.classList.contains('handle-nw')) {
-                        newWidth = initialWidth - deltaX;
-                        newHeight = initialHeight - deltaY;
-                        newWidth = newHeight = Math.max(newWidth, newHeight);
-                        newLeft = initialX + (initialWidth - newWidth);
-                        newTop = initialY + (initialHeight - newHeight);
-                    } else if (currentHandle.classList.contains('handle-ne')) {
-                        newWidth = initialWidth + deltaX;
-                        newHeight = initialHeight - deltaY;
-                        newWidth = newHeight = Math.max(newWidth, newHeight);
-                        newTop = initialY + (initialHeight - newHeight);
+                        const maxWidth = maxRight - initialX;
+                        const maxHeight = maxBottom - initialY;
+                        let change = Math.max(deltaX, deltaY); 
+                        let maxChange = Math.min(maxWidth - initialWidth, maxHeight - initialHeight);
+                        change = Math.min(change, maxChange);
+
+                        newWidth = initialWidth + change;
+                        newHeight = initialHeight + change;
+
                     } else if (currentHandle.classList.contains('handle-sw')) {
-                        newWidth = initialWidth - deltaX;
-                        newHeight = initialHeight + deltaY;
-                        newWidth = newHeight = Math.max(newWidth, newHeight);
-                        newLeft = initialX + (initialWidth - newWidth);
+                        const maxGrowthLeft = initialX - offsetLeft;
+                        const maxGrowthBottom = maxBottom - (initialY + initialHeight); 
+                        
+                        let change = -deltaX; 
+                        let maxChange = Math.min(maxGrowthLeft, maxGrowthBottom);
+                        change = Math.min(change, maxChange);
+
+                        newWidth = initialWidth + change;
+                        newHeight = initialHeight + change;
+                        newLeft = initialX - change;
+                        
+                    } else if (currentHandle.classList.contains('handle-nw')) {
+                        const maxGrowthLeft = initialX - offsetLeft;
+                        const maxGrowthTop = initialY - offsetTop;
+                        
+                        let change = -Math.min(deltaX, deltaY); 
+                        let maxChange = Math.min(maxGrowthLeft, maxGrowthTop);
+                        change = Math.min(change, maxChange);
+                        
+                        newWidth = initialWidth + change;
+                        newHeight = initialHeight + change;
+                        newLeft = initialX - change;
+                        newTop = initialY - change;
+
+                    } else if (currentHandle.classList.contains('handle-ne')) {
+                        const maxGrowthRight = maxRight - (initialX + initialWidth);
+                        const maxGrowthTop = initialY - offsetTop;
+                        
+                        let change = deltaX; 
+                        let maxChange = Math.min(maxGrowthRight, maxGrowthTop);
+                        change = Math.min(change, maxChange);
+
+                        newWidth = initialWidth + change;
+                        newHeight = initialHeight + change;
+                        newTop = initialY - change;
+                    }
+                    
+                    // Min size check
+                    if (newWidth < 50) {
+                        newWidth = 50;
+                        newHeight = 50;
+                        if (currentHandle.classList.contains('handle-nw')) {
+                            newLeft = initialX + initialWidth - 50;
+                            newTop = initialY + initialHeight - 50;
+                        } else if (currentHandle.classList.contains('handle-sw')) {
+                            newLeft = initialX + initialWidth - 50;
+                        } else if (currentHandle.classList.contains('handle-ne')) {
+                            newTop = initialY + initialHeight - 50;
+                        }
                     }
 
-                    newWidth = Math.max(20, newWidth);
-                    newHeight = Math.max(20, newHeight);
-
-                    const maxDim = Math.min(originalImage.width - newLeft + offsetX, originalImage.height - newTop + offsetY);
-                    newWidth = newHeight = Math.min(newWidth, maxDim);
+                    // Force square
+                    newHeight = newWidth;
 
                     cropBox.style.width = `${newWidth}px`;
                     cropBox.style.height = `${newHeight}px`;
-                    cropBox.style.left = `${newLeft}px`;
-                    cropBox.style.top = `${newTop}px`;
+                    if(newLeft !== initialX) cropBox.style.left = `${newLeft}px`;
+                    if(newTop !== initialY) cropBox.style.top = `${newTop}px`;
                 }
             }
 
@@ -1061,46 +695,43 @@
 
             cropButton.addEventListener('click', function () {
                 if (!img || !img.complete || img.naturalWidth === 0) {
-                    showError('Ảnh gốc chưa sẵn sàng hoặc không hợp lệ.');
+                    showError('Ảnh gốc chưa sẵn sàng.');
                     return;
                 }
-                if (!cropBox || cropBox.style.display === 'none') {
-                    showError('Vùng chọn chưa được khởi tạo hoặc đang ẩn.');
-                    return;
-                }
+                
                 const scaleX = img.naturalWidth / originalImage.clientWidth;
                 const scaleY = img.naturalHeight / originalImage.clientHeight;
-                const sourceX = (cropBox.offsetLeft - originalImage.offsetLeft) * scaleX;
-                const sourceY = (cropBox.offsetTop - originalImage.offsetTop) * scaleY;
-                const sourceSize = cropBox.offsetWidth * scaleX;
+                
+                const rectBox = cropBox.getBoundingClientRect();
+                const rectImg = originalImage.getBoundingClientRect();
+                
+                const relativeLeft = rectBox.left - rectImg.left;
+                const relativeTop = rectBox.top - rectImg.top;
+                
+                const sourceX = Math.max(0, relativeLeft * scaleX);
+                const sourceY = Math.max(0, relativeTop * scaleY);
+                const sourceWidth = cropBox.offsetWidth * scaleX;
+                const sourceHeight = cropBox.offsetHeight * scaleY;
 
-                if (sourceSize <= 0) {
-                    showError('Kích thước vùng cắt không hợp lệ (quá nhỏ hoặc nằm ngoài ảnh).');
-                    return;
-                }
                 const canvas = document.createElement('canvas');
-                canvas.width = sourceSize;
-                canvas.height = sourceSize;
+                canvas.width = sourceWidth;
+                canvas.height = sourceHeight;
                 const ctx = canvas.getContext('2d');
-                try {
-                    ctx.drawImage(img, sourceX, sourceY, sourceSize, sourceSize, 0, 0, sourceSize, sourceSize);
-                    const croppedImageDataUrl = canvas.toDataURL('image/png');
-                    croppedImagePreview.src = croppedImageDataUrl;
-                    downloadLink.href = croppedImageDataUrl;
-                    downloadLink.download = `${originalFileName}_square.png`;
-                    downloadLink.style.display = 'inline-block';
-                    cropResultDiv.style.display = 'block';
-                    errorMessage.textContent = '';
-                } catch (error) {
-                    console.error("Lỗi khi cắt ảnh:", error);
-                    showError("Đã xảy ra lỗi trong quá trình cắt ảnh.");
-                    cropResultDiv.style.display = 'none';
-                }
+                
+                ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
+                
+                const croppedImageDataUrl = canvas.toDataURL('image/png');
+                croppedImagePreview.src = croppedImageDataUrl;
+                downloadLink.href = croppedImageDataUrl;
+                downloadLink.download = `${originalFileName}_square.png`;
+                downloadLink.style.display = 'inline-flex';
+                cropResultDiv.style.display = 'block';
+                errorMessage.textContent = '';
+                cropResultDiv.scrollIntoView({behavior: 'smooth'});
             });
 
             function showError(message) {
                 errorMessage.textContent = message;
-                console.error("Lỗi:", message);
             }
 
             function resetState() {
@@ -1111,99 +742,37 @@
                 downloadLink.style.display = 'none';
                 originalImage.src = '#';
                 originalImage.style.display = 'none';
-                originalImage.classList.remove('loaded');
                 img = new Image();
                 originalFileName = 'anh_goc';
                 fileLabel.textContent = 'Chọn file...';
-                isDragging = false;
-                isResizing = false;
-                currentHandle = null;
             }
-
-            imageInput.addEventListener('change', function () {
-                let fileName = this.value.split('\\').pop();
-                this.nextElementSibling.classList.add("selected");
-                this.nextElementSibling.innerHTML = fileName || 'Chọn file...';
-            });
         });
-    </script>
-    <!-- Common site-wide scripts -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Update Copyright Year ---
-            const currentYearSpan = document.getElementById('currentYear');
-            if (currentYearSpan) {
-                currentYearSpan.textContent = new Date().getFullYear();
-            }
 
-            // --- Header Visibility on Scroll ---
+        // Common Scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
+
             const header = document.querySelector('.main-header');
-            if(header) {
-                setTimeout(() => {
-                    header.classList.add('visible');
-                }, 100); // Delay for initial animation
-            }
+            if(header) setTimeout(() => header.classList.add('visible'), 100);
             
-            // --- Scroll Progress Bar ---
             const progressBar = document.querySelector('.scroll-progress-bar');
             window.addEventListener('scroll', () => {
                 const scrollTop = document.documentElement.scrollTop;
                 const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrollPercentage = (scrollTop / scrollHeight) * 100;
-                if(progressBar) {
-                    progressBar.style.width = `${scrollPercentage}%`;
-                }
+                if(progressBar) progressBar.style.width = `${(scrollTop / scrollHeight) * 100}%`;
             });
 
-            // --- Animate on Scroll ---
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-
-            document.querySelectorAll('.animate-on-scroll').forEach(element => {
-                observer.observe(element);
-            });
-
-            // --- Theme Toggler (Light/Dark Mode) ---
             const themeToggleBtn = document.querySelector('.theme-toggle-btn');
             const currentTheme = localStorage.getItem('theme');
-
-            if (currentTheme === 'light') {
-                document.body.classList.add('light-mode');
-            }
-
+            if (currentTheme === 'light') document.body.classList.add('light-mode');
             if(themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', () => {
                     document.body.classList.toggle('light-mode');
-                    let theme = 'dark';
-                    if (document.body.classList.contains('light-mode')) {
-                        theme = 'light';
-                    }
-                    localStorage.setItem('theme', theme);
+                    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
                 });
             }
-
-            // --- Anchor link smooth scroll ---
-             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    const targetElement = document.querySelector(href);
-                    if (href.startsWith('#') && href.length > 1 && targetElement) {
-                        e.preventDefault();
-                        targetElement.scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
         });
     </script>
 </body>
-
 </html>
