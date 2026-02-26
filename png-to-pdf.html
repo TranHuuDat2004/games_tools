@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển đổi PNG sang PDF</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <!-- Essential JS Libraries for generating PDF -->
+    <!-- Sử dụng jsPDF thay vì pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Driver.js (Tour) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+
+    <!-- Global Styles (Giữ nguyên style từ file gốc của bạn) -->
+    <style>
+        :root {
+            /* Dark Mode (Mặc định) */
+            --bg-dark: #121212;
+            --bg-card: rgba(28, 28, 31, 0.9);
+            --bg-footer: #0c0c0c;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-border: rgba(255, 255, 255, 0.1);
+
+            --gradient-purple: #c084fc;
+            --gradient-pink: #f472b6;
+            --gradient-green: #4ade80;
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            --bg-dark: #f5f5f5;
+            --bg-card: #ffffff;
+            --bg-footer: #e5e5e5;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-primary: #212121;
+            --text-secondary: #5f5f5f;
+            --input-bg: #ffffff;
+            --input-border: #ced4da;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            padding-top: 80px;
+            background-color: var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            font-family: 'Sora', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--gradient-purple);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Class background cho theme */
+        .bg-body-theme {
+            background-color: var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* === SPECIFIC STYLES FOR PNG TO PDF === */
+        h1,
+        h5 {
+            color: var(--text-primary);
+        }
+
+        #drop-zone {
+            background: var(--bg-card);
+            border: 3px dashed var(--border-color);
+            transition: border-color 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        #drop-zone.drag-over {
+            border-color: var(--gradient-purple);
+            background-color: rgba(192, 132, 252, 0.1);
+        }
+
+        #drop-zone p {
+            color: var(--text-secondary);
+        }
+
+        /* Grid hiển thị ảnh đã chọn */
+        #preview-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 5px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .preview-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            pointer-events: none;
+        }
+
+        .preview-item {
+            cursor: grab;
+        }
+
+        .preview-item:active {
+            cursor: grabbing;
+        }
+
+        .sortable-ghost {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        .remove-btn {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .preview-item:hover .remove-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        /* Nav & Footer overrides (Giữ nguyên) */
+        .nav-tabs {
+            border-bottom-color: var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--bg-dark) !important;
+            border-color: var(--border-color) var(--border-color) var(--bg-dark) !important;
+            color: var(--text-primary) !important;
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-secondary);
+        }
+
+        /* Header (Rút gọn cho code ngắn hơn, giống file gốc) */
+        .main-header {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            z-index: 999;
+            max-width: 1000px;
+            width: calc(100% - 3rem);
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translate(-50%, 0);
+        }
+
+        body.light-mode .main-header {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .header-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .main-nav a {
+            padding: 0 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.is-active {
+            color: var(--text-primary);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .main-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-bottom: 2rem;
+        }
+
+        /* Tour Btn */
+        .tour-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--gradient-purple), var(--gradient-pink));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(192, 132, 252, 0.4);
+            z-index: 9999;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Driver JS Theme */
+        .driver-popover.driverjs-theme {
+            background-color: #1e1e21;
+            color: #fff;
+        }
+
+        .driver-popover.driverjs-theme .driver-popover-title {
+            color: var(--gradient-purple);
+        }
+
+        body.light-mode .driver-popover.driverjs-theme {
+            background-color: #fff;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <a href="index.html" class="logo">Game & Image Pro</a>
+        <nav class="header-navigation">
+            <div class="main-nav d-none d-md-flex">
+                <a href="index.html">Trang chủ</a>
+                <a href="scale.html" class="is-active">Công cụ ảnh</a>
+            </div>
+            <button class="theme-toggle-btn" id="themeToggle"><i class="fas fa-adjust"></i></button>
+        </nav>
+    </header>
+
+    <!-- Tour Button -->
+    <div class="tour-btn" id="start-tour-btn" title="Hướng dẫn">?</div>
+
+    <main class="container my-5 bg-body-theme">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="toolTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" href="scale.html">Cắt Ảnh Vuông</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="split.html">Cắt Ảnh Lưới</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="resize.html">Đổi Kích Thước</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="pdf-to-png.html">PDF to PNG</a>
+            </li>
+            <li class="nav-item">
+                <!-- Tab hiện tại đang Active -->
+                <a class="nav-link active" href="#" onclick="return false;">PNG to PDF</a>
+            </li>
+        </ul>
+
+        <h1 class="text-center mb-4">PNG to PDF Converter</h1>
+
+        <div id="drop-zone" class="p-4 p-md-5 text-center rounded mb-4">
+            <div class="mb-3">
+                <i class="fas fa-images fa-3x" style="color: var(--text-secondary);"></i>
+            </div>
+            <p class="fs-5">Kéo thả nhiều ảnh (PNG/JPG) vào đây</p>
+            <p class="small text-secondary">(Tối đa 100 ảnh)</p>
+
+            <label for="imgFileInput" class="btn btn-secondary mt-2">Chọn Ảnh từ máy tính</label>
+            <!-- allow multiple files -->
+            <input type="file" id="imgFileInput" accept="image/png, image/jpeg, image/jpg" multiple class="d-none">
+
+            <div id="fileCount" class="mt-3 fst-italic fw-bold text-success"></div>
+
+            <div class="action-buttons mt-4">
+                <button id="convertBtn" class="btn btn-warning" disabled>
+                    <i class="fas fa-file-pdf me-2"></i>Tạo PDF
+                </button>
+                <button id="clearBtn" class="btn btn-danger ms-2" style="display: none;">
+                    <i class="fas fa-trash me-2"></i>Xóa tất cả
+                </button>
+            </div>
+        </div>
+
+        <!-- BẢNG TÙY CHỌN (Giao diện) -->
+        <div id="pdfOptionsPanel" class="card mb-4 mt-2"
+            style="display: none; background: var(--bg-card); border-color: var(--border-color);">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3" style="color: var(--text-primary);"><i
+                        class="fas fa-cog me-2"></i>Tùy chọn PDF & Vị trí ảnh</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pdfOrientation" class="form-label mb-1"
+                            style="color: var(--text-secondary); font-size: 0.9rem;">Trình bày trang (Hướng PDF)</label>
+                        <select id="pdfOrientation" class="form-select shadow-sm"
+                            style="background-color: #fff; color: #000; border-color: var(--border-color);">
+                            <option value="p">Dọc (Portrait) - Mặc định</option>
+                            <option value="l">Ngang (Landscape)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="imgPosition" class="form-label mb-1"
+                            style="color: var(--text-secondary); font-size: 0.9rem;">Vị trí hiển thị ảnh trên
+                            trang</label>
+                        <select id="imgPosition" class="form-select shadow-sm"
+                            style="background-color: #fff; color: #000; border-color: var(--border-color);">
+                            <option value="center">Căn giữa trang (Giữ tỉ lệ)</option>
+                            <option value="top">Căn trên cùng (Giữ tỉ lệ)</option>
+                            <option value="stretch">Kéo giãn toàn trang (Méo ảnh)</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="small mt-1 mb-0" style="color: var(--gradient-green);">
+                    <i class="fas fa-lightbulb me-1"></i> Mẹo: Hãy <strong>kéo và thả</strong> các bức ảnh bên dưới để
+                    thay đổi thứ tự theo ý muốn trước khi tạo file!
+                </p>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="text-center fw-bold my-4" style="display: none; color: var(--gradient-purple);">
+            <i class="fas fa-spinner fa-spin me-2"></i>Đang tạo file PDF, vui lòng chờ...
+        </div>
+
+        <!-- Khu vực hiển thị ảnh đã chọn -->
+        <div id="preview-area"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>© 2024 Game & Image Pro. Phát triển bởi Trần Hữu Đạt.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const { jsPDF } = window.jspdf; // Khởi tạo jsPDF
+
+            const imgFileInput = document.getElementById("imgFileInput");
+            const convertBtn = document.getElementById("convertBtn");
+            const clearBtn = document.getElementById("clearBtn");
+            const dropZone = document.getElementById("drop-zone");
+            const previewArea = document.getElementById("preview-area");
+            const fileCountDiv = document.getElementById("fileCount");
+            const loadingMessage = document.getElementById("loadingMessage");
+            const pdfOptionsPanel = document.getElementById("pdfOptionsPanel");
+
+            let selectedFiles = []; // Mảng chứa các file đã chọn
+
+            // Cài đặt SortableJS cho phép kéo thả ảnh để đổi thứ tự
+            Sortable.create(previewArea, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    // Cập nhật mảng files theo vị trí mới
+                    const item = selectedFiles.splice(evt.oldIndex, 1)[0];
+                    selectedFiles.splice(evt.newIndex, 0, item);
+
+                    // Cập nhật số thứ tự hiển thị
+                    Array.from(previewArea.children).forEach((child, idx) => {
+                        const numberSpan = child.querySelector('.preview-number');
+                        if (numberSpan) numberSpan.textContent = idx + 1;
+                    });
+                }
+            });
+
+            // --- XỬ LÝ SỰ KIỆN KÉO THẢ & CHỌN FILE ---
+
+            const handleFiles = (files) => {
+                const newFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+
+                if (newFiles.length === 0) {
+                    alert("Vui lòng chỉ chọn file ảnh (PNG, JPG).");
+                    return;
+                }
+
+                if (selectedFiles.length + newFiles.length > 100) {
+                    alert("Giới hạn tối đa là 100 ảnh. Vui lòng chọn ít hơn.");
+                    return;
+                }
+
+                // Thêm file mới vào mảng
+                selectedFiles = [...selectedFiles, ...newFiles];
+                updateUI();
+            };
+
+            // Sự kiện Input change
+            imgFileInput.addEventListener("change", (e) => {
+                handleFiles(e.target.files);
+                // Reset input để có thể chọn lại cùng file nếu muốn
+                imgFileInput.value = '';
+            });
+
+            // Sự kiện Drag & Drop
+            dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+            dropZone.addEventListener("dragleave", e => { e.preventDefault(); dropZone.classList.remove("drag-over"); });
+            dropZone.addEventListener("drop", e => {
+                e.preventDefault();
+                dropZone.classList.remove("drag-over");
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // Click vào dropzone để mở dialog file (nếu không click vào nút)
+            dropZone.addEventListener("click", e => {
+                if (e.target === dropZone || e.target.tagName === 'P' || e.target.tagName === 'I') {
+                    imgFileInput.click();
+                }
+            });
+
+            // Nút xóa tất cả
+            clearBtn.addEventListener("click", (e) => {
+                e.stopPropagation(); // Ngăn chặn sự kiện click lan ra dropzone
+                selectedFiles = [];
+                updateUI();
+            });
+
+            // --- CẬP NHẬT GIAO DIỆN (PREVIEW) ---
+            function updateUI() {
+                previewArea.innerHTML = "";
+
+                if (selectedFiles.length > 0) {
+                    fileCountDiv.textContent = `Đã chọn ${selectedFiles.length}/100 ảnh`;
+                    convertBtn.disabled = false;
+                    clearBtn.style.display = "inline-block";
+                    pdfOptionsPanel.style.display = "block";
+
+                    // Sắp xếp các file theo thứ tự đọc xong để tránh lỗi bất đồng bộ
+                    // Render các khung trước, sau đó nhồi ảnh vào
+                    selectedFiles.forEach((file, index) => {
+                        const div = document.createElement("div");
+                        div.className = "preview-item";
+                        // Loading state placeholder
+                        div.innerHTML = `
+                            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                            <span class="preview-number">${index + 1}</span>
+                        `;
+                        previewArea.appendChild(div);
+
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            div.innerHTML = `
+                                <img src="${e.target.result}" alt="img" draggable="false">
+                                <span class="preview-number">${index + 1}</span>
+                                <button class="remove-btn" title="Xóa ảnh"><i class="fas fa-times"></i></button>
+                            `;
+                            // Sự kiện xóa riêng từng ảnh
+                            div.querySelector('.remove-btn').addEventListener('click', (ev) => {
+                                ev.stopPropagation();
+                                const currentIndex = Array.from(previewArea.children).indexOf(div);
+                                selectedFiles.splice(currentIndex, 1);
+                                updateUI();
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    fileCountDiv.textContent = "";
+                    convertBtn.disabled = true;
+                    clearBtn.style.display = "none";
+                    pdfOptionsPanel.style.display = "none";
+                }
+            }
+
+            // --- LOGIC CHUYỂN ĐỔI SANG PDF ---
+            convertBtn.addEventListener("click", async (e) => {
+                e.stopPropagation();
+                if (selectedFiles.length === 0) return;
+
+                loadingMessage.style.display = "block";
+                convertBtn.disabled = true;
+                clearBtn.disabled = true;
+
+                // Sử dụng setTimeout để UI kịp cập nhật loading message
+                setTimeout(async () => {
+                    try {
+                        const orient = document.getElementById("pdfOrientation").value;
+                        const positionOptions = document.getElementById("imgPosition").value;
+
+                        const doc = new jsPDF({
+                            orientation: orient
+                        });
+                        const pdfWidth = doc.internal.pageSize.getWidth();
+                        const pdfHeight = doc.internal.pageSize.getHeight();
+
+                        for (let i = 0; i < selectedFiles.length; i++) {
+                            const file = selectedFiles[i];
+                            const imgData = await readFileAsDataURL(file);
+
+                            // Lấy thuộc tính ảnh để tính tỉ lệ
+                            const imgProps = doc.getImageProperties(imgData);
+                            const imgRatio = imgProps.width / imgProps.height;
+
+                            // Tính toán kích thước ảnh fit vào trang
+                            const margin = 10;
+                            const availableWidth = pdfWidth - (margin * 2);
+                            const availableHeight = pdfHeight - (margin * 2);
+
+                            let finalWidth = availableWidth;
+                            let finalHeight = finalWidth / imgRatio;
+
+                            if (positionOptions === 'stretch') {
+                                finalWidth = availableWidth;
+                                finalHeight = availableHeight;
+                            } else {
+                                // 'center' hoặc 'top' - Giữ đúng tỉ lệ ảnh (không méo)
+                                if (finalHeight > availableHeight) {
+                                    finalHeight = availableHeight;
+                                    finalWidth = finalHeight * imgRatio;
+                                }
+                            }
+
+                            // Tính tọa độ X, Y dựa trên lựa chọn Vị trí ảnh
+                            const x = (pdfWidth - finalWidth) / 2; // Luôn căn giữa theo chiều ngang
+                            let y = margin; // Mặc định ở phía trên
+
+                            if (positionOptions === 'center') {
+                                y = (pdfHeight - finalHeight) / 2; // Căn giữa toàn trang
+                            } else if (positionOptions === 'stretch') {
+                                y = margin;
+                            }
+
+                            // Thêm trang mới nếu không phải là ảnh đầu tiên
+                            if (i > 0) {
+                                doc.addPage();
+                            }
+
+                            doc.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+
+                            loadingMessage.textContent = `Đang xử lý trang ${i + 1}/${selectedFiles.length}...`;
+                        }
+
+                        doc.save("images-converted.pdf");
+                        alert("Chuyển đổi thành công! File đang được tải xuống.");
+
+                    } catch (err) {
+                        console.error(err);
+                        alert("Có lỗi xảy ra trong quá trình tạo PDF.");
+                    } finally {
+                        loadingMessage.style.display = "none";
+                        convertBtn.disabled = false;
+                        clearBtn.disabled = false;
+                    }
+                }, 100);
+            });
+
+            // Hàm helper đọc file thành DataURL (Promise)
+            function readFileAsDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // --- CÁC SCRIPTS CHUNG (THEME, TOUR) ---
+
+            // Theme Toggle
+            const themeToggleBtn = document.getElementById('themeToggle');
+            if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            });
+
+            // Tour Guide
+            const driver = window.driver.js.driver;
+            const driverObj = driver({
+                showProgress: true,
+                steps: [
+                    { element: '#drop-zone', popover: { title: 'Bước 1: Chọn Ảnh', description: 'Kéo thả nhiều ảnh hoặc bấm chọn từ máy tính. Tối đa 100 ảnh.' } },
+                    { element: '#convertBtn', popover: { title: 'Bước 2: Tạo PDF', description: 'Bấm nút này để gộp tất cả ảnh thành 1 file PDF.' } },
+                    { element: '#clearBtn', popover: { title: 'Làm mới', description: 'Xóa danh sách ảnh đã chọn để làm lại từ đầu.' } }
+                ],
+                popoverClass: 'driverjs-theme'
+            });
+
+            document.getElementById('start-tour-btn').addEventListener('click', () => driverObj.drive());
+        });
+    </script>
+</body>
+
+</html>
