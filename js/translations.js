@@ -88,7 +88,12 @@ const translations = {
         "splitRows": "Số Hàng:",
         "splitCols": "Số Cột:",
         "splitButton": "Cắt Ảnh",
-        "splitNoImage": "Chưa có ảnh nào được chọn"
+        "splitNoImage": "Chưa có ảnh nào được chọn",
+        "pdfToImageTitle": "Chuyển Đổi PDF sang Ảnh (PNG, WebP, JPG)",
+        "outputFormat": "Định dạng ảnh đầu ra:",
+        "png": "PNG (Mặc định)",
+        "webp": "WebP (Gọn nhẹ)",
+        "jpg": "JPG (Phổ biến)"
     },
     "en": {
         "pageTitle": "Home - Jigsaw Puzzle Game & Image Tools",
@@ -179,6 +184,11 @@ const translations = {
         "splitRows": "Rows:",
         "splitCols": "Columns:",
         "splitButton": "Image Tools",
-        "splitNoImage": "No image selected"
+        "splitNoImage": "No image selected",
+        "pdfToImageTitle": "PDF to Image Converter (PNG, WebP, JPG)",
+        "outputFormat": "Output format:",
+        "png": "PNG (Default)",
+        "webp": "WebP (Lightweight)",
+        "jpg": "JPG (Popular)"
     }
 }

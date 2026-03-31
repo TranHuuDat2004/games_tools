@@ -51,7 +51,7 @@
             opacity: 0; transform: translate(-50%, -100px); transition: opacity 0.5s, transform 0.5s;
         }
         .main-header.visible { opacity: 1; transform: translateX(-50%); }
-        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
+        .logo { font-weight: bold; font-size: 1.25rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 0.5rem; }
         .logo img { max-height: 28px; }
         .header-navigation { display: flex; align-items: center; gap: 1rem; }
         .main-nav { display: none; }
@@ -223,7 +223,7 @@
                 <a href="about.html" class="is-active" data-translate="navAbout">Về chúng tôi</a>
                 <a href="contact.html" data-translate="navContact">Liên hệ</a>
                 <a href="split.html" data-translate="navImageTools">Công cụ ảnh</a>
-                <a href="pdf-to-png.html">PDF to PNG</a>
+                <a href="pdf-to-image.html">PDF to Image</a>
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn" data-lang="vi">VI</button>
@@ -283,6 +283,28 @@
                         <p>Rất hữu ích khi bạn cần ảnh với kích thước cụ thể cho website, email, hoặc các mục đích khác.</p>
                         <div class="text-center mt-auto"> 
                             <a href="resize.html" class="btn btn-warning btn-lg mt-3">Thử Resize Ảnh</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF to Image Tool Info (VI) -->
+                <div class="col-md-12 mt-4">
+                    <div class="feature-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <i class="fas fa-file-pdf fa-5x mb-3" style="color: #e25555;"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <h3>Chuyển Đổi PDF Sang Ảnh (PNG, WebP, JPG)</h3>
+                                <p>Công cụ mạnh mẽ giúp bạn tách từng trang trong file PDF thành các định dạng ảnh phổ biến:</p>
+                                <ul>
+                                    <li>Hỗ trợ chuyển đổi sang <strong>PNG</strong> (trong suốt, chất lượng cao), <strong>WebP</strong> (tối ưu dung lượng) và <strong>JPG</strong> (phổ biến).</li>
+                                    <li>Tự động xử lý nhiều trang cùng lúc.</li>
+                                    <li>Tải về từng trang riêng lẻ hoặc tải toàn bộ dưới dạng file nén <strong>ZIP</strong>.</li>
+                                    <li>Xử lý hoàn toàn trên trình duyệt, đảm bảo an toàn tuyệt đối cho dữ liệu của bạn.</li>
+                                </ul>
+                                <a href="pdf-to-image.html" class="btn btn-warning">Sử dụng ngay</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -366,6 +388,28 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- PDF to Image Tool Info (EN) -->
+                <div class="col-md-12 mt-4">
+                    <div class="feature-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <i class="fas fa-file-pdf fa-5x mb-3" style="color: #e25555;"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <h3>Convert PDF to Image (PNG, WebP, JPG)</h3>
+                                <p>A powerful tool that helps you extract each page of a PDF file into popular image formats:</p>
+                                <ul>
+                                    <li>Supports <strong>PNG</strong> (transparent, high quality), <strong>WebP</strong> (lightweight), and <strong>JPG</strong> (common).</li>
+                                    <li>Automatically processes multiple pages at once.</li>
+                                    <li>Download each page individually or all in a single <strong>ZIP</strong> archive.</li>
+                                    <li>Fully processed in the browser, ensuring 100% privacy for your files.</li>
+                                </ul>
+                                <a href="pdf-to-image.html" class="btn btn-warning">Try it now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="text-center my-5">
@@ -420,6 +464,8 @@
                     <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
                     <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
                     <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                    <li><a href="pdf-to-image.html">PDF to Image</a></li>
+                    <li><a href="png-to-pdf.html">PNG to PDF</a></li>
                 </ul>
             </div>
              <div class="footer-column">

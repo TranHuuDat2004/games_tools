@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chuyển đổi PDF sang PNG</title>
+    <title data-translate="pdfToImageTitle">PDF to Image Converter</title>
     <link rel="icon" href="favicon.png" type="image/png">
 
     <!-- Essential JS Libraries for PDF -->
@@ -211,7 +211,9 @@
         .logo {
             font-weight: bold; font-size: 1.25rem; color: var(--text-primary);
             background: linear-gradient(to right, #a855f7, #ec4899);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             display: flex; align-items: center; gap: 0.5rem;
         }
         .logo img { max-height: 28px; }
@@ -378,7 +380,7 @@
                 <a href="about.html" data-translate="navAbout">Về chúng tôi</a>
                 <a href="contact.html" data-translate="navContact">Liên hệ</a>
                 <a href="scale.html" class="is-active" data-translate="navImageTools">Công cụ ảnh</a>
-                <a href="pdf-to-png.html">PDF to PNG</a>
+                <a href="pdf-to-image.html">PDF to Image</a>
             </div>
             <div class="lang-switcher">
                 <button class="lang-btn" data-lang="vi">VI</button>
@@ -407,20 +409,39 @@
                 <a class="nav-link" id="resize-image-tab" href="resize.html" role="tab" data-translate="toolResizeTitle">Thay Đổi Kích Thước</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" id="pdf-to-png-tab" href="pdf-to-png.html" role="tab">PDF to PNG</a>
+                <a class="nav-link active" id="pdf-to-png-tab" href="pdf-to-image.html" role="tab">PDF to Image</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="png-to-pdf-tab" href="png-to-pdf.html" role="tab">PNG to PDF</a>
             </li>
         </ul>
 
-        <h1 class="text-center mb-4">PDF to PNG Converter</h1>
+        <h1 class="text-center mb-4" data-translate="pdfToImageTitle">PDF to Image Converter</h1>
         
         <div id="drop-zone" class="p-4 p-md-5 text-center rounded mb-4">
             <p class="fs-5">Kéo và thả file PDF vào đây, hoặc</p>
             <label for="pdfFileInput" class="btn btn-secondary">Chọn File từ máy tính</label>
             <input type="file" id="pdfFileInput" accept=".pdf" class="d-none">
             <div id="fileName" class="mt-3 fst-italic">Chưa có file nào được chọn</div>
+
+            <!-- Format Selection Area -->
+            <div id="formatSelection" class="mt-4 p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);">
+                <label class="d-block mb-3 fw-bold" data-translate="outputFormat">Chọn định dạng đầu ra:</label>
+                <div class="d-flex justify-content-center gap-4 flex-wrap">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="imageFormat" id="formatPng" value="png" checked>
+                        <label class="form-check-label" for="formatPng" data-translate="png">PNG</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="imageFormat" id="formatWebp" value="webp">
+                        <label class="form-check-label" for="formatWebp" data-translate="webp">WebP</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="imageFormat" id="formatJpg" value="jpg">
+                        <label class="form-check-label" for="formatJpg" data-translate="jpg">JPG</label>
+                    </div>
+                </div>
+            </div>
             
             <div class="action-buttons mt-4">
                 <button id="convertBtn" class="btn btn-warning" disabled>Chuyển đổi</button>
@@ -457,6 +478,8 @@
                     <li><a href="split.html" data-translate="footerGridSplit">Chia ảnh lưới</a></li>
                     <li><a href="scale.html" data-translate="footerSquareCrop">Cắt ảnh vuông</a></li>
                     <li><a href="resize.html" data-translate="footerResize">Thay đổi kích thước</a></li>
+                    <li><a href="pdf-to-image.html">PDF to Image</a></li>
+                    <li><a href="png-to-pdf.html">PNG to PDF</a></li>
                 </ul>
             </div>
              <div class="footer-column">
@@ -548,6 +571,9 @@
                     try {
                         const pdf = await pdfjsLib.getDocument({ data }).promise;
                         const totalPages = pdf.numPages;
+                        const selectedFormat = document.querySelector('input[name="imageFormat"]:checked').value;
+                        const mimeType = selectedFormat === 'jpg' ? 'image/jpeg' : `image/${selectedFormat}`;
+                        const extension = selectedFormat === 'jpg' ? 'jpg' : selectedFormat;
 
                         for (let i = 1; i <= totalPages; i++) {
                             const page = await pdf.getPage(i);
@@ -557,9 +583,15 @@
                             canvas.height = viewport.height;
                             canvas.width = viewport.width;
 
+                            // Fill white background for JPG (since JPG doesn't support transparency)
+                            if (selectedFormat === 'jpg') {
+                                context.fillStyle = '#ffffff';
+                                context.fillRect(0, 0, canvas.width, canvas.height);
+                            }
+
                             await page.render({ canvasContext: context, viewport }).promise;
 
-                            const imgUrl = canvas.toDataURL("image/png");
+                            const imgUrl = canvas.toDataURL(mimeType, 0.9);
                             
                             // Create Display Element
                             const container = document.createElement("div");
@@ -572,7 +604,7 @@
                             
                             const downloadBtn = document.createElement("a");
                             downloadBtn.href = imgUrl;
-                            downloadBtn.download = `${file.name.replace(".pdf", "")}_page_${i}.png`;
+                            downloadBtn.download = `${file.name.replace(".pdf", "")}_page_${i}.${extension}`;
                             downloadBtn.textContent = `Tải trang ${i}`;
                             downloadBtn.className = "btn btn-info btn-sm";
 
@@ -584,6 +616,7 @@
                         loadingMessage.style.display = "none";
                         if (totalPages > 0) {
                             downloadAllBtn.style.display = "inline-block";
+                            downloadAllBtn.textContent = `Tải tất cả (.zip - ${selectedFormat.toUpperCase()})`;
                         }
                     } catch (err) {
                         console.error("Lỗi khi chuyển đổi PDF:", err);
@@ -607,11 +640,13 @@
                 downloadAllBtn.disabled = true;
 
                 try {
+                    const selectedFormat = document.querySelector('input[name="imageFormat"]:checked').value;
+                    const extension = selectedFormat === 'jpg' ? 'jpg' : selectedFormat;
                     const zip = new JSZip();
                     outputDiv.querySelectorAll(".page-container").forEach((container, index) => {
                         const img = container.querySelector("img");
                         const imgData = img.src.split(",")[1];
-                        const fileName = `${file.name.replace(".pdf", "")}_page_${index + 1}.png`;
+                        const fileName = `${file.name.replace(".pdf", "")}_page_${index + 1}.${extension}`;
                         zip.file(fileName, imgData, { base64: true });
                     });
 
@@ -676,10 +711,19 @@
                         } 
                     },
                     { 
+                        element: '#formatSelection', 
+                        popover: { 
+                            title: 'Bước 2: Chọn Định Dạng 🖼️', 
+                            description: 'Chọn định dạng ảnh bạn muốn nhận được: PNG (chất lượng cao, hỗ trợ trong suốt), WebP (siêu nhẹ) hoặc JPG (phổ biến).', 
+                            side: "bottom", 
+                            align: 'center' 
+                        } 
+                    },
+                    { 
                         element: '#convertBtn', 
                         popover: { 
-                            title: 'Bước 2: Chuyển Đổi ⚡', 
-                            description: 'Sau khi chọn file, nút này sẽ sáng lên. Bấm vào đây để hệ thống tự động tách từng trang PDF thành ảnh PNG.', 
+                            title: 'Bước 3: Chuyển Đổi ⚡', 
+                            description: 'Bấm vào đây để hệ thống tự động tách từng trang PDF thành ảnh theo định dạng bạn đã chọn.', 
                             side: "top", 
                             align: 'center' 
                         } 
